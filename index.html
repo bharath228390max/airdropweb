@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My First Website</title>
+  <title>First Website</title>
   <style>
     body {
       margin: 0;
@@ -13,15 +13,26 @@
       align-items: center;
       height: 100vh; /* Full screen height */
     }
-    h1 {
-      font-family: "Comic Sans MS", cursive, sans-serif;
+
+    .box {
+      background-color: rgba(255, 255, 255, 0.1); /* Light transparent */
+      border: 2px solid white; /* Thin white border */
+      padding: 50px 100px; /* Space inside box */
+      border-radius: 15px; /* Rounded corners */
+      text-align: center;
+    }
+
+    .box h1 {
+      font-family: "Comic Sans MS", cursive, sans-serif; /* Comic Sans */
       color: white; /* White text */
       font-size: 60px; /* Big text */
-      text-align: center;
+      margin: 0;
     }
   </style>
 </head>
 <body>
-  <h1>the first website for small accounts</h1>
+  <div class="box">
+    <h1>the first website for small accounts</h1>
+  </div>
 </body>
 </html>

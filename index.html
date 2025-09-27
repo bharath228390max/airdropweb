@@ -2,37 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>First Website</title>
+  <title>Rezo</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
     body {
       margin: 0;
       padding: 0;
-      background-color: purple; /* Purple background */
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh; /* Full screen height */
+      background: linear-gradient(135deg, #4b0082, #8a2be2); /* Futuristic purple gradient */
+      font-family: 'Orbitron', sans-serif;
     }
 
     .box {
-      background-color: rgba(255, 255, 255, 0.1); /* Light transparent */
-      border: 1px solid white; /* Thin white border */
-      padding: 33px 66px; /* Space inside box */
-      border-radius: 15px; /* Rounded corners */
+      background-color: rgba(255, 255, 255, 0.05); /* Slightly transparent */
+      border: 1px solid white; /* thin white border */
+      border-radius: 20px;
+      padding: 40px 80px;
       text-align: center;
+      box-shadow: 0 0 20px rgba(255,255,255,0.3), 0 0 40px rgba(138,43,226,0.4);
+      animation: glow 2s ease-in-out infinite alternate;
     }
 
     .box h1 {
-      font-family: "Comic Sans MS", cursive, sans-serif; /* Comic Sans */
-      color: white; /* White text */
-      font-size: 40px; /* Big text */
+      color: white;
+      font-size: 40px;
+      line-height: 1.4;
       margin: 0;
+      text-shadow: 0 0 10px #fff, 0 0 20px #8a2be2;
+    }
+
+    @keyframes glow {
+      0% {
+        box-shadow: 0 0 20px rgba(255,255,255,0.3), 0 0 40px rgba(138,43,226,0.4);
+      }
+      100% {
+        box-shadow: 0 0 30px rgba(255,255,255,0.5), 0 0 60px rgba(138,43,226,0.6);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .box h1 {
+        font-size: 28px; /* Smaller text on mobile */
+      }
+      .box {
+        padding: 20px 30px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="box">
-    <h1>the first website for small accounts</h1>
+    <h1>Welcome to Rezo<br>Built for small accounts<br>Made for Airdrop opportunities</h1>
   </div>
 </body>
 </html>

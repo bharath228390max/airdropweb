@@ -11,11 +11,11 @@
       padding: 0;
       font-family: 'Orbitron', sans-serif;
       height: 100vh;
-      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: flex-start;
       background-color: #d7d7d7; /* fallback */
+      overflow: hidden;
       position: relative;
     }
 
@@ -26,39 +26,37 @@
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 0;
+      z-index: 0; /* behind everything */
     }
 
-    /* Individual diagonal shapes with blur */
+    /* Individual diagonal shapes */
     .shape {
       position: absolute;
-      width: 200%;
-      height: 200%;
-      filter: blur(20px);
+      width: 150%;
+      height: 150%;
+      filter: blur(30px);
+      transform: rotate(-25deg);
     }
 
     .shape1 {
       background-color: #d7d7d7;
       clip-path: polygon(0 0, 100% 0, 100% 50%, 0 60%);
-      transform: rotate(-25deg);
-      top: -50%;
-      left: -50%;
+      top: -20%;
+      left: -25%;
     }
 
     .shape2 {
       background-color: #c3a8f4;
       clip-path: polygon(0 40%, 100% 30%, 100% 80%, 0 70%);
-      transform: rotate(-25deg);
-      top: -50%;
-      left: -50%;
+      top: -10%;
+      left: -25%;
     }
 
     .shape3 {
       background-color: #ffffff;
       clip-path: polygon(0 60%, 100% 50%, 100% 100%, 0 100%);
-      transform: rotate(-25deg);
-      top: -50%;
-      left: -50%;
+      top: 0%;
+      left: -25%;
     }
 
     /* Box container */
@@ -73,7 +71,7 @@
       text-align: center;
       box-shadow: 0 0 20px rgba(255,255,255,0.3), 0 0 40px rgba(195,168,244,0.4);
       max-width: 600px;
-      z-index: 1; /* above background shapes */
+      z-index: 1; /* ensure above background */
     }
 
     .box h1 {
@@ -83,13 +81,14 @@
       margin: 0;
       text-shadow: 0 0 10px #fff, 0 0 20px #c3a8f4;
       position: relative;
-      z-index: 2; /* ensure above blur */
+      z-index: 2; /* above everything */
     }
 
     @media (max-width: 768px) {
       .box h1 { font-size: 28px; }
       .box { padding: 20px 30px; }
     }
+
   </style>
 </head>
 <body>

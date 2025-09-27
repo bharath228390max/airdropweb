@@ -12,65 +12,48 @@
       font-family: 'Orbitron', sans-serif;
       height: 100vh;
       overflow: hidden;
-      position: relative;
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      background: #d7d7d7; /* fallback */
+      background-color: #d7d7d7; /* fallback */
+      position: relative;
     }
 
-    /* Diagonal geometric shapes using pseudo-elements */
-    body::before, body::after {
-      content: "";
+    /* Diagonal geometric shapes container */
+    .background-shapes {
       position: absolute;
+      top: 0;
+      left: 0;
       width: 200%;
       height: 200%;
-      top: -50%;
-      left: -50%;
       transform: rotate(-25deg);
       z-index: 0;
+      filter: blur(20px); /* slight blur for soft effect */
     }
 
-    body::before {
-      background: #c3a8f4;
-      clip-path: polygon(0 0, 100% 0, 100% 50%, 0 100%);
-    }
-
-    body::after {
-      background: #d7d7d7;
-      clip-path: polygon(0 50%, 100% 0, 100% 100%, 0 100%);
-    }
-
-    /* Clustered logos */
-    .logo-container {
+    .shape1, .shape2, .shape3 {
       position: absolute;
-      top: 10%;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 20px;
-      z-index: 1;
-      opacity: 0.4;
+      width: 100%;
+      height: 100%;
     }
 
-    .logo-container img {
-      width: 50px;
-      height: 50px;
-    }
+    .shape1 { background-color: #d7d7d7; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 60%); }
+    .shape2 { background-color: #c3a8f4; clip-path: polygon(0 40%, 100% 30%, 100% 80%, 0 70%); }
+    .shape3 { background-color: #ffffff; clip-path: polygon(0 60%, 100% 50%, 100% 100%, 0 100%); }
 
     /* Box container */
     .box {
       position: relative;
-      top: 20%;
+      top: 20%; /* move box up 20% */
       margin: 0 auto;
       background-color: rgba(255, 255, 255, 0.05);
       border: 1px solid white;
       border-radius: 20px;
-      padding: 40px 60px;
+      padding: 40px 60px; /* narrower box */
       text-align: center;
       box-shadow: 0 0 20px rgba(255,255,255,0.3), 0 0 40px rgba(195,168,244,0.4);
       max-width: 600px;
-      z-index: 2;
+      z-index: 1;
     }
 
     .box h1 {
@@ -84,18 +67,16 @@
     @media (max-width: 768px) {
       .box h1 { font-size: 28px; }
       .box { padding: 20px 30px; }
-      .logo-container img { width: 30px; height: 30px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Clustered logos -->
-  <div class="logo-container">
-    <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=014" alt="BTC">
-    <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png?v=014" alt="ETH">
-    <img src="https://cryptologos.cc/logos/solana-sol-logo.png?v=014" alt="SOL">
-    <img src="https://cryptologos.cc/logos/cardano-ada-logo.png?v=014" alt="ADA">
+  <!-- Background shapes -->
+  <div class="background-shapes">
+    <div class="shape1"></div>
+    <div class="shape2"></div>
+    <div class="shape3"></div>
   </div>
 
   <!-- Main box -->

@@ -14,7 +14,7 @@
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      background-color: #d7d7d7; /* fallback */
+      background-color: #d7d7d7;
       overflow: hidden;
       position: relative;
     }
@@ -26,43 +26,42 @@
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 0; /* behind everything */
+      z-index: 0;
     }
 
-    /* Individual diagonal shapes */
     .shape {
       position: absolute;
-      width: 150%;
-      height: 150%;
-      filter: blur(30px);
+      width: 120%;
+      height: 120%;
+      filter: blur(15px);
       transform: rotate(-25deg);
     }
 
     .shape1 {
-      background-color: #d7d7d7;
+      background-color: #d7d7d7; /* ash */
       clip-path: polygon(0 0, 100% 0, 100% 50%, 0 60%);
-      top: -20%;
-      left: -25%;
+      top: -10%;
+      left: -10%;
     }
 
     .shape2 {
-      background-color: #c3a8f4;
+      background-color: #c3a8f4; /* light purple */
       clip-path: polygon(0 40%, 100% 30%, 100% 80%, 0 70%);
-      top: -10%;
-      left: -25%;
+      top: 0%;
+      left: -10%;
     }
 
     .shape3 {
-      background-color: #ffffff;
+      background-color: #ffffff; /* white */
       clip-path: polygon(0 60%, 100% 50%, 100% 100%, 0 100%);
-      top: 0%;
-      left: -25%;
+      top: 5%;
+      left: -10%;
     }
 
     /* Box container */
     .box {
       position: relative;
-      top: 20%; /* move box down 20% */
+      top: 15%;
       margin: 0 auto;
       background-color: rgba(255, 255, 255, 0.05);
       border: 1px solid white;
@@ -71,7 +70,7 @@
       text-align: center;
       box-shadow: 0 0 20px rgba(255,255,255,0.3), 0 0 40px rgba(195,168,244,0.4);
       max-width: 600px;
-      z-index: 1; /* ensure above background */
+      z-index: 2; /* ensure above background */
     }
 
     .box h1 {
@@ -81,14 +80,13 @@
       margin: 0;
       text-shadow: 0 0 10px #fff, 0 0 20px #c3a8f4;
       position: relative;
-      z-index: 2; /* above everything */
+      z-index: 3; /* ensure above box background */
     }
 
     @media (max-width: 768px) {
       .box h1 { font-size: 28px; }
       .box { padding: 20px 30px; }
     }
-
   </style>
 </head>
 <body>

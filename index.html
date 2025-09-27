@@ -11,9 +11,29 @@
       padding: 0;
       height: 100vh;
       font-family: 'Orbitron', sans-serif;
-      overflow: hidden;
       background: linear-gradient(135deg, #00bfff, #20c997); /* Blue/turquoise gradient */
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; /* so we can move box down/up */
+      overflow: hidden;
       position: relative;
+    }
+
+    /* Clustered logos in background */
+    .logo-container {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+      z-index: 0;
+      opacity: 0.3; /* faint in background */
+    }
+
+    .logo-container img {
+      width: 50px;
+      height: 50px;
     }
 
     /* Box container */
@@ -24,12 +44,12 @@
       background-color: rgba(255, 255, 255, 0.05);
       border: 1px solid white;
       border-radius: 20px;
-      padding: 40px 80px;
+      padding: 40px 60px; /* less left/right padding */
       text-align: center;
       box-shadow: 0 0 20px rgba(255,255,255,0.3), 0 0 40px rgba(0,191,255,0.4);
       animation: glow 2s ease-in-out infinite alternate;
-      max-width: 90%;
-      z-index: 2; /* ensure above logos */
+      max-width: 600px; /* limit box width */
+      z-index: 1;
     }
 
     .box h1 {
@@ -45,37 +65,24 @@
       100% { box-shadow: 0 0 30px rgba(255,255,255,0.5), 0 0 60px rgba(0,191,255,0.6); }
     }
 
-    /* Floating logos */
-    .logo {
-      position: absolute;
-      width: 40px;
-      animation: floatUp 15s linear infinite;
-      opacity: 0.7;
-      z-index: 1;
-    }
-
-    @keyframes floatUp {
-      0% { transform: translateY(100vh) rotate(0deg); opacity:0; }
-      50% { opacity:1; }
-      100% { transform: translateY(-20vh) rotate(360deg); opacity:0; }
-    }
-
     @media (max-width: 768px) {
       .box h1 { font-size: 28px; }
       .box { padding: 20px 30px; }
-      .logo { width: 25px; }
+      .logo-container img { width: 30px; height: 30px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Cryptocurrency logos -->
-  <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=014" class="logo" style="left:5%; animation-delay:0s;">
-  <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png?v=014" class="logo" style="left:20%; animation-delay:3s;">
-  <img src="https://cryptologos.cc/logos/solana-sol-logo.png?v=014" class="logo" style="left:35%; animation-delay:1s;">
-  <img src="https://cryptologos.cc/logos/cardano-ada-logo.png?v=014" class="logo" style="left:50%; animation-delay:2s;">
-  <img src="https://cryptologos.cc/logos/polkadot-dot-logo.png?v=014" class="logo" style="left:65%; animation-delay:4s;">
-  <img src="https://cryptologos.cc/logos/binance-coin-bnb-logo.png?v=014" class="logo" style="left:80%; animation-delay:1.5s;">
+  <!-- Clustered logos behind box -->
+  <div class="logo-container">
+    <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=014" alt="BTC">
+    <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png?v=014" alt="ETH">
+    <img src="https://cryptologos.cc/logos/solana-sol-logo.png?v=014" alt="SOL">
+    <img src="https://cryptologos.cc/logos/cardano-ada-logo.png?v=014" alt="ADA">
+    <img src="https://cryptologos.cc/logos/polkadot-dot-logo.png?v=014" alt="DOT">
+    <img src="https://cryptologos.cc/logos/binance-coin-bnb-logo.png?v=014" alt="BNB">
+  </div>
 
   <!-- Main box -->
   <div class="box">

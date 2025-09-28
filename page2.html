@@ -44,20 +44,22 @@
 
     /* Each top box */
     .box-item {
-      background: rgba(255, 255, 255, 0.05); /* slight transparency */
-      border: 1px solid white;
+      background: rgba(255, 255, 255, 0.05);
+      border: 3px solid white; /* thicker border */
       border-radius: 20px;
-      padding: 60px 50px;
+      padding: 80px 60px; /* bigger box */
       color: white;
       font-family: 'Hobo Std', cursive;
-      font-size: 28px;
+      font-size: 32px; /* bigger text */
       text-align: center;
-      min-width: 250px;
+      min-width: 300px;
       box-shadow: 0 0 20px rgba(255,255,255,0.3);
-      z-index: 3; /* above blurred background */
+      position: relative;
+      z-index: 3;
+      text-shadow: 0 0 3px white, 0 0 6px white; /* makes text thicker/glow */
     }
 
-    /* Optional text below boxes */
+    /* Optional content text below boxes */
     .content-text {
       margin-top: 60px;
       color: white;
@@ -70,7 +72,7 @@
 
     @media (max-width: 768px) {
       .top-boxes { flex-direction: column; gap: 20px; margin-top: 30px; }
-      .box-item { min-width: 200px; font-size: 22px; padding: 40px 30px; }
+      .box-item { min-width: 200px; font-size: 28px; padding: 60px 40px; }
       .content-text { font-size: 22px; margin-top: 30px; }
     }
   </style>
@@ -89,7 +91,7 @@
 
   <!-- Optional content text below boxes -->
   <div class="content-text">
-    Your text goes here (replace with whatever you want)
+    Your text goes here
   </div>
 
 </body>

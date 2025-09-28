@@ -14,19 +14,19 @@
       flex-direction: column;
       align-items: center;
       font-family: "Comic Sans MS", cursive, sans-serif;
-      background-color: #d7d7d7;
+      background-color: #d7d7d7; /* smooth background */
       overflow: hidden;
       position: relative;
     }
 
-    .background-blur {
+    /* Background gradient but not blurred */
+    .background-gradient {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       background: linear-gradient(135deg, #c3a8f4 50%, #d7d7d7 50%);
-      filter: blur(15px);
       z-index: 0;
     }
 
@@ -41,45 +41,39 @@
 
     .box-item {
       background: rgba(255, 255, 255, 0.05);
-      border: 4px solid white; /* thicker border */
+      border: 4px solid white;
       border-radius: 20px;
-      padding: 80px 60px; /* bigger box */
+      padding: 80px 60px;
       color: white;
       font-family: 'Hobo Std', cursive;
-      font-size: 40px; /* bigger/thicker text */
+      font-size: 40px;
       text-align: center;
-      min-width: 300px;
+      width: 300px;  /* set same width for all boxes */
+      height: 300px; /* set same height for all boxes */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px); /* blur inside boxes only */
       box-shadow: 0 0 20px rgba(255,255,255,0.3);
       position: relative;
       z-index: 3;
     }
 
-    .content-text {
-      margin-top: 60px;
-      color: white;
-      font-size: 28px;
-      text-align: center;
-      z-index: 3;
-      position: relative;
-    }
-
     @media (max-width: 768px) {
       .top-boxes { flex-direction: column; gap: 20px; margin-top: 30px; }
-      .box-item { min-width: 200px; font-size: 28px; padding: 60px 40px; }
-      .content-text { font-size: 22px; margin-top: 30px; }
+      .box-item { width: 250px; height: 250px; font-size: 32px; padding: 60px 40px; }
     }
   </style>
 </head>
 <body>
 
-  <div class="background-blur"></div>
+  <div class="background-gradient"></div>
 
   <div class="top-boxes">
     <div class="box-item">Airdrop opportunities</div>
     <div class="box-item">Yappers per project</div>
     <div class="box-item">New projects</div>
   </div>
-
 
 </body>
 </html>

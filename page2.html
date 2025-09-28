@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Page 2 - Rezo</title>
   <style>
-    /* Import Hobo font */
     @import url('https://fonts.cdnfonts.com/css/hobo-std');
 
     body {
@@ -20,7 +19,6 @@
       position: relative;
     }
 
-    /* Blurred background shapes */
     .background-blur {
       position: absolute;
       top: 0;
@@ -32,42 +30,37 @@
       z-index: 0;
     }
 
-    /* Top 3 boxes container */
     .top-boxes {
       display: flex;
       justify-content: center;
       gap: 30px;
       margin-top: 50px;
       z-index: 2;
-      position: relative; /* above background */
+      position: relative;
     }
 
-    /* Each top box */
     .box-item {
       background: rgba(255, 255, 255, 0.05);
-      border: 3px solid white; /* thicker border */
+      border: 4px solid white; /* thicker border */
       border-radius: 20px;
       padding: 80px 60px; /* bigger box */
       color: white;
       font-family: 'Hobo Std', cursive;
-      font-size: 32px; /* bigger text */
+      font-size: 34px; /* bigger/thicker text */
       text-align: center;
       min-width: 300px;
       box-shadow: 0 0 20px rgba(255,255,255,0.3);
       position: relative;
       z-index: 3;
-      text-shadow: 0 0 3px white, 0 0 6px white; /* makes text thicker/glow */
     }
 
-    /* Optional content text below boxes */
     .content-text {
       margin-top: 60px;
       color: white;
       font-size: 28px;
       text-align: center;
       z-index: 3;
-      position: relative; /* above blurred background */
-      text-shadow: 0 0 10px rgba(255,255,255,0.5);
+      position: relative;
     }
 
     @media (max-width: 768px) {
@@ -79,17 +72,14 @@
 </head>
 <body>
 
-  <!-- Blurred background -->
   <div class="background-blur"></div>
 
-  <!-- Top 3 boxes -->
   <div class="top-boxes">
     <div class="box-item">Yappers opportunities</div>
     <div class="box-item">Yappers per project</div>
     <div class="box-item">Box 3</div>
   </div>
 
-  <!-- Optional content text below boxes -->
   <div class="content-text">
     Your text goes here
   </div>

@@ -41,10 +41,47 @@
       font-size: 28px;
       backdrop-filter: blur(5px);
     }
+
+    /* Import Hobo font */
+    @import url('https://fonts.cdnfonts.com/css/hobo-std');
+
+    /* Top boxes container */
+    .top-boxes {
+      position: absolute;
+      top: 5%;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+      z-index: 2;
+    }
+
+    /* Each box */
+    .box-item {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid white;
+      border-radius: 15px;
+      padding: 20px 30px;
+      color: white;
+      font-family: 'Hobo Std', cursive;
+      font-size: 20px;
+      text-align: center;
+      min-width: 200px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.3);
+    }
   </style>
 </head>
 <body>
   <div class="background-blur"></div>
+
+  <!-- Three boxes row -->
+  <div class="top-boxes">
+    <div class="box-item">Yappers opportunities</div>
+    <div class="box-item">Yappers per project</div>
+    <div class="box-item">Box 3</div>
+  </div>
+
+  <!-- Main content box -->
   <div class="content-box">
     <p>Welcome to Page 2 of Rezo 🚀</p>
     <p>Here we will add features for small accounts and airdrop opportunities.</p>

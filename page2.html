@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page 2 - Rezo</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: "Comic Sans MS", cursive, sans-serif;
+      background: linear-gradient(135deg, #c3a8f4 50%, #d7d7d7 50%);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Blurred background effect */
+    .background-blur {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #c3a8f4 50%, #d7d7d7 50%);
+      filter: blur(15px);
+      z-index: 0;
+    }
+
+    .content-box {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid white;
+      padding: 40px 60px;
+      border-radius: 12px;
+      text-align: center;
+      color: white;
+      font-size: 28px;
+      backdrop-filter: blur(5px);
+    }
+  </style>
+</head>
+<body>
+  <div class="background-blur"></div>
+  <div class="content-box">
+    <p>Welcome to Page 2 of Rezo 🚀</p>
+    <p>Here we will add features for small accounts and airdrop opportunities.</p>
+  </div>
+</body>
+</html>

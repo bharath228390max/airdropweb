@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Page 2 - Rezo</title>
+  <title>Rezo - Page 2</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
@@ -14,13 +13,12 @@
       height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       background-color: #d7d7d7;
       overflow: hidden;
       position: relative;
     }
 
-    /* Background shapes container */
     .background-shapes {
       position: absolute;
       top: 0;
@@ -35,6 +33,7 @@
       width: 120%;
       height: 120%;
       transform: rotate(-25deg);
+      transition: all 0.6s ease;
     }
 
     .shape1 {
@@ -58,58 +57,72 @@
       left: -10%;
     }
 
-    /* Top 3 boxes container */
-    .top-boxes {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin-top: 50px;
-      z-index: 2;
+    .box {
       position: relative;
-    }
-
-    /* Each box */
-    .box-item {
-      background-color: #c3a8f4; /* purple background */
-      border: 4px solid white;
-      border-radius: 20px;
-      width: 400px;   /* width */
-      height: 250px;  /* decreased height */
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(5px);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 25px;
+      padding: 40px 70px;
       text-align: center;
-      font-size: 36px;
-      color: white;
-      text-shadow: 0 0 10px #fff, 0 0 20px #b091f0;
-      box-shadow: 0 0 20px rgba(255,255,255,0.3);
-      position: relative;
+      box-shadow: 0 0 25px rgba(195,168,244,0.3), 0 0 60px rgba(195,168,244,0.3) inset;
+      max-width: 550px;
+      transform: scale(0.9);
+      z-index: 2;
+      transition: transform 0.6s ease, box-shadow 0.6s ease;
     }
 
-    @media (max-width: 1024px) {
-      .box-item { width: 320px; height: 220px; font-size: 32px; }
+    .box:hover {
+      transform: scale(0.95);
+      box-shadow: 0 0 35px rgba(195,168,244,0.4), 0 0 80px rgba(195,168,244,0.4) inset;
+    }
+
+    .box h1 {
+      color: #f6f4fa;
+      font-size: 38px;
+      line-height: 1.4;
+      margin: 0 0 35px 0;
+      text-shadow: 0 0 10px rgba(255,255,255,0.4), 0 0 15px #c3a8f4;
+    }
+
+    .next-btn {
+      display: inline-block;
+      padding: 12px 30px;
+      font-size: 18px;
+      color: white;
+      border: 1px solid white;
+      border-radius: 15px;
+      background-color: rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(255,255,255,0.2);
+    }
+
+    .next-btn:hover {
+      background-color: rgba(195,168,244,0.2);
+      box-shadow: 0 0 20px rgba(195,168,244,0.5);
+      transform: translateY(-2px);
     }
 
     @media (max-width: 768px) {
-      .top-boxes { flex-direction: column; gap: 20px; margin-top: 30px; }
-      .box-item { width: 250px; height: 180px; font-size: 28px; }
+      .box h1 { font-size: 26px; }
+      .box { padding: 25px 35px; transform: scale(0.95); }
+      .next-btn { font-size: 16px; padding: 10px 25px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Background shapes -->
   <div class="background-shapes">
     <div class="shape shape1"></div>
     <div class="shape shape2"></div>
     <div class="shape shape3"></div>
   </div>
 
-  <!-- Top 3 boxes -->
-  <div class="top-boxes">
-    <div class="box-item">Airdrop opportunities</div>
-    <div class="box-item">Yappers per project</div>
-    <div class="box-item">New projects</div>
+  <div class="box">
+    <h1>Yappers per Project<br>Track active users & engagement<br>Stay ahead in every drop</h1>
+    <a href="page3.html" class="next-btn">Next</a>
   </div>
 
 </body>

@@ -16,7 +16,7 @@
       align-items: center;
       justify-content: flex-start;
       background-color: #d7d7d7;
-      overflow: hidden;
+      overflow-y: auto;
       position: relative;
     }
 
@@ -44,11 +44,13 @@
     /* Boxes container */
     .top-boxes {
       display: flex;
-      justify-content: space-around; /* evenly spaced boxes */
-      width: 90%;                   /* take almost full width */
+      justify-content: space-around; 
+      width: 90%;
       margin-top: 50px;
       z-index: 2;
       position: relative;
+      flex-wrap: wrap; /* allow multiple rows */
+      gap: 30px;
     }
 
     /* Individual box */
@@ -57,9 +59,9 @@
       backdrop-filter: blur(5px);
       border: 2px solid rgba(255, 255, 255, 0.4);
       border-radius: 25px;
-      width: 30%;        /* each box same size and fills space */
-      height: 250px;     /* increased height */
-      color: #8742cd;
+      width: 30%;        
+      height: 250px;     
+      color: #E0D4FF;   /* suggested soft lavender text */
       font-size: 28px;
       display: flex;
       justify-content: center;
@@ -69,7 +71,7 @@
       transition: transform 0.5s ease, box-shadow 0.5s ease;
     }
 
-    /* Zoom effect on hover only */
+    /* Zoom effect on hover */
     .box-item:hover {
       transform: scale(1.05);
       box-shadow: 0 0 35px rgba(195,168,244,0.4), 0 0 80px rgba(195,168,244,0.4) inset;
@@ -89,10 +91,18 @@
     <div class="shape shape3"></div>
   </div>
 
+  <!-- First row -->
   <div class="top-boxes">
     <div class="box-item">Airdrop Opportunities</div>
     <div class="box-item">Yappers per Project</div>
     <div class="box-item">New Projects</div>
+  </div>
+
+  <!-- Second row -->
+  <div class="top-boxes">
+    <div class="box-item">Support Each Other</div>
+    <div class="box-item">Global Chat</div>
+    <div class="box-item">Big Accounts Support</div>
   </div>
 
 </body>

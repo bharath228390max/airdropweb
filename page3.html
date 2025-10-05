@@ -4,168 +4,171 @@
   <meta charset="UTF-8">
   <title>Rezo - Support Each Other</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500&display=swap');
 
     body {
       margin: 0;
-      padding: 0;
-      font-family: 'Orbitron', sans-serif;
       height: 100vh;
+      background-color: #c3a8f4; /* lavender purple */
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .chat-container {
+      width: 80%;
+      height: 85%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      border-radius: 10px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      background-color: #d7d7d7;
-      overflow-x: hidden;
+      justify-content: space-between;
+      padding: 20px;
+      box-sizing: border-box;
+      box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    .messages {
+      flex: 1;
       overflow-y: auto;
-      position: relative;
-    }
-
-    .background-shapes {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
-
-    .shape {
-      position: absolute;
-      width: 120%;
-      height: 120%;
-      transform: rotate(-25deg);
-    }
-
-    .shape1 { background-color: #d7d7d7; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 60%); top: -10%; left: -10%; }
-    .shape2 { background-color: #c3a8f4; clip-path: polygon(0 40%, 100% 30%, 100% 80%, 0 70%); top: 0%; left: -10%; }
-    .shape3 { background-color: #ffffff; clip-path: polygon(0 60%, 100% 50%, 100% 100%, 0 100%); top: 5%; left: -10%; }
-
-    .content {
-      z-index: 2;
-      margin-top: 60px;
-      text-align: center;
-      color: #9b58d9;
-    }
-
-    .content h1 {
-      font-size: 42px;
-      margin-bottom: 10px;
-      text-shadow: 0 0 10px rgba(195,168,244,0.6);
-    }
-
-    .content p {
-      font-size: 18px;
-      margin-bottom: 50px;
-      color: #6a2fbf;
-    }
-
-    .actions {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 30px;
-      width: 90%;
-      max-width: 1000px;
-      margin-bottom: 50px;
-    }
-
-    .action-box {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(6px);
-      border: 5px solid rgba(255, 255, 255, 0.6);
-      border-radius: 25px;
-      width: 30%;
-      height: 200px;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      box-shadow: 0 0 20px rgba(195,168,244,0.3), 0 0 40px rgba(195,168,244,0.3) inset;
-      transition: transform 0.5s ease, box-shadow 0.5s ease;
-      color: #9b58d9;
+      gap: 15px;
+      padding: 10px;
     }
 
-    .action-box:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 35px rgba(195,168,244,0.4), 0 0 80px rgba(195,168,244,0.4) inset;
+    .message {
+      max-width: 60%;
+      padding: 12px 18px;
+      border-radius: 18px;
+      background: #f5f4f8;
+      color: #333;
+      box-shadow: 0 0 3px rgba(0,0,0,0.3);
+      position: relative;
+      animation: fadeIn 0.3s ease;
     }
 
-    .action-box h2 {
-      font-size: 24px;
-      margin-bottom: 10px;
+    .message.left {
+      align-self: flex-start;
+      border-top-left-radius: 0;
     }
 
-    .action-box p {
-      font-size: 15px;
-      color: #6a2fbf;
-      max-width: 80%;
+    .message.right {
+      align-self: flex-end;
+      border-top-right-radius: 0;
+      background: #fff;
     }
 
-    .buttons {
+    .input-area {
       display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-bottom: 60px;
+      gap: 10px;
+      margin-top: 10px;
     }
 
-    .nav-btn {
-      padding: 12px 30px;
-      font-size: 18px;
+    input {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 25px;
+      outline: none;
+      background: #f5f4f8;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 25px;
+      background-color: #9b58d9;
       color: white;
-      border: 1px solid white;
-      border-radius: 15px;
-      background-color: rgba(255, 255, 255, 0.1);
       cursor: pointer;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 10px rgba(255,255,255,0.2);
+      transition: background 0.3s;
+      font-weight: 500;
     }
 
-    .nav-btn:hover {
-      background-color: rgba(195,168,244,0.2);
-      box-shadow: 0 0 20px rgba(195,168,244,0.5);
-      transform: translateY(-2px);
+    button:hover {
+      background-color: #7e3fc2;
     }
 
-    @media (max-width: 768px) {
-      .action-box { width: 100%; height: 180px; }
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.4);
+      border-radius: 10px;
+    }
+
+    @keyframes fadeOut {
+      to { opacity: 0; transform: scale(0.9); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
 <body>
-
-  <div class="background-shapes">
-    <div class="shape shape1"></div>
-    <div class="shape shape2"></div>
-    <div class="shape shape3"></div>
-  </div>
-
-  <div class="content">
-    <h1>Support Each Other</h1>
-    <p>Help smaller accounts grow by engaging, sharing, and creating a stronger community together.</p>
-  </div>
-
-  <div class="actions">
-    <div class="action-box">
-      <h2>Follow</h2>
-      <p>Discover and follow fellow community members to grow together.</p>
+  <div class="chat-container">
+    <div class="messages" id="messages">
+      <div class="message left">Hey there! Welcome to Rezo Support 💬</div>
+      <div class="message left">Feel free to share your thoughts here.</div>
     </div>
-    <div class="action-box">
-      <h2>Like & Retweet</h2>
-      <p>Boost engagement by liking and sharing others’ posts regularly.</p>
-    </div>
-    <div class="action-box">
-      <h2>Tag & Boost</h2>
-      <p>Tag new users or projects to get more eyes on them and help them rise.</p>
+
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Type your message..." />
+      <button onclick="sendMessage()">Send</button>
     </div>
   </div>
 
-  <div class="buttons">
-    <a href="page2.html" class="nav-btn">⬅ Back</a>
-    <a href="#" class="nav-btn">Next ➡</a>
-  </div>
+  <script>
+    const messages = document.getElementById('messages');
+    const input = document.getElementById('userInput');
 
+    function autoRemoveMessage(msg) {
+      setTimeout(() => {
+        msg.style.animation = "fadeOut 0.5s forwards";
+        setTimeout(() => msg.remove(), 500);
+      }, 60000); // 1 minute = 60000 ms
+    }
+
+    function sendMessage() {
+      const text = input.value.trim();
+      if (text === '') return;
+
+      const msgRight = document.createElement('div');
+      msgRight.classList.add('message', 'right');
+      msgRight.textContent = text;
+      messages.appendChild(msgRight);
+      messages.scrollTop = messages.scrollHeight;
+
+      autoRemoveMessage(msgRight);
+      input.value = '';
+
+      // Fake reply
+      setTimeout(() => {
+        const msgLeft = document.createElement('div');
+        msgLeft.classList.add('message', 'left');
+        const replies = [
+          "That's awesome! 👏",
+          "Tell me more about it!",
+          "Let's support each other 💪",
+          "Good idea!",
+          "Absolutely agree 💜"
+        ];
+        msgLeft.textContent = replies[Math.floor(Math.random() * replies.length)];
+        messages.appendChild(msgLeft);
+        messages.scrollTop = messages.scrollHeight;
+        autoRemoveMessage(msgLeft);
+      }, 1000);
+    }
+
+    input.addEventListener("keypress", e => {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
 </body>
 </html>

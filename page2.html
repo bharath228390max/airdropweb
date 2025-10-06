@@ -15,10 +15,12 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      background-color: #d7d7d7;
+      background: linear-gradient(135deg, #8b5cf6, #7e22ce, #9333ea, #4c1d95);
+      background-size: 400% 400%;
       overflow-y: auto;
       overflow-x: hidden;
       position: relative;
+      color: white;
     }
 
     /* Background shapes */
@@ -29,6 +31,7 @@
       width: 100%;
       height: 100%;
       z-index: 0;
+      pointer-events: none;
     }
 
     .shape {
@@ -39,21 +42,21 @@
     }
 
     .shape1 {
-      background-color: #d7d7d7;
+      background-color: rgba(255, 255, 255, 0.05);
       clip-path: polygon(0 0, 100% 0, 100% 50%, 0 60%);
       top: -10%;
       left: -10%;
     }
 
     .shape2 {
-      background-color: #c3a8f4;
+      background-color: rgba(255, 255, 255, 0.08);
       clip-path: polygon(0 40%, 100% 30%, 100% 80%, 0 70%);
       top: 0%;
       left: -10%;
     }
 
     .shape3 {
-      background-color: #ffffff;
+      background-color: rgba(255, 255, 255, 0.1);
       clip-path: polygon(0 60%, 100% 50%, 100% 100%, 0 100%);
       top: 5%;
       left: -10%;
@@ -62,7 +65,7 @@
     /* Boxes container */
     .top-boxes {
       display: flex;
-      justify-content: space-around; 
+      justify-content: space-around;
       width: 90%;
       margin-top: 50px;
       z-index: 2;
@@ -75,38 +78,41 @@
     .box-item {
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(5px);
-      border: 5px solid rgba(255, 255, 255, 0.6);
+      border: 5px solid rgba(255, 255, 255, 0.4);
       border-radius: 25px;
       width: 30%;
       height: 250px;
-      color: #9b58d9;
+      color: #f3e8ff;
       font-size: 28px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      box-shadow: 0 0 20px rgba(195,168,244,0.3), 0 0 40px rgba(195,168,244,0.3) inset;
+      box-shadow: 0 0 20px rgba(255,255,255,0.15),
+                  0 0 40px rgba(255,255,255,0.15) inset;
       transition: transform 0.5s ease, box-shadow 0.5s ease;
       padding: 10px;
+      z-index: 2;
     }
 
     .box-item h2 {
       margin: 0;
       font-size: 28px;
+      color: #fefefe;
     }
 
     .box-item p {
       margin-top: 8px;
       font-size: 16px;
-      color: rgb(200, 128, 239);
+      color: rgb(229, 207, 255);
     }
 
     /* Hover zoom effect */
     .box-item:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 35px rgba(195,168,244,0.4),
-                  0 0 80px rgba(195,168,244,0.4) inset;
+      box-shadow: 0 0 35px rgba(255,255,255,0.25),
+                  0 0 80px rgba(255,255,255,0.25) inset;
     }
 
     /* Responsive */

@@ -20,7 +20,7 @@
     .chat-container {
       width: 80%;
       height: 85%;
-      background: rgba(255, 255, 255, 0.1);
+      background: #301934; /* dark purple outside box */
       border: 2px solid rgba(255, 255, 255, 0.5);
       border-radius: 15px;
       display: flex;
@@ -28,7 +28,6 @@
       justify-content: space-between;
       padding: 20px;
       box-sizing: border-box;
-      backdrop-filter: blur(10px);
       box-shadow: 0 0 25px rgba(255, 255, 255, 0.2), inset 0 0 10px rgba(255, 255, 255, 0.15);
       animation: fadeIn 0.8s ease;
     }
@@ -40,14 +39,16 @@
       flex-direction: column;
       gap: 15px;
       padding: 10px;
+      background: #c3a8f4; /* light purple inside box */
+      border-radius: 10px;
     }
 
     .message {
       max-width: 60%;
       padding: 12px 18px;
       border-radius: 18px;
-      background: #e8d3ff; /* soft light purple bubbles */
-      color: #2a005e;
+      background: white; /* white message box */
+      color: black; /* black text in box */
       box-shadow: 0 0 6px rgba(0,0,0,0.3);
       position: relative;
       animation: fadeIn 0.3s ease;
@@ -61,8 +62,8 @@
     .message.right {
       align-self: flex-end;
       border-top-right-radius: 0;
-      background: #d2aaff;
-      color: #2b006b;
+      background: white; /* white message box for right too */
+      color: black; /* black text in box */
     }
 
     .input-area {
@@ -79,7 +80,7 @@
       outline: none;
       background: rgba(255, 255, 255, 0.3);
       font-size: 16px;
-      color: #2a005e;
+      color: black;
     }
 
     input::placeholder {

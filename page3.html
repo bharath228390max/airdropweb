@@ -9,7 +9,7 @@
     body {
       margin: 0;
       height: 100vh;
-      background-color: #c3a8f4; /* darker purple like first/second page */
+      background-color: #6a0dad; /* Purple background */
       font-family: 'Orbitron', sans-serif;
       display: flex;
       justify-content: center;
@@ -20,13 +20,15 @@
     .chat-container {
       width: 80%;
       height: 85%;
-      background: #301934; /* dark purple outside box */
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.5);
       border-radius: 15px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       padding: 20px;
       box-sizing: border-box;
+      backdrop-filter: blur(10px);
       box-shadow: 0 0 25px rgba(255, 255, 255, 0.2), inset 0 0 10px rgba(255, 255, 255, 0.15);
       animation: fadeIn 0.8s ease;
     }
@@ -38,16 +40,14 @@
       flex-direction: column;
       gap: 15px;
       padding: 10px;
-      background: #c3a8f4; /* light purple inside box */
-      border-radius: 10px;
     }
 
     .message {
       max-width: 60%;
       padding: 12px 18px;
       border-radius: 18px;
-      background: white; /* white message box */
-      color: black; /* black text in box */
+      background: #ffffff; /* White message bubbles */
+      color: #2a005e;
       box-shadow: 0 0 6px rgba(0,0,0,0.3);
       position: relative;
       animation: fadeIn 0.3s ease;
@@ -61,8 +61,8 @@
     .message.right {
       align-self: flex-end;
       border-top-right-radius: 0;
-      background: white; /* white message box for right too */
-      color: black; /* black text in box */
+      background: #ffffff;
+      color: #2b006b;
     }
 
     .input-area {
@@ -79,7 +79,7 @@
       outline: none;
       background: rgba(255, 255, 255, 0.3);
       font-size: 16px;
-      color: black;
+      color: #2a005e;
     }
 
     input::placeholder {

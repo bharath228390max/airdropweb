@@ -46,7 +46,7 @@
     }
 
     th, td {
-      padding: 10px 14px; /* smaller height */
+      padding: 10px 14px;
       text-align: center;
       font-size: 15px;
       border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -75,20 +75,30 @@
       font-weight: bold;
     }
 
-    /* row glow animation */
+    .vote-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .arrow {
+      cursor: pointer;
+      user-select: none;
+      font-size: 18px;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .arrow:hover {
+      transform: scale(1.2);
+    }
+
+    .arrow.up { color: #22c55e; }   /* green */
+    .arrow.down { color: #ef4444; } /* red */
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(15px); }
       to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Optional scrollbar styling */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background-color: rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
     }
   </style>
 </head>
@@ -96,25 +106,121 @@
 
   <div class="leaderboard">
     <h1>Yappers Per Project</h1>
-    <table>
+    <table id="leaderboard">
       <thead>
         <tr>
           <th>No.</th>
           <th>Name</th>
+          <th>Yappers</th>
           <th>Rewards</th>
           <th>Categories</th>
           <th>Active</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td>1</td><td>Project Orion</td><td>Tokens</td><td>DeFi</td><td>Active</td></tr>
-        <tr><td>2</td><td>NovaChain</td><td>Whitelist</td><td>AI</td><td>Active</td></tr>
-        <tr><td>3</td><td>CosmosFi</td><td>Merch Drop</td><td>Finance</td><td>Inactive</td></tr>
-        <tr><td>4</td><td>RezoNet</td><td>Access Pass</td><td>Community</td><td>Active</td></tr>
-        <tr><td>5</td><td>MetaCore</td><td>XP Boost</td><td>Gaming</td><td>Inactive</td></tr>
+        <tr>
+          <td>1</td>
+          <td>Project Orion</td>
+          <td>
+            <div class="vote-box">
+              <span class="arrow up">▲</span>
+              <span class="count">128</span>
+              <span class="arrow down">▼</span>
+            </div>
+          </td>
+          <td>Tokens</td>
+          <td>DeFi</td>
+          <td>Active</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>NovaChain</td>
+          <td>
+            <div class="vote-box">
+              <span class="arrow up">▲</span>
+              <span class="count">97</span>
+              <span class="arrow down">▼</span>
+            </div>
+          </td>
+          <td>Whitelist</td>
+          <td>AI</td>
+          <td>Active</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>CosmosFi</td>
+          <td>
+            <div class="vote-box">
+              <span class="arrow up">▲</span>
+              <span class="count">83</span>
+              <span class="arrow down">▼</span>
+            </div>
+          </td>
+          <td>Merch Drop</td>
+          <td>Finance</td>
+          <td>Inactive</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>RezoNet</td>
+          <td>
+            <div class="vote-box">
+              <span class="arrow up">▲</span>
+              <span class="count">110</span>
+              <span class="arrow down">▼</span>
+            </div>
+          </td>
+          <td>Access Pass</td>
+          <td>Community</td>
+          <td>Active</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>MetaCore</td>
+          <td>
+            <div class="vote-box">
+              <span class="arrow up">▲</span>
+              <span class="count">75</span>
+              <span class="arrow down">▼</span>
+            </div>
+          </td>
+          <td>XP Boost</td>
+          <td>Gaming</td>
+          <td>Inactive</td>
+        </tr>
       </tbody>
     </table>
   </div>
+
+  <script>
+    const tableBody = document.querySelector('#leaderboard tbody');
+
+    tableBody.addEventListener('click', (e) => {
+      if (e.target.classList.contains('arrow')) {
+        const voteBox = e.target.closest('.vote-box');
+        const countEl = voteBox.querySelector('.count');
+        let count = parseInt(countEl.textContent);
+
+        if (e.target.classList.contains('up')) count++;
+        else if (e.target.classList.contains('down') && count > 0) count--;
+
+        countEl.textContent = count;
+
+        // Re-sort leaderboard
+        const rows = Array.from(tableBody.querySelectorAll('tr'));
+        rows.sort((a, b) => {
+          const aCount = parseInt(a.querySelector('.count').textContent);
+          const bCount = parseInt(b.querySelector('.count').textContent);
+          return bCount - aCount;
+        });
+
+        rows.forEach((row, index) => {
+          row.querySelector('td:first-child').textContent = index + 1;
+          tableBody.appendChild(row);
+        });
+      }
+    });
+  </script>
 
 </body>
 </html>

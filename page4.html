@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Yappers per Project - Leaderboard</title>
+  <title>Yappers per Project</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
@@ -16,25 +16,24 @@
       justify-content: center;
       align-items: flex-start;
       min-height: 100vh;
-      overflow-x: hidden;
     }
 
     .leaderboard {
       margin-top: 60px;
       background: rgba(255, 255, 255, 0.05);
       border-radius: 20px;
-      box-shadow: 0 0 50px rgba(168, 85, 247, 0.4);
+      box-shadow: 0 0 40px rgba(168, 85, 247, 0.4);
       padding: 25px;
       width: 85%;
       max-width: 900px;
-      backdrop-filter: blur(12px);
-      animation: fadeIn 1s ease-in-out;
+      backdrop-filter: blur(10px);
+      animation: fadeIn 0.8s ease-in-out;
     }
 
     h1 {
       text-align: center;
       color: #e9d5ff;
-      font-size: 32px;
+      font-size: 30px;
       text-shadow: 0 0 10px #c084fc, 0 0 25px #7e22ce;
       margin-bottom: 25px;
     }
@@ -75,11 +74,12 @@
       font-weight: bold;
     }
 
+    /* New vote layout (side arrows) */
     .vote-box {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
+      gap: 10px;
     }
 
     .arrow {
@@ -111,10 +111,9 @@
         <tr>
           <th>No.</th>
           <th>Name</th>
-          <th>Yappers</th>
+          <th>Yappers Count</th>
           <th>Rewards</th>
           <th>Categories</th>
-          <th>Active</th>
         </tr>
       </thead>
       <tbody>
@@ -130,7 +129,6 @@
           </td>
           <td>Tokens</td>
           <td>DeFi</td>
-          <td>Active</td>
         </tr>
         <tr>
           <td>2</td>
@@ -144,7 +142,6 @@
           </td>
           <td>Whitelist</td>
           <td>AI</td>
-          <td>Active</td>
         </tr>
         <tr>
           <td>3</td>
@@ -158,7 +155,6 @@
           </td>
           <td>Merch Drop</td>
           <td>Finance</td>
-          <td>Inactive</td>
         </tr>
         <tr>
           <td>4</td>
@@ -172,7 +168,6 @@
           </td>
           <td>Access Pass</td>
           <td>Community</td>
-          <td>Active</td>
         </tr>
         <tr>
           <td>5</td>
@@ -186,7 +181,6 @@
           </td>
           <td>XP Boost</td>
           <td>Gaming</td>
-          <td>Inactive</td>
         </tr>
       </tbody>
     </table>

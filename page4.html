@@ -74,7 +74,6 @@
       font-weight: bold;
     }
 
-    /* New vote layout (side arrows) */
     .vote-box {
       display: flex;
       align-items: center;
@@ -93,8 +92,8 @@
       transform: scale(1.2);
     }
 
-    .arrow.up { color: #22c55e; }   /* green */
-    .arrow.down { color: #ef4444; } /* red */
+    .arrow.up { color: #22c55e; }
+    .arrow.down { color: #ef4444; }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(15px); }
@@ -186,35 +185,8 @@
     </table>
   </div>
 
-  <script>
-    const tableBody = document.querySelector('#leaderboard tbody');
-
-    tableBody.addEventListener('click', (e) => {
-      if (e.target.classList.contains('arrow')) {
-        const voteBox = e.target.closest('.vote-box');
-        const countEl = voteBox.querySelector('.count');
-        let count = parseInt(countEl.textContent);
-
-        if (e.target.classList.contains('up')) count++;
-        else if (e.target.classList.contains('down') && count > 0) count--;
-
-        countEl.textContent = count;
-
-        // Re-sort leaderboard
-        const rows = Array.from(tableBody.querySelectorAll('tr'));
-        rows.sort((a, b) => {
-          const aCount = parseInt(a.querySelector('.count').textContent);
-          const bCount = parseInt(b.querySelector('.count').textContent);
-          return bCount - aCount;
-        });
-
-        rows.forEach((row, index) => {
-          row.querySelector('td:first-child').textContent = index + 1;
-          tableBody.appendChild(row);
-        });
-      }
-    });
-  </script>
+  <!-- Link to external JS file -->
+  <script src="vote.js"></script>
 
 </body>
 </html>

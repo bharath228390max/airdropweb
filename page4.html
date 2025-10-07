@@ -21,20 +21,20 @@
 
     .leaderboard {
       margin-top: 60px;
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.05);
       border-radius: 20px;
-      box-shadow: 0 0 40px rgba(180, 100, 255, 0.3);
-      padding: 30px;
+      box-shadow: 0 0 50px rgba(168, 85, 247, 0.4);
+      padding: 25px;
       width: 85%;
       max-width: 900px;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
       animation: fadeIn 1s ease-in-out;
     }
 
     h1 {
       text-align: center;
       color: #e9d5ff;
-      font-size: 30px;
+      font-size: 32px;
       text-shadow: 0 0 10px #c084fc, 0 0 25px #7e22ce;
       margin-bottom: 25px;
     }
@@ -46,27 +46,27 @@
     }
 
     th, td {
-      padding: 10px 16px;
+      padding: 10px 14px; /* smaller height */
       text-align: center;
-      font-size: 16px;
+      font-size: 15px;
       border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
     th {
       color: #c084fc;
-      font-size: 17px;
+      font-size: 16px;
       letter-spacing: 1px;
       text-transform: uppercase;
     }
 
     tr {
       transition: all 0.3s ease;
-      background: rgba(255,255,255,0.02);
+      background: rgba(255,255,255,0.03);
     }
 
     tr:hover {
       background: rgba(255,255,255,0.12);
-      box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
       transform: scale(1.01);
     }
 
@@ -75,12 +75,13 @@
       font-weight: bold;
     }
 
+    /* row glow animation */
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
+      from { opacity: 0; transform: translateY(15px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Scroll styling */
+    /* Optional scrollbar styling */
     ::-webkit-scrollbar {
       width: 6px;
     }
@@ -102,15 +103,15 @@
           <th>Name</th>
           <th>Rewards</th>
           <th>Categories</th>
-          <th>Yappers Count</th>
+          <th>Active</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td>1</td><td>Project Orion</td><td>Tokens</td><td>DeFi</td><td>128</td></tr>
-        <tr><td>2</td><td>NovaChain</td><td>Whitelist</td><td>AI</td><td>97</td></tr>
-        <tr><td>3</td><td>CosmosFi</td><td>Merch Drop</td><td>Finance</td><td>83</td></tr>
-        <tr><td>4</td><td>RezoNet</td><td>Access Pass</td><td>Community</td><td>76</td></tr>
-        <tr><td>5</td><td>MetaCore</td><td>XP Boost</td><td>Gaming</td><td>64</td></tr>
+        <tr><td>1</td><td>Project Orion</td><td>Tokens</td><td>DeFi</td><td>Active</td></tr>
+        <tr><td>2</td><td>NovaChain</td><td>Whitelist</td><td>AI</td><td>Active</td></tr>
+        <tr><td>3</td><td>CosmosFi</td><td>Merch Drop</td><td>Finance</td><td>Inactive</td></tr>
+        <tr><td>4</td><td>RezoNet</td><td>Access Pass</td><td>Community</td><td>Active</td></tr>
+        <tr><td>5</td><td>MetaCore</td><td>XP Boost</td><td>Gaming</td><td>Inactive</td></tr>
       </tbody>
     </table>
   </div>

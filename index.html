@@ -13,61 +13,151 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      overflow: hidden;
+      position: relative;
       font-family: 'Orbitron', sans-serif;
-      background-color: #c9b9a6; /* Sepia minimalist tone */
-      color: #f8f6ef;
+      background: linear-gradient(135deg, #8b5cf6, #7e22ce, #9333ea, #4c1d95);
+      background-size: 400% 400%;
+      animation: gradientShift 10s ease infinite;
     }
 
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Floating glowing circles */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.6;
+      animation: float 12s ease-in-out infinite;
+    }
+
+    .orb1 {
+      width: 300px;
+      height: 300px;
+      background: #c084fc;
+      top: 10%;
+      left: 15%;
+      animation-delay: 0s;
+    }
+
+    .orb2 {
+      width: 250px;
+      height: 250px;
+      background: #a855f7;
+      bottom: 15%;
+      right: 20%;
+      animation-delay: 3s;
+    }
+
+    .orb3 {
+      width: 200px;
+      height: 200px;
+      background: #9333ea;
+      top: 40%;
+      right: 10%;
+      animation-delay: 6s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.7; }
+      50% { transform: translateY(-40px) scale(1.1); opacity: 1; }
+    }
+
+    /* Moving streaks (diagonal light lines) */
+    .streak {
+      position: absolute;
+      width: 160px;
+      height: 3px;
+      background: rgba(255,255,255,0.2);
+      top: 0;
+      left: 0;
+      border-radius: 2px;
+      animation: moveStreak 6s linear infinite;
+      transform: rotate(45deg);
+    }
+
+    @keyframes moveStreak {
+      0% { transform: translate(-10%, -10%) rotate(45deg); opacity: 0; }
+      10% { opacity: 1; }
+      100% { transform: translate(110vw, 110vh) rotate(45deg); opacity: 0; }
+    }
+
+    .streak:nth-child(1) { animation-delay: 0s; }
+    .streak:nth-child(2) { animation-delay: 2s; width: 200px; }
+    .streak:nth-child(3) { animation-delay: 4s; width: 250px; }
+
+    /* Main frosted glass box */
     .box {
-      background-color: #f8f6ef;
-      border: 2px solid #b8a491;
-      border-radius: 20px;
-      padding: 50px 80px;
+      position: relative;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 25px;
+      padding: 40px 70px;
       text-align: center;
-      box-shadow: 0 0 25px rgba(184, 164, 145, 0.15);
-      transition: all 0.3s ease;
+      box-shadow: 0 0 25px rgba(195,168,244,0.3),
+                  0 0 60px rgba(195,168,244,0.3) inset;
+      max-width: 550px;
+      z-index: 5;
+      animation: pulse 6s infinite ease-in-out;
     }
 
-    .box:hover {
-      box-shadow: 0 0 35px rgba(184, 164, 145, 0.25);
-      transform: translateY(-2px);
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 25px rgba(195,168,244,0.3), 0 0 60px rgba(195,168,244,0.3) inset; }
+      50% { transform: scale(1.02); box-shadow: 0 0 40px rgba(195,168,244,0.5), 0 0 90px rgba(195,168,244,0.4) inset; }
     }
 
     .box h1 {
-      font-size: 32px;
+      color: #f6f4fa;
+      font-size: 36px;
       line-height: 1.4;
-      margin-bottom: 40px;
-      color: #b8a491;
+      margin-bottom: 35px;
+      text-shadow: 0 0 10px rgba(255,255,255,0.3), 0 0 15px #c3a8f4;
     }
 
     .next-btn {
       display: inline-block;
       padding: 12px 30px;
       font-size: 18px;
-      color: #b8a491;
-      border: 1.5px solid #b8a491;
+      color: white;
+      border: 1px solid white;
       border-radius: 15px;
-      background-color: transparent;
+      background-color: rgba(255, 255, 255, 0.1);
+      cursor: pointer;
       text-decoration: none;
       transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(255,255,255,0.3);
     }
 
     .next-btn:hover {
-      background-color: #b8a491;
-      color: #f8f6ef;
+      background-color: rgba(195,168,244,0.3);
+      box-shadow: 0 0 20px rgba(195,168,244,0.6);
       transform: translateY(-2px);
-      box-shadow: 0 0 10px rgba(184, 164, 145, 0.4);
     }
 
     @media (max-width: 768px) {
-      .box { padding: 30px 40px; }
       .box h1 { font-size: 24px; }
+      .box { padding: 25px 35px; }
       .next-btn { font-size: 16px; padding: 10px 25px; }
     }
   </style>
 </head>
 <body>
 
+  <!-- Animated background -->
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <div class="streak"></div>
+  <div class="streak"></div>
+  <div class="streak"></div>
+
+  <!-- Main content -->
   <div class="box">
     <h1>Welcome to Rezo<br>Built for Small Accounts<br>Made for Airdrop Opportunities</h1>
     <a href="page2.html" class="next-btn">Next</a>

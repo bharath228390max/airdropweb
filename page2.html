@@ -20,12 +20,13 @@
       align-items: center;
     }
 
-    /* Support button at top */
+    /* Support button (top bar) */
     .support-btn-container {
       width: 100%;
       display: flex;
       justify-content: flex-end;
-      padding: 20px 50px;
+      align-items: center;
+      padding: 10px 30px; /* thinner bar */
       position: sticky;
       top: 0;
       z-index: 10;
@@ -37,10 +38,10 @@
       text-decoration: none;
       color: #fefefe;
       font-weight: bold;
-      font-size: 18px;
-      padding: 10px 20px;
-      border: 2px solid #fefefe;
-      border-radius: 10px;
+      font-size: 16px;
+      padding: 6px 14px; /* smaller button */
+      border: 1.5px solid #fefefe;
+      border-radius: 8px;
       transition: all 0.3s ease;
     }
 
@@ -65,7 +66,7 @@
       gap: 40px;
       width: 90%;
       max-width: 1200px;
-      margin-top: 20px;
+      margin-top: 30px;
       position: relative;
       z-index: 2;
     }
@@ -100,7 +101,11 @@
 
     /* Responsive */
     @media (max-width: 992px) { .box-item { flex: 1 1 calc(45% - 30px); } }
-    @media (max-width: 600px) { .box-item { flex: 1 1 100%; height: 200px; } }
+    @media (max-width: 600px) { 
+      .box-item { flex: 1 1 100%; height: 200px; } 
+      .support-btn-container { padding: 8px 20px; }
+      .support-btn { font-size: 14px; padding: 5px 10px; }
+    }
 
   </style>
 </head>
@@ -143,8 +148,8 @@
       <p>Join discussions with users from all over the world.</p>
     </div>
     <div class="box-item">
-      <h2>DEV Community</h2>
-      <p>place where devs can help eachother.</p>
+      <h2>Big Accounts Support</h2>
+      <p>Get guidance and tips from bigger accounts in the network.</p>
     </div>
   </div>
 

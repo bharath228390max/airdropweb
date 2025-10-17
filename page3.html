@@ -5,22 +5,20 @@
   <title>Rezo - Support Each Other</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500&display=swap');
-
     body {
       margin: 0;
       height: 100vh;
-      background-color: #9d55d1; /* Purple background only outside the chat */
+      background-color: #9d55d1;
       font-family: 'Orbitron', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       overflow: hidden;
     }
-
     .chat-container {
       width: 80%;
       height: 85%;
-      background: rgba(225, 177, 246, 0.9); /* Solid white background for chat */
+      background: rgba(225, 177, 246, 0.9);
       border: 2px solid rgba(255, 255, 255, 0.5);
       border-radius: 15px;
       display: flex;
@@ -32,7 +30,6 @@
       box-shadow: 0 0 25px rgba(255, 255, 255, 0.2), inset 0 0 10px rgba(255, 255, 255, 0.15);
       animation: fadeIn 0.8s ease;
     }
-
     .messages {
       flex: 1;
       overflow-y: auto;
@@ -41,37 +38,32 @@
       gap: 15px;
       padding: 10px;
     }
-
     .message {
       max-width: 60%;
       padding: 12px 18px;
       border-radius: 18px;
-      background: #ffffff; /* White message bubbles */
+      background: #ffffff;
       color: #2a005e;
       box-shadow: 0 0 6px rgba(0,0,0,0.1);
       position: relative;
       animation: fadeIn 0.3s ease;
       border: 1px solid #e0e0e0;
     }
-
     .message.left {
       align-self: flex-start;
       border-top-left-radius: 0;
     }
-
     .message.right {
       align-self: flex-end;
       border-top-right-radius: 0;
-      background: #f5f5f5; /* Slightly different white for user messages */
+      background: #f5f5f5;
       color: #2b006b;
     }
-
     .input-area {
       display: flex;
       gap: 10px;
       margin-top: 10px;
     }
-
     input {
       flex: 1;
       padding: 12px;
@@ -83,11 +75,6 @@
       color: #2a005e;
       border: 1px solid #e0e0e0;
     }
-
-    input::placeholder {
-      color: #7a7a7a;
-    }
-
     button {
       padding: 12px 20px;
       border: none;
@@ -99,26 +86,21 @@
       font-weight: 500;
       box-shadow: 0 0 10px rgba(169, 110, 247, 0.4);
     }
-
     button:hover {
       background-color: #9d23ea;
       transform: scale(1.05);
       box-shadow: 0 0 15px rgba(169, 110, 247, 0.6);
     }
-
     ::-webkit-scrollbar {
       width: 6px;
     }
-
     ::-webkit-scrollbar-thumb {
       background: rgba(106, 13, 173, 0.3);
       border-radius: 10px;
     }
-
     @keyframes fadeOut {
       to { opacity: 0; transform: scale(0.9); }
     }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.9); }
       to { opacity: 1; transform: scale(1); }
@@ -127,58 +109,55 @@
 </head>
 <body>
   <div class="chat-container">
-    <div class="messages" id="messages">
-      <div class="message left">Hey there! Welcome to Rezo Support 💬</div>
-      <div class="message left">Feel free to share your thoughts here.</div>
-    </div>
-
+    <div class="messages" id="messages"></div>
     <div class="input-area">
       <input type="text" id="userInput" placeholder="Type your message..." />
       <button onclick="sendMessage()">Send</button>
     </div>
   </div>
 
-  <script>
-    const messages = document.getElementById('messages');
-    const input = document.getElementById('userInput');
+  <!-- Firebase + Chat Logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
 
-    function autoRemoveMessage(msg) {
-      setTimeout(() => {
-        msg.style.animation = "fadeOut 0.5s forwards";
-        setTimeout(() => msg.remove(), 500);
-      }, 60000); // 1 minute = 60000 ms
+    const firebaseConfig = {
+      apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
+      authDomain: "rezo-chat.firebaseapp.com",
+      databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "rezo-chat",
+      storageBucket: "rezo-chat.firebasestorage.app",
+      messagingSenderId: "300513819927",
+      appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const chatRef = ref(db, "messages");
+
+    const messagesDiv = document.getElementById("messages");
+    const input = document.getElementById("userInput");
+
+    function addMessage(text, side = "left") {
+      const msg = document.createElement("div");
+      msg.classList.add("message", side);
+      msg.textContent = text;
+      messagesDiv.appendChild(msg);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
 
     function sendMessage() {
       const text = input.value.trim();
-      if (text === '') return;
-
-      const msgRight = document.createElement('div');
-      msgRight.classList.add('message', 'right');
-      msgRight.textContent = text;
-      messages.appendChild(msgRight);
-      messages.scrollTop = messages.scrollHeight;
-
-      autoRemoveMessage(msgRight);
-      input.value = '';
-
-      // Fake reply
-      setTimeout(() => {
-        const msgLeft = document.createElement('div');
-        msgLeft.classList.add('message', 'left');
-        const replies = [
-          "That's awesome! 👏",
-          "Tell me more about it!",
-          "Let's support each other 💪",
-          "Good idea!",
-          "Absolutely agree 💜"
-        ];
-        msgLeft.textContent = replies[Math.floor(Math.random() * replies.length)];
-        messages.appendChild(msgLeft);
-        messages.scrollTop = messages.scrollHeight;
-        autoRemoveMessage(msgLeft);
-      }, 1000);
+      if (text === "") return;
+      push(chatRef, { text });
+      input.value = "";
     }
+
+    // Listen for new messages in real-time
+    onChildAdded(chatRef, (snapshot) => {
+      const msgData = snapshot.val();
+      addMessage(msgData.text, "left");
+    });
 
     input.addEventListener("keypress", e => {
       if (e.key === "Enter") sendMessage();

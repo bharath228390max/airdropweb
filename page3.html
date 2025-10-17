@@ -3,46 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rezo Chat</title>
+  <title>Rezo - Support Each Other</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500&display=swap');
+
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
-      background: #f0f0f0;
+      height: 100vh;
+      background-color: #9d55d1;
+      font-family: 'Orbitron', sans-serif;
       display: flex;
       flex-direction: column;
-      height: 100vh;
     }
 
     .chat-container {
       flex: 1;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
-      padding: 10px;
-      overflow-y: auto;
+      padding: 20px;
+      box-sizing: border-box;
     }
 
     .message {
       max-width: 70%;
-      margin: 5px 0;
+      margin: 8px 0;
       padding: 10px 15px;
       border-radius: 20px;
       word-wrap: break-word;
-      display: inline-block;
-    }
-
-    .other {
-      background: #e5e5ea;
-      align-self: flex-start;
-      border-top-left-radius: 0;
+      position: relative;
     }
 
     .me {
-      background: #9d55d1;
-      color: white;
+      background: #fff;
+      color: #000;
       align-self: flex-end;
       border-top-right-radius: 0;
+    }
+
+    .other {
+      background: rgba(225, 177, 246, 0.9);
+      color: #000;
+      align-self: flex-start;
+      border-top-left-radius: 0;
     }
 
     .timestamp {
@@ -85,54 +88,92 @@
 </head>
 <body>
 
-  <div class="chat-container" id="chatContainer">
-    <!-- Example messages -->
-    <div class="message other">
-      Hello! How are you?
-      <div class="timestamp">10:30 AM</div>
-    </div>
-    <div class="message me">
-      I'm good, thanks! How about you?
-      <div class="timestamp">10:31 AM</div>
-    </div>
-  </div>
+  <div class="chat-container" id="chatContainer"></div>
 
   <div class="input-container">
     <input type="text" id="messageInput" placeholder="Type your message..." />
     <button id="sendBtn">Send</button>
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import { getDatabase, ref, push, onChildAdded, remove, get } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+
+    // ✅ Your Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
+      authDomain: "rezo-chat.firebaseapp.com",
+      databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "rezo-chat",
+      storageBucket: "rezo-chat.firebasestorage.app",
+      messagingSenderId: "300513819927",
+      appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
+    };
+
+    // ✅ Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
     const chatContainer = document.getElementById('chatContainer');
     const messageInput = document.getElementById('messageInput');
     const sendBtn = document.getElementById('sendBtn');
 
-    function addMessage(text, sender='me') {
-      if (!text) return;
+    const username = 'user-' + Math.floor(Math.random() * 10000);
+
+    function addMessageToUI(text, sender, timestamp) {
       const messageDiv = document.createElement('div');
-      messageDiv.classList.add('message', sender);
+      messageDiv.classList.add('message', sender === username ? 'me' : 'other');
+      const time = new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       messageDiv.innerHTML = `
         ${text}
-        <div class="timestamp">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+        <div class="timestamp">${time}</div>
       `;
       chatContainer.appendChild(messageDiv);
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
-    sendBtn.addEventListener('click', () => {
+    // ✅ Send message
+    sendBtn.addEventListener('click', async () => {
       const text = messageInput.value.trim();
-      addMessage(text, 'me');
-      messageInput.value = '';
+      if (!text) return;
 
-      // Example: simulate other user's reply after 1s
-      setTimeout(() => {
-        addMessage("This is a reply from other user", 'other');
-      }, 1000);
+      const msg = {
+        sender: username,
+        text,
+        timestamp: Date.now(),
+        expireAt: Date.now() + 10 * 60 * 1000 // 10 minutes
+      };
+
+      await push(ref(db, 'messages'), msg);
+      messageInput.value = '';
     });
 
-    messageInput.addEventListener('keydown', (e) => {
+    messageInput.addEventListener('keydown', e => {
       if (e.key === 'Enter') sendBtn.click();
     });
+
+    // ✅ Show incoming messages
+    onChildAdded(ref(db, 'messages'), (snapshot) => {
+      const msg = snapshot.val();
+      if (!msg) return;
+
+      if (Date.now() < msg.expireAt) {
+        addMessageToUI(msg.text, msg.sender, msg.timestamp);
+      } else {
+        remove(ref(db, 'messages/' + snapshot.key));
+      }
+    });
+
+    // ✅ Cleanup old messages every minute
+    setInterval(async () => {
+      const snapshot = await get(ref(db, 'messages'));
+      snapshot.forEach(child => {
+        const msg = child.val();
+        if (Date.now() > msg.expireAt) {
+          remove(ref(db, 'messages/' + child.key));
+        }
+      });
+    }, 60000);
   </script>
 
 </body>

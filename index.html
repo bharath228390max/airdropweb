@@ -20,7 +20,6 @@
       color: white;
     }
 
-    /* Blackhole rotating vortex */
     .blackhole {
       position: absolute;
       width: 200vmax;
@@ -67,17 +66,20 @@
     @keyframes glow { 0%,100%{box-shadow:0 0 30px rgba(255,255,255,0.3);}50%{box-shadow:0 0 60px rgba(255,255,255,0.5);} }
     .box h1 { color: white; font-weight: 700; font-size: 38px; text-shadow: 0 0 20px rgba(255,255,255,0.5); margin-bottom: 40px; }
 
-    .next-btn { display: inline-block; padding: 14px 32px; font-size: 18px; color: #fff; font-weight: bold; border: 2px solid white; border-radius: 15px; background: rgba(255,255,255,0.1); text-decoration: none; transition: all 0.3s ease; }
+    .next-btn { display: inline-block; padding: 14px 32px; font-size: 18px; color: #fff; font-weight: bold; border: 2px solid white; border-radius: 15px; background: rgba(255,255,255,0.1); text-decoration: none; transition: all 0.3s ease; cursor:pointer; }
     .next-btn:hover { background: white; color: black; box-shadow: 0 0 25px rgba(255,255,255,0.7); transform: scale(1.05); }
 
     .button-group { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
 
     .cook-btn { background: rgba(255,165,0,0.15); border-color: orange; color: white; text-shadow: 0 0 10px rgba(255,165,0,0.5); }
-    .cook-btn:hover { background: orange; color: black; box-shadow: 0 0 25px rgba(255,165,0,0.7); transform: scale(1.05); }
 
     .extra-feature { display:none; margin-top: 30px; color: #ffd700; font-size: 20px; text-shadow: 0 0 10px #ffb700; }
 
-    @media (max-width: 768px) { .box{padding:25px 40px;} .box h1{font-size:26px;} .next-btn,.cook-btn{font-size:16px; padding:10px 24px;} .button-group{gap:10px;} }
+    .login-form { margin-top:20px; display:flex; flex-direction:column; align-items:center; gap:10px; }
+
+    .login-form input { padding:10px; border-radius:10px; border:none; width:200px; text-align:center; }
+
+    @media (max-width: 768px) { .box{padding:25px 40px;} .box h1{font-size:26px;} .next-btn,.cook-btn{font-size:16px; padding:10px 24px;} .button-group{gap:10px;} .login-form input{width:150px;} }
   </style>
 </head>
 <body>
@@ -92,9 +94,15 @@
 
   <div class="box">
     <h1>Welcome to Rezo<br>Built for Small Accounts<br>Made for Airdrop Opportunities</h1>
+
     <div class="button-group">
       <a href="page2.html" class="next-btn">Enter</a>
-      <a href="#" onclick="loginCookIn()" class="next-btn cook-btn">Cook In</a>
+    </div>
+
+    <div class="login-form">
+      <input type="email" id="email" placeholder="Email">
+      <input type="password" id="password" placeholder="Password">
+      <button id="loginBtn" class="next-btn cook-btn">Cook In</button>
     </div>
 
     <div class="extra-feature">
@@ -102,12 +110,11 @@
     </div>
   </div>
 
-  <!-- Firebase SDK & Cook In Login -->
+  <!-- Firebase SDK & Login -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
-    // 🔑 Use your Firebase config here
     const firebaseConfig = {
       apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
       authDomain: "rezo-chat.firebaseapp.com",
@@ -121,24 +128,26 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Cook In login popup
-    window.loginCookIn = async function() {
-      const email = prompt("Enter your email:");
-      if (!email) return;
+    const loginBtn = document.getElementById('loginBtn');
 
-      const password = prompt("Enter your password:");
-      if (!password) return;
+    loginBtn.addEventListener('click', async () => {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      if(!email || !password){
+        alert("Please enter both email and password");
+        return;
+      }
 
       try {
         await signInWithEmailAndPassword(auth, email, password);
         alert("✅ Welcome, early supporter! Extra features unlocked.");
-      } catch (error) {
+      } catch(error){
         console.log(error);
         alert("❌ Invalid email or password. You will continue as anonymous.");
       }
-    };
+    });
 
-    // Show/hide supporter features based on login state
     onAuthStateChanged(auth, user => {
       if(user){
         document.querySelectorAll('.extra-feature').forEach(el => el.style.display='block');

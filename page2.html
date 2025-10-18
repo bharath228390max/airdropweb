@@ -133,10 +133,80 @@
     .box-item h2 { margin: 0; font-size: 28px; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
     .box-item p { margin-top: 8px; font-size: 16px; color: rgba(255,255,255,0.7); }
 
+    /* Big full-width promo box */
+    .promo-box {
+      width: 100%;
+      max-width: none;
+      height: 250px;
+      margin-top: 40px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      border-top: 2px solid rgba(255,255,255,0.3);
+      border-bottom: 2px solid rgba(255,255,255,0.3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      box-shadow: 0 0 35px rgba(255,255,255,0.2);
+      backdrop-filter: blur(8px);
+      position: relative;
+      overflow: hidden;
+      z-index: 3;
+    }
+
+    .promo-box::before {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 100%;
+      top: 0;
+      left: -50%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shine 4s linear infinite;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .promo-box h2 {
+      font-size: 32px;
+      margin: 0;
+      color: white;
+      text-shadow: 0 0 20px rgba(255,255,255,0.5);
+    }
+
+    .promo-box p {
+      margin-top: 12px;
+      font-size: 18px;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .promo-btn {
+      margin-top: 20px;
+      padding: 10px 24px;
+      font-size: 16px;
+      border: 2px solid white;
+      border-radius: 10px;
+      background: transparent;
+      color: white;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .promo-btn:hover {
+      background: white;
+      color: black;
+      box-shadow: 0 0 25px rgba(255,255,255,0.7);
+      transform: scale(1.05);
+    }
+
     /* Responsive */
     @media (max-width: 992px) { .box-item { flex: 1 1 calc(45% - 30px); } }
     @media (max-width: 600px) { 
       .box-item { flex: 1 1 100%; height: 200px; } 
+      .promo-box { height: 200px; }
       .support-btn-container { padding: 8px 20px; }
       .support-btn { font-size: 14px; padding: 5px 10px; }
     }
@@ -182,6 +252,13 @@
       <h2>Big Accounts Support</h2>
       <p>Get guidance and tips from bigger accounts in the network.</p>
     </div>
+  </div>
+
+  <!-- Promo Box -->
+  <div class="promo-box">
+    <h2>🚀 Rezo Premium Launching Soon</h2>
+    <p>Early supporters get exclusive perks, tools, and airdrop insights first.</p>
+    <a href="#" class="promo-btn">Join Waitlist</a>
   </div>
 
 </body>

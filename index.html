@@ -73,13 +73,17 @@
 
     .cook-btn { background: rgba(255,165,0,0.15); border-color: orange; color: white; text-shadow: 0 0 10px rgba(255,165,0,0.5); }
 
-    .extra-feature { display:none; margin-top: 30px; color: #ffd700; font-size: 20px; text-shadow: 0 0 10px #ffb700; }
+    .login-popup {
+      display: none;
+      flex-direction: column;
+      gap:10px;
+      margin-top:20px;
+      align-items:center;
+    }
 
-    .login-form { margin-top:20px; display:flex; flex-direction:column; align-items:center; gap:10px; }
+    .login-popup input { padding:10px; border-radius:10px; border:none; width:200px; text-align:center; }
 
-    .login-form input { padding:10px; border-radius:10px; border:none; width:200px; text-align:center; }
-
-    @media (max-width: 768px) { .box{padding:25px 40px;} .box h1{font-size:26px;} .next-btn,.cook-btn{font-size:16px; padding:10px 24px;} .button-group{gap:10px;} .login-form input{width:150px;} }
+    @media (max-width: 768px) { .box{padding:25px 40px;} .box h1{font-size:26px;} .next-btn,.cook-btn{font-size:16px; padding:10px 24px;} .login-popup input{width:150px;} }
   </style>
 </head>
 <body>
@@ -97,23 +101,20 @@
 
     <div class="button-group">
       <a href="page2.html" class="next-btn">Enter</a>
+      <button class="next-btn cook-btn" id="showLogin">Cook In</button>
     </div>
 
-    <div class="login-form">
+    <div class="login-popup" id="loginForm">
       <input type="email" id="email" placeholder="Email">
       <input type="password" id="password" placeholder="Password">
-      <button id="loginBtn" class="next-btn cook-btn">Cook In</button>
-    </div>
-
-    <div class="extra-feature">
-      🔥 Exclusive Supporter Features Unlocked! 🔥
+      <button id="loginBtn" class="next-btn cook-btn">Login</button>
     </div>
   </div>
 
   <!-- Firebase SDK & Login -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
@@ -128,7 +129,13 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
+    const showLoginBtn = document.getElementById('showLogin');
+    const loginForm = document.getElementById('loginForm');
     const loginBtn = document.getElementById('loginBtn');
+
+    showLoginBtn.addEventListener('click', () => {
+      loginForm.style.display = loginForm.style.display === 'flex' ? 'none' : 'flex';
+    });
 
     loginBtn.addEventListener('click', async () => {
       const email = document.getElementById('email').value;
@@ -141,18 +148,11 @@
 
       try {
         await signInWithEmailAndPassword(auth, email, password);
-        alert("✅ Welcome, early supporter! Extra features unlocked.");
+        // Correct login → redirect to page2
+        window.location.href = "page2.html";
       } catch(error){
         console.log(error);
-        alert("❌ Invalid email or password. You will continue as anonymous.");
-      }
-    });
-
-    onAuthStateChanged(auth, user => {
-      if(user){
-        document.querySelectorAll('.extra-feature').forEach(el => el.style.display='block');
-      } else {
-        document.querySelectorAll('.extra-feature').forEach(el => el.style.display='none');
+        alert("❌ Wrong email or password");
       }
     });
   </script>

@@ -14,12 +14,12 @@
       justify-content: center;
       align-items: center;
       overflow: hidden;
-      position: relative;
       font-family: 'Orbitron', sans-serif;
       background: radial-gradient(circle at center, #0a0a0a 20%, #000000 80%);
       color: white;
     }
 
+    /* Blackhole rotating vortex */
     .blackhole {
       position: absolute;
       width: 200vmax;
@@ -33,22 +33,38 @@
       z-index: 0;
       filter: blur(80px) brightness(1.2);
     }
-
     @keyframes rotate { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
 
+    /* Glowing orbit lines */
     .orbit { position: absolute; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; animation: spin 30s linear infinite; mix-blend-mode: overlay; }
     .orbit1 { width: 400px; height: 400px; animation-duration: 40s; }
     .orbit2 { width: 600px; height: 600px; animation-duration: 55s; border-color: rgba(255,255,255,0.1); }
     .orbit3 { width: 800px; height: 800px; animation-duration: 70s; border-color: rgba(255,255,255,0.05); }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+    /* Floating streaks */
     .streak { position: absolute; width: 140px; height: 2px; background: rgba(255,255,255,0.2); top: 0; left: 0; transform: rotate(45deg); animation: moveStreak 7s linear infinite; }
     @keyframes moveStreak { 0% { transform: translate(-10%, -10%) rotate(45deg); opacity: 0; } 10% { opacity: 1; } 100% { transform: translate(110vw, 110vh) rotate(45deg); opacity: 0; } }
     .streak:nth-child(1) { animation-delay: 0s; }
     .streak:nth-child(2) { animation-delay: 2s; width: 200px; }
     .streak:nth-child(3) { animation-delay: 4s; width: 250px; }
 
-    .box { position: relative; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.8); border-radius: 20px; padding: 50px 80px; text-align: center; box-shadow: 0 0 30px rgba(255,255,255,0.3); z-index: 5; animation: glow 5s ease-in-out infinite; }
+    /* Frosted glass box */
+    .box {
+      position: relative;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255,255,255,0.8);
+      border-radius: 20px;
+      padding: 50px 80px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(255,255,255,0.3);
+      z-index: 5;
+      animation: glow 5s ease-in-out infinite;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
     @keyframes glow { 0%, 100% { box-shadow: 0 0 30px rgba(255,255,255,0.3); } 50% { box-shadow: 0 0 60px rgba(255,255,255,0.5); } }
     .box h1 { color: white; font-weight: 700; font-size: 38px; text-shadow: 0 0 20px rgba(255,255,255,0.5); margin-bottom: 40px; }
 
@@ -60,13 +76,13 @@
 
     /* Login popup */
     .login-popup {
-      display: none;
-      position: absolute;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: fixed; /* fixed keeps popup independent */
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0.8);
-      flex-direction: column;
-      gap: 10px;
       background: rgba(0,0,0,0.9);
       padding: 40px;
       border-radius: 20px;
@@ -75,12 +91,13 @@
       width: 300px;
       align-items: center;
       opacity: 0;
+      pointer-events: none;
       transition: all 0.4s ease;
     }
     .login-popup.show {
-      display: flex;
       opacity: 1;
       transform: translate(-50%, -50%) scale(1);
+      pointer-events: all;
     }
     .login-popup input { width: 80%; padding: 10px; border-radius: 10px; border: none; text-align: center; }
   </style>
@@ -132,7 +149,7 @@
     const loginForm = document.getElementById('loginForm');
     const loginBtn = document.getElementById('loginBtn');
 
-    // Toggle popup with animation
+    // Toggle popup with smooth animation
     showLoginBtn.addEventListener('click', () => {
       loginForm.classList.toggle('show');
     });

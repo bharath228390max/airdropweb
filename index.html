@@ -20,6 +20,7 @@
       color: white;
     }
 
+    /* Blackhole and orbits */
     .blackhole {
       position: absolute;
       width: 200vmax;
@@ -33,12 +34,7 @@
       z-index: 0;
       filter: blur(80px) brightness(1.2);
     }
-
-    @keyframes rotate {
-      0% { transform: translate(-50%, -50%) rotate(0deg); }
-      100% { transform: translate(-50%, -50%) rotate(360deg); }
-    }
-
+    @keyframes rotate { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
     .orbit { position: absolute; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; animation: spin 30s linear infinite; mix-blend-mode: overlay; }
     .orbit1 { width: 400px; height: 400px; animation-duration: 40s; }
     .orbit2 { width: 600px; height: 600px; animation-duration: 55s; border-color: rgba(255,255,255,0.1); }
@@ -51,6 +47,7 @@
     .streak:nth-child(2) { animation-delay: 2s; width: 200px; }
     .streak:nth-child(3) { animation-delay: 4s; width: 250px; }
 
+    /* Main box */
     .box {
       position: relative;
       background: rgba(255,255,255,0.05);
@@ -70,20 +67,24 @@
     .next-btn:hover { background: white; color: black; box-shadow: 0 0 25px rgba(255,255,255,0.7); transform: scale(1.05); }
 
     .button-group { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
-
     .cook-btn { background: rgba(255,165,0,0.15); border-color: orange; color: white; text-shadow: 0 0 10px rgba(255,165,0,0.5); }
 
+    /* Login popup */
     .login-popup {
       display: none;
       flex-direction: column;
-      gap:10px;
-      margin-top:20px;
-      align-items:center;
+      gap: 10px;
+      margin-top: 20px;
+      align-items: center;
     }
-
     .login-popup input { padding:10px; border-radius:10px; border:none; width:200px; text-align:center; }
 
-    @media (max-width: 768px) { .box{padding:25px 40px;} .box h1{font-size:26px;} .next-btn,.cook-btn{font-size:16px; padding:10px 24px;} .login-popup input{width:150px;} }
+    @media (max-width: 768px) { 
+      .box{padding:25px 40px;} 
+      .box h1{font-size:26px;} 
+      .next-btn,.cook-btn{font-size:16px; padding:10px 24px;} 
+      .login-popup input{width:150px;} 
+    }
   </style>
 </head>
 <body>
@@ -101,13 +102,13 @@
 
     <div class="button-group">
       <a href="page2.html" class="next-btn">Enter</a>
-      <button class="next-btn cook-btn" id="showLogin">Cook In</button>
+      <button type="button" class="next-btn cook-btn" id="showLogin">Cook In</button>
     </div>
 
     <div class="login-popup" id="loginForm">
       <input type="email" id="email" placeholder="Email">
       <input type="password" id="password" placeholder="Password">
-      <button id="loginBtn" class="next-btn cook-btn">Login</button>
+      <button type="button" id="loginBtn" class="next-btn cook-btn">Login</button>
     </div>
   </div>
 
@@ -133,10 +134,12 @@
     const loginForm = document.getElementById('loginForm');
     const loginBtn = document.getElementById('loginBtn');
 
+    // Toggle login popup
     showLoginBtn.addEventListener('click', () => {
       loginForm.style.display = loginForm.style.display === 'flex' ? 'none' : 'flex';
     });
 
+    // Login with Firebase
     loginBtn.addEventListener('click', async () => {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;

@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rezo - Support Each Other</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rezo - Chat</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500&display=swap');
 
     body {
       margin: 0;
       height: 100vh;
-      background-color: #9d55d1;
+      background-color: #0b0014;
       font-family: 'Orbitron', sans-serif;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
+      color: white;
     }
 
     .chat-container {
@@ -23,42 +25,85 @@
       flex-direction: column;
       padding: 20px;
       box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    /* --- Chat Message Structure --- */
+    .message-wrapper {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 18px;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .message-wrapper.me {
+      flex-direction: row-reverse;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      font-size: 14px;
+      margin: 0 10px;
+    }
+
+    .message-content {
+      display: flex;
+      flex-direction: column;
+      max-width: 70%;
+    }
+
+    .username {
+      font-size: 0.8rem;
+      opacity: 0.8;
+      margin-bottom: 4px;
     }
 
     .message {
-      max-width: 70%;
-      margin: 8px 0;
-      padding: 10px 15px;
-      border-radius: 20px;
+      padding: 14px 18px;
+      border-radius: 18px;
       word-wrap: break-word;
+      font-size: 0.95rem;
+      line-height: 1.4;
       position: relative;
+      box-shadow: 0 0 8px rgba(255,255,255,0.1);
     }
 
-    .me {
-      background: #fff;
+    /* My messages */
+    .me .message {
+      background: linear-gradient(135deg, #fff, #d1c4e9);
       color: #000;
-      align-self: flex-end;
       border-top-right-radius: 0;
+      align-self: flex-end;
     }
 
-    .other {
-      background: rgba(225, 177, 246, 0.9);
-      color: #000;
-      align-self: flex-start;
+    /* Others */
+    .other .message {
+      background: linear-gradient(135deg, #9d55d1, #6e00b6);
+      color: #fff;
       border-top-left-radius: 0;
+      align-self: flex-start;
     }
 
     .timestamp {
       font-size: 0.7rem;
-      color: gray;
+      opacity: 0.6;
       margin-top: 3px;
+      align-self: flex-end;
     }
 
     .input-container {
       display: flex;
       padding: 10px;
       background: #fff;
-      box-shadow: 0 -1px 5px rgba(0,0,0,0.1);
+      box-shadow: 0 -1px 5px rgba(0,0,0,0.3);
     }
 
     .input-container input {
@@ -84,6 +129,11 @@
     .input-container button:hover {
       background: #7a36a5;
     }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -99,7 +149,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
     import { getDatabase, ref, push, onChildAdded, remove, get } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
 
-    // ✅ Your Firebase Config
+    // ✅ Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
       authDomain: "rezo-chat.firebaseapp.com",
@@ -110,7 +160,6 @@
       appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
     };
 
-    // ✅ Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
@@ -118,21 +167,37 @@
     const messageInput = document.getElementById('messageInput');
     const sendBtn = document.getElementById('sendBtn');
 
-    const username = 'user-' + Math.floor(Math.random() * 10000);
+    // ✅ Random Username + Color
+    const username = 'User-' + Math.floor(Math.random() * 10000);
+    const avatarColor = `hsl(${Math.random() * 360}, 70%, 50%)`;
 
-    function addMessageToUI(text, sender, timestamp) {
-      const messageDiv = document.createElement('div');
-      messageDiv.classList.add('message', sender === username ? 'me' : 'other');
-      const time = new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      messageDiv.innerHTML = `
-        ${text}
-        <div class="timestamp">${time}</div>
+    // ✅ Add message to UI
+    function addMessageToUI(text, sender, timestamp, color) {
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('message-wrapper');
+      wrapper.classList.add(sender === username ? 'me' : 'other');
+
+      const avatar = document.createElement('div');
+      avatar.classList.add('avatar');
+      avatar.style.background = color;
+      avatar.textContent = sender.charAt(0).toUpperCase();
+
+      const content = document.createElement('div');
+      content.classList.add('message-content');
+      content.innerHTML = `
+        <div class="username">${sender}</div>
+        <div class="message">${text}</div>
+        <div class="timestamp">${new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
       `;
-      chatContainer.appendChild(messageDiv);
+
+      wrapper.appendChild(avatar);
+      wrapper.appendChild(content);
+
+      chatContainer.appendChild(wrapper);
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
-    // ✅ Send message
+    // ✅ Send Message
     sendBtn.addEventListener('click', async () => {
       const text = messageInput.value.trim();
       if (!text) return;
@@ -140,8 +205,9 @@
       const msg = {
         sender: username,
         text,
+        color: avatarColor,
         timestamp: Date.now(),
-        expireAt: Date.now() + 10 * 60 * 1000 // 10 minutes
+        expireAt: Date.now() + 10 * 60 * 1000 // 10 min expiry
       };
 
       await push(ref(db, 'messages'), msg);
@@ -152,19 +218,19 @@
       if (e.key === 'Enter') sendBtn.click();
     });
 
-    // ✅ Show incoming messages
+    // ✅ Receive Messages
     onChildAdded(ref(db, 'messages'), (snapshot) => {
       const msg = snapshot.val();
       if (!msg) return;
 
       if (Date.now() < msg.expireAt) {
-        addMessageToUI(msg.text, msg.sender, msg.timestamp);
+        addMessageToUI(msg.text, msg.sender, msg.timestamp, msg.color || '#9d55d1');
       } else {
         remove(ref(db, 'messages/' + snapshot.key));
       }
     });
 
-    // ✅ Cleanup old messages every minute
+    // ✅ Cleanup old messages
     setInterval(async () => {
       const snapshot = await get(ref(db, 'messages'));
       snapshot.forEach(child => {

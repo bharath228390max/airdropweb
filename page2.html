@@ -104,7 +104,7 @@
       z-index: 3;
     }
 
-    /* Box item */
+    /* Normal boxes */
     .box-item {
       flex: 1 1 calc(33.333% - 40px);
       background: rgba(255,255,255,0.05);
@@ -130,13 +130,46 @@
       border-color: rgba(255,255,255,0.6);
     }
 
-    .box-item h2 { margin: 0; font-size: 28px; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
-    .box-item p { margin-top: 8px; font-size: 16px; color: rgba(255,255,255,0.7); }
+    /* Full-width top big box */
+    .big-top-box {
+      width: 100%;
+      height: 250px;
+      background: rgba(255,255,255,0.05);
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 25px;
+      box-shadow: 0 0 25px rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      margin-bottom: 40px;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
 
-    /* Big full-width promo box */
+    .big-top-box:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 35px rgba(255,255,255,0.3);
+      border-color: rgba(255,255,255,0.6);
+    }
+
+    .big-top-box h2 {
+      font-size: 30px;
+      margin: 0;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(255,255,255,0.4);
+    }
+
+    .big-top-box p {
+      margin-top: 10px;
+      font-size: 17px;
+      color: rgba(255,255,255,0.75);
+    }
+
+    /* Bottom promo box */
     .promo-box {
       width: 100%;
-      max-width: none;
       height: 250px;
       margin-top: 40px;
       background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.1), rgba(255,255,255,0.05));
@@ -202,31 +235,32 @@
       transform: scale(1.05);
     }
 
-    /* Responsive */
     @media (max-width: 992px) { .box-item { flex: 1 1 calc(45% - 30px); } }
     @media (max-width: 600px) { 
       .box-item { flex: 1 1 100%; height: 200px; } 
-      .promo-box { height: 200px; }
-      .support-btn-container { padding: 8px 20px; }
-      .support-btn { font-size: 14px; padding: 5px 10px; }
+      .promo-box, .big-top-box { height: 200px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Animated blackhole & orbits -->
   <div class="blackhole"></div>
   <div class="orbit orbit1"></div>
   <div class="orbit orbit2"></div>
 
-  <!-- Support button -->
   <div class="support-btn-container">
     <a href="https://x.com/bharath_apex" target="_blank" class="support-btn">
       Support Me by following @bharath_apex
     </a>
   </div>
 
-  <!-- Boxes -->
+  <!-- Big Top Box -->
+  <div class="big-top-box">
+    <h2>🌐 Discover the Future of Rezo</h2>
+    <p>Everything you need to connect, build, and grow together.</p>
+  </div>
+
+  <!-- 6 Main Boxes -->
   <div class="top-boxes">
     <div class="box-item">
       <h2>Airdrop Opportunities</h2>
@@ -254,7 +288,7 @@
     </div>
   </div>
 
-  <!-- Promo Box -->
+  <!-- Bottom Promo Box -->
   <div class="promo-box">
     <h2>🚀 Rezo Launching Soon</h2>
     <p>Early supporters get exclusive perks</p>

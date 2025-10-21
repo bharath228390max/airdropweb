@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rezo - Engage for Engage</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500&display=swap');
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background-color: #0a0a0a;
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      color: white;
+    }
+
+    /* Header */
+    .header {
+      padding: 15px 20px;
+      font-size: 1.5rem;
+      font-weight: 500;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+    }
+
+    /* Feed container */
+    .feed-container {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      gap: 15px;
+      scroll-behavior: smooth;
+    }
+
+    /* Link cards */
+    .link-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 15px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .link-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 20px rgba(255,255,255,0.3);
+    }
+
+    .link-user {
+      font-weight: bold;
+      font-size: 0.95rem;
+      opacity: 0.8;
+      margin-bottom: 5px;
+    }
+
+    .link-url {
+      color: #9d55d1;
+      text-decoration: underline;
+      word-break: break-all;
+    }
+
+    .timestamp {
+      font-size: 0.7rem;
+      opacity: 0.6;
+      margin-top: 5px;
+      align-self: flex-end;
+    }
+
+    /* Input container */
+    .input-container {
+      display: flex;
+      padding: 12px 20px;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(5px);
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .input-container input {
+      flex: 1;
+      padding: 10px 15px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      outline: none;
+      font-size: 1rem;
+    }
+
+    .input-container button {
+      margin-left: 10px;
+      padding: 10px 20px;
+      background: #9d55d1;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .input-container button:hover {
+      background: #7a36a5;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .link-card { animation: fadeIn 0.3s ease-in-out; }
+  </style>
+</head>
+<body>
+
+  <div class="header">Engage for Engage 💬</div>
+
+  <div class="feed-container" id="feedContainer"></div>
+
+  <div class="input-container">
+    <input type="text" id="linkInput" placeholder="Paste your tweet link..." />
+    <button id="addLinkBtn">Drop</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import { getDatabase, ref, push, onChildAdded, remove, get } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
+      authDomain: "rezo-chat.firebaseapp.com",
+      databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "rezo-chat",
+      storageBucket: "rezo-chat.firebasedstorage.app",
+      messagingSenderId: "300513819927",
+      appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const feedContainer = document.getElementById('feedContainer');
+    const linkInput = document.getElementById('linkInput');
+    const addLinkBtn = document.getElementById('addLinkBtn');
+
+    // Random anonymous username
+    const username = 'anon-' + Math.floor(Math.random() * 10000);
+
+    // Add link to Firebase
+    addLinkBtn.addEventListener('click', async () => {
+      const link = linkInput.value.trim();
+      if (!link) return;
+
+      const linkObj = {
+        username,
+        link,
+        timestamp: Date.now(),
+        expireAt: Date.now() + 2*60*60*1000 // 2 hours
+      };
+
+      await push(ref(db, 'engage_links'), linkObj);
+      linkInput.value = '';
+    });
+
+    linkInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') addLinkBtn.click();
+    });
+
+    // Display link in feed
+    function addLinkToUI(linkObj, snapshotKey) {
+      const card = document.createElement('div');
+      card.classList.add('link-card');
+
+      card.innerHTML = `
+        <div class="link-user">${linkObj.username}</div>
+        <a class="link-url" href="${linkObj.link}" target="_blank">${linkObj.link}</a>
+        <div class="timestamp">${new Date(linkObj.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+      `;
+
+      feedContainer.prepend(card); // newest first
+    }
+
+    // Receive links from Firebase
+    onChildAdded(ref(db, 'engage_links'), snapshot => {
+      const linkObj = snapshot.val();
+      if (!linkObj) return;
+
+      // If not expired
+      if (Date.now() < linkObj.expireAt) {
+        addLinkToUI(linkObj, snapshot.key);
+      } else {
+        remove(ref(db, 'engage_links/' + snapshot.key));
+      }
+    });
+
+    // Cleanup old links every 5 minutes
+    setInterval(async () => {
+      const snapshot = await get(ref(db, 'engage_links'));
+      snapshot.forEach(child => {
+        const linkObj = child.val();
+        if (Date.now() > linkObj.expireAt) {
+          remove(ref(db, 'engage_links/' + child.key));
+        }
+      });
+    }, 300000); // 5 min
+  </script>
+
+</body>
+</html>

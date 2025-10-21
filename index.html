@@ -12,169 +12,141 @@
       padding: 0;
       height: 100vh;
       width: 100vw;
-      font-family: 'Orbitron', sans-serif;
-      background: radial-gradient(circle at center, #0a0a0a 20%, #000000 80%);
-      color: white;
-      position: relative;
-      overflow: hidden;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      font-family: 'Orbitron', sans-serif;
+      background: #000000; /* plain black */
+      color: white;
     }
 
-    /* Blackhole vortex */
-    .blackhole {
-      position: fixed;
-      width: 200vmin;
-      height: 200vmin;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: conic-gradient(from 0deg, #111, #222, #111, #000, #111, #222, #111);
-      border-radius: 50%;
-      animation: rotate 18s linear infinite;
-      filter: blur(80px) brightness(1.2);
-      z-index: 0;
-    }
-
-    @keyframes rotate { 
-      0% { transform: translate(-50%, -50%) rotate(0deg); } 
-      100% { transform: translate(-50%, -50%) rotate(360deg); } 
-    }
-
-    /* Orbits */
-    .orbit { position: fixed; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; animation: spin 30s linear infinite; mix-blend-mode: overlay; z-index:1; }
-    .orbit1 { width: 400px; height: 400px; animation-duration: 40s; top:50%; left:50%; transform: translate(-50%, -50%); }
-    .orbit2 { width: 600px; height: 600px; animation-duration: 55s; border-color: rgba(255,255,255,0.1); top:50%; left:50%; transform: translate(-50%, -50%); }
-    .orbit3 { width: 800px; height: 800px; animation-duration: 70s; border-color: rgba(255,255,255,0.05); top:50%; left:50%; transform: translate(-50%, -50%); }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-    /* Floating streaks */
-    .streak { position: fixed; width: 140px; height: 2px; background: rgba(255,255,255,0.2); top:0; left:0; transform: rotate(45deg); animation: moveStreak 7s linear infinite; z-index:1; }
-    @keyframes moveStreak { 0% { transform: translate(-10%, -10%) rotate(45deg); opacity:0; } 10% { opacity:1; } 100% { transform: translate(110vw, 110vh) rotate(45deg); opacity:0; } }
-    .streak:nth-child(1) { animation-delay:0s; }
-    .streak:nth-child(2) { animation-delay:2s; width:200px; }
-    .streak:nth-child(3) { animation-delay:4s; width:250px; }
-
-    /* Main container */
     .container {
-      position: relative;
-      z-index: 5;
-      width: 90%;
-      max-width: 1200px;
       display: flex;
+      width: 80%;
+      max-width: 1000px;
       justify-content: space-between;
       align-items: center;
-      height: 60%;
-      min-height: 300px;
     }
 
-    /* Left text side */
-    .left-side {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding-left: 40px;
-    }
-
+    /* Left side welcome text */
     .left-side h1 {
-      font-size: 50px;
-      margin: 0;
+      font-size: 60px;
+      margin: 0 0 20px 0;
       line-height: 1.4;
-      text-shadow: 0 0 15px rgba(255,255,255,0.5);
+    }
+    .left-side p {
+      font-size: 20px;
+      margin: 5px 0;
     }
 
-    /* Right button side */
+    /* Right side box */
     .right-side {
-      flex: 1;
+      background: rgba(255,255,255,0.05);
+      padding: 40px 30px;
+      border-radius: 20px;
+      border: 2px solid rgba(255,255,255,0.5);
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 25px;
-      padding-right: 40px;
+      gap: 15px;
+      min-width: 250px;
     }
 
-    .next-btn {
-      display:inline-block;
-      padding:18px 40px;
-      font-size:20px;
-      color:#fff;
-      font-weight:bold;
-      border:2px solid white;
-      border-radius:20px;
+    .right-side button, .right-side input {
+      padding: 12px 15px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1.5px solid white;
       background: rgba(255,255,255,0.1);
-      text-decoration:none;
-      cursor:pointer;
-      transition: all 0.3s ease;
-    }
-    .next-btn:hover {
-      background:white;
-      color:black;
-      transform: scale(1.05);
-      box-shadow:0 0 25px rgba(255,255,255,0.7);
+      color: white;
     }
 
-    /* Cook login popup */
-    .login-popup {
+    .right-side button:hover {
+      background: white;
+      color: black;
+      cursor: pointer;
+    }
+
+    .signin-text {
+      color: rgba(255,255,255,0.7);
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    /* Signup modal */
+    .signup-modal {
       position: fixed;
       top:50%;
       left:50%;
-      transform: translate(-50%, -50%) scale(0.8);
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      width:300px;
+      transform: translate(-50%, -50%);
       background: rgba(0,0,0,0.95);
-      padding:40px;
-      border-radius:20px;
-      box-shadow:0 0 30px rgba(255,255,255,0.5);
-      opacity:0;
-      pointer-events:none;
-      z-index:10;
-      transition: all 0.4s ease;
+      border-radius: 20px;
+      padding: 30px 40px;
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 10;
+      border: 2px solid white;
     }
-    .login-popup.show { opacity:1; transform: translate(-50%, -50%) scale(1); pointer-events:all; }
-    .login-popup input { width:80%; padding:10px; border-radius:10px; border:none; text-align:center; background: rgba(255,255,255,0.05); color: white; }
 
-    @media (max-width: 900px) {
-      .container { flex-direction: column; gap:40px; height:auto; }
-      .left-side, .right-side { padding:0; align-items: center; text-align:center; }
-      .left-side h1 { font-size:32px; }
-      .next-btn { padding:14px 32px; font-size:18px; }
+    .signup-modal input {
+      width: 250px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1.5px solid white;
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .signup-modal button {
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1.5px solid white;
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .signup-modal button:hover {
+      background: white;
+      color: black;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .container { flex-direction: column; gap: 30px; }
+      .left-side h1 { font-size: 40px; }
     }
   </style>
 </head>
 <body>
 
-  <div class="blackhole"></div>
-  <div class="orbit orbit1"></div>
-  <div class="orbit orbit2"></div>
-  <div class="orbit orbit3"></div>
-  <div class="streak"></div>
-  <div class="streak"></div>
-  <div class="streak"></div>
-
   <div class="container">
     <div class="left-side">
-      <h1>Welcome to Rezo<br>Built for Small Accounts<br>Made for Airdrop Opportunities</h1>
+      <h1>Welcome to Rezo</h1>
+      <p>Built for Small Accounts</p>
+      <p>Made for Airdrop Opportunities</p>
     </div>
+
     <div class="right-side">
-      <a href="page2.html" class="next-btn">Enter</a>
-      <button class="next-btn cook-btn" id="showLogin">Cook In</button>
+      <button id="signupBtn">Signup</button>
+      <div class="signin-text">Signin</div>
+      <input type="email" id="emailInput" placeholder="Email">
+      <input type="password" id="passwordInput" placeholder="Password">
+      <button id="cookInBtn">Cook In</button>
     </div>
   </div>
 
-  <div class="login-popup" id="loginForm">
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-    <button class="next-btn cook-btn" id="loginBtn">Login</button>
+  <!-- Signup Modal -->
+  <div class="signup-modal" id="signupModal">
+    <h2>Signup New User</h2>
+    <input type="email" id="newEmail" placeholder="Enter Email">
+    <input type="password" id="newPassword" placeholder="Enter Password">
+    <button id="saveSignup">Save</button>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
@@ -189,18 +161,38 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const showLoginBtn = document.getElementById('showLogin');
-    const loginForm = document.getElementById('loginForm');
-    const loginBtn = document.getElementById('loginBtn');
+    const signupBtn = document.getElementById('signupBtn');
+    const signupModal = document.getElementById('signupModal');
+    const saveSignup = document.getElementById('saveSignup');
+    const cookInBtn = document.getElementById('cookInBtn');
 
-    showLoginBtn.addEventListener('click', ()=> loginForm.classList.toggle('show'));
+    // Show signup modal
+    signupBtn.addEventListener('click', () => {
+      signupModal.style.display = 'flex';
+    });
 
-    loginBtn.addEventListener('click', async ()=>{
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+    // Save new user
+    saveSignup.addEventListener('click', async () => {
+      const email = document.getElementById('newEmail').value;
+      const password = document.getElementById('newPassword').value;
+      if(!email || !password){ alert("Enter email & password"); return; }
+      try{
+        await createUserWithEmailAndPassword(auth, email, password);
+        alert("✅ Signup successful!");
+        signupModal.style.display = 'none';
+        document.getElementById('newEmail').value = '';
+        document.getElementById('newPassword').value = '';
+      } catch(e) { alert("❌ "+ e.message); }
+    });
+
+    // Sign in existing user (Cook In)
+    cookInBtn.addEventListener('click', async () => {
+      const email = document.getElementById('emailInput').value;
+      const password = document.getElementById('passwordInput').value;
       if(!email || !password){ alert("Enter email & password"); return; }
       try{
         await signInWithEmailAndPassword(auth, email, password);
+        alert("✅ Signed in! Redirecting...");
         window.location.href = "page2.html";
       } catch(e){ alert("❌ Wrong email or password"); }
     });

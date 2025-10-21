@@ -40,13 +40,6 @@
       align-items: center;
       gap: 20px;
       box-shadow: 0 0 25px rgba(255,255,255,0.1);
-      transform: translateY(0);
-      animation: fadeIn 1.5s ease forwards;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     .avatar {
@@ -99,12 +92,7 @@
 
     .status {
       font-size: 14px;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-
-    .status.visible {
-      opacity: 1;
+      opacity: 0.8;
     }
   </style>
 </head>
@@ -112,18 +100,16 @@
   <div class="profile-card">
     <div id="avatar" class="avatar">👤</div>
     <input type="file" id="avatarInput" accept="image/*" style="display:none">
-
     <input type="text" id="username" placeholder="Enter your name">
     <input type="text" id="link1" placeholder="Your X Profile Link">
     <input type="text" id="link2" placeholder="Any other link">
-
     <button id="saveBtn">Save</button>
     <div class="status" id="status"></div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-storage.js";
 
@@ -132,7 +118,7 @@
       authDomain: "rezo-chat.firebaseapp.com",
       databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "rezo-chat",
-      storageBucket: "rezo-chat.firebasestorage.app",
+      storageBucket: "rezo-chat.appspot.com",
       messagingSenderId: "300513819927",
       appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
     };
@@ -150,7 +136,6 @@
     const saveBtn = document.getElementById("saveBtn");
     const status = document.getElementById("status");
 
-    // Avatar click to select
     avatarDiv.addEventListener("click", () => avatarInput.click());
 
     avatarInput.addEventListener("change", (e) => {
@@ -166,13 +151,19 @@
       }
     });
 
-    // Load user profile
+    // Check if user is logged in
     onAuthStateChanged(auth, async (user) => {
-      if (!user) return;
+      if (!user) {
+        status.textContent = "Please login to view your profile.";
+        return;
+      }
       currentUser = user;
-      const profileSnap = await getDoc(doc(db, "profiles", user.uid));
-      if (profileSnap.exists()) {
-        const data = profileSnap.data();
+
+      // Load saved profile
+      const docRef = doc(db, "profiles", user.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
         document.getElementById("username").value = data.username || "";
         document.getElementById("link1").value = data.link1 || "";
         document.getElementById("link2").value = data.link2 || "";
@@ -183,46 +174,30 @@
       }
     });
 
-    // Save user data
     saveBtn.addEventListener("click", async () => {
       if (!currentUser) {
-        showStatus("Please login first.");
+        status.textContent = "Please login first.";
         return;
       }
-      showStatus("Saving...");
-
-      const username = document.getElementById("username").value.trim();
-      const link1 = document.getElementById("link1").value.trim();
-      const link2 = document.getElementById("link2").value.trim();
+      status.textContent = "Saving...";
 
       let avatarUrl = null;
-
-      try {
-        if (avatarFile) {
-          const storageRef = ref(storage, `avatars/${currentUser.uid}`);
-          await uploadBytes(storageRef, avatarFile);
-          avatarUrl = await getDownloadURL(storageRef);
-        }
-
-        const profileData = { username, link1, link2 };
-        if (avatarUrl) profileData.avatarUrl = avatarUrl;
-
-        await setDoc(doc(db, "profiles", currentUser.uid), profileData, { merge: true });
-
-        showStatus("✅ Saved successfully!");
-        avatarFile = null;
-      } catch (err) {
-        showStatus("❌ Error saving profile");
-        console.error(err);
+      if (avatarFile) {
+        const storageRef = ref(storage, `avatars/${currentUser.uid}`);
+        await uploadBytes(storageRef, avatarFile);
+        avatarUrl = await getDownloadURL(storageRef);
       }
-    });
 
-    // Status message helper
-    function showStatus(msg) {
-      status.textContent = msg;
-      status.classList.add("visible");
-      setTimeout(() => status.classList.remove("visible"), 2000);
-    }
+      await setDoc(doc(db, "profiles", currentUser.uid), {
+        username: document.getElementById("username").value,
+        link1: document.getElementById("link1").value,
+        link2: document.getElementById("link2").value,
+        avatarUrl
+      }, { merge: true });
+
+      status.textContent = "✅ Saved successfully!";
+      avatarFile = null;
+    });
   </script>
 </body>
 </html>

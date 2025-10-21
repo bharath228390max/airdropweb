@@ -6,7 +6,6 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
 
-    /* Reset and body */
     body {
       margin: 0;
       padding: 0;
@@ -16,7 +15,7 @@
       justify-content: center;
       align-items: center;
       font-family: 'Orbitron', sans-serif;
-      background: #000000; /* plain black */
+      background: #000000;
       color: white;
     }
 
@@ -28,18 +27,19 @@
       align-items: center;
     }
 
-    /* Left side welcome text */
     .left-side h1 {
       font-size: 60px;
       margin: 0 0 20px 0;
       line-height: 1.4;
     }
+
     .left-side p {
-      font-size: 20px;
-      margin: 5px 0;
+      font-size: 26px; /* increased size */
+      margin: 10px 0;
+      color: #ffffff;
+      text-shadow: 0 0 8px #fff, 0 0 15px #fff; /* subtle glow */
     }
 
-    /* Right side box */
     .right-side {
       background: rgba(255,255,255,0.05);
       padding: 40px 30px;
@@ -72,7 +72,6 @@
       margin-bottom: 10px;
     }
 
-    /* Signup modal */
     .signup-modal {
       position: fixed;
       top:50%;
@@ -115,6 +114,7 @@
     @media (max-width: 768px) {
       .container { flex-direction: column; gap: 30px; }
       .left-side h1 { font-size: 40px; }
+      .left-side p { font-size: 20px; }
     }
   </style>
 </head>
@@ -178,7 +178,6 @@
       if(!email || !password){ alert("Enter email & password"); return; }
       try{
         await createUserWithEmailAndPassword(auth, email, password);
-        alert("✅ Signup successful!");
         signupModal.style.display = 'none';
         document.getElementById('newEmail').value = '';
         document.getElementById('newPassword').value = '';
@@ -192,8 +191,7 @@
       if(!email || !password){ alert("Enter email & password"); return; }
       try{
         await signInWithEmailAndPassword(auth, email, password);
-        alert("✅ Signed in! Redirecting...");
-        window.location.href = "page2.html";
+        window.location.href = "page2.html"; // silently redirect
       } catch(e){ alert("❌ Wrong email or password"); }
     });
   </script>

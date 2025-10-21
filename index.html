@@ -12,20 +12,20 @@
       padding: 0;
       height: 100vh;
       width: 100vw;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
       font-family: 'Orbitron', sans-serif;
       background: radial-gradient(circle at center, #0a0a0a 20%, #000000 80%);
       color: white;
       position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     /* Blackhole vortex */
     .blackhole {
       position: fixed;
-      width: 200vmin;  /* safer than vmax */
+      width: 200vmin;
       height: 200vmin;
       top: 50%;
       left: 50%;
@@ -56,31 +56,65 @@
     .streak:nth-child(2) { animation-delay:2s; width:200px; }
     .streak:nth-child(3) { animation-delay:4s; width:250px; }
 
-    /* Centered box */
-    .box {
+    /* Main container */
+    .container {
       position: relative;
-      z-index:5;
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(255,255,255,0.8);
-      border-radius: 20px;
-      padding: 50px 80px;
-      text-align: center;
+      z-index: 5;
+      width: 90%;
+      max-width: 1200px;
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      box-shadow: 0 0 30px rgba(255,255,255,0.3);
-      animation: glow 5s ease-in-out infinite;
+      height: 60%;
+      min-height: 300px;
     }
 
-    @keyframes glow { 0%,100%{box-shadow:0 0 30px rgba(255,255,255,0.3);}50%{box-shadow:0 0 60px rgba(255,255,255,0.5);} }
+    /* Left text side */
+    .left-side {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: 40px;
+    }
 
-    .box h1 { font-size: 38px; font-weight:700; text-shadow:0 0 20px rgba(255,255,255,0.5); margin-bottom:40px; color:white; }
+    .left-side h1 {
+      font-size: 42px;
+      margin: 0;
+      line-height: 1.4;
+      text-shadow: 0 0 15px rgba(255,255,255,0.5);
+    }
 
-    .next-btn { display:inline-block; padding:14px 32px; font-size:18px; color:#fff; font-weight:bold; border:2px solid white; border-radius:15px; background: rgba(255,255,255,0.1); text-decoration:none; cursor:pointer; transition: all 0.3s ease; }
-    .next-btn:hover { background:white; color:black; transform: scale(1.05); box-shadow:0 0 25px rgba(255,255,255,0.7); }
+    /* Right button side */
+    .right-side {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 25px;
+      padding-right: 40px;
+    }
 
-    .button-group { display:flex; gap:20px; justify-content:center; }
+    .next-btn {
+      display:inline-block;
+      padding:18px 40px;
+      font-size:20px;
+      color:#fff;
+      font-weight:bold;
+      border:2px solid white;
+      border-radius:20px;
+      background: rgba(255,255,255,0.1);
+      text-decoration:none;
+      cursor:pointer;
+      transition: all 0.3s ease;
+    }
+    .next-btn:hover {
+      background:white;
+      color:black;
+      transform: scale(1.05);
+      box-shadow:0 0 25px rgba(255,255,255,0.7);
+    }
 
     /* Cook login popup */
     .login-popup {
@@ -92,7 +126,7 @@
       flex-direction:column;
       gap:10px;
       width:300px;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0,0,0,0.95);
       padding:40px;
       border-radius:20px;
       box-shadow:0 0 30px rgba(255,255,255,0.5);
@@ -102,14 +136,14 @@
       transition: all 0.4s ease;
     }
     .login-popup.show { opacity:1; transform: translate(-50%, -50%) scale(1); pointer-events:all; }
-    .login-popup input { width:80%; padding:10px; border-radius:10px; border:none; text-align:center; }
+    .login-popup input { width:80%; padding:10px; border-radius:10px; border:none; text-align:center; background: rgba(255,255,255,0.05); color: white; }
 
-    @media (max-width:768px){
-      .box { padding:25px 40px; }
-      .box h1 { font-size:26px; }
-      .next-btn { font-size:16px; padding:10px 24px; }
+    @media (max-width: 900px) {
+      .container { flex-direction: column; gap:40px; height:auto; }
+      .left-side, .right-side { padding:0; align-items: center; text-align:center; }
+      .left-side h1 { font-size:32px; }
+      .next-btn { padding:14px 32px; font-size:18px; }
     }
-
   </style>
 </head>
 <body>
@@ -122,18 +156,20 @@
   <div class="streak"></div>
   <div class="streak"></div>
 
-  <div class="box">
-    <h1>Welcome to Rezo<br>Built for Small Accounts<br>Made for Airdrop Opportunities</h1>
-    <div class="button-group">
+  <div class="container">
+    <div class="left-side">
+      <h1>Welcome to Rezo<br>Built for Small Accounts<br>Made for Airdrop Opportunities</h1>
+    </div>
+    <div class="right-side">
       <a href="page2.html" class="next-btn">Enter</a>
       <button class="next-btn cook-btn" id="showLogin">Cook In</button>
     </div>
+  </div>
 
-    <div class="login-popup" id="loginForm">
-      <input type="email" id="email" placeholder="Email">
-      <input type="password" id="password" placeholder="Password">
-      <button class="next-btn cook-btn" id="loginBtn">Login</button>
-    </div>
+  <div class="login-popup" id="loginForm">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button class="next-btn cook-btn" id="loginBtn">Login</button>
   </div>
 
   <script type="module">
@@ -168,7 +204,6 @@
         window.location.href = "page2.html";
       } catch(e){ alert("❌ Wrong email or password"); }
     });
-
   </script>
 
 </body>

@@ -1,99 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Yappers per Project</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+<meta charset="UTF-8">
+<title>Yappers per Project</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Orbitron', sans-serif;
-      background: #0a0a0a;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-    }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Orbitron', sans-serif;
+    background: #0a0a0a;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+  }
 
-    .leaderboard {
-      margin-top: 40px;
-      background: rgba(0,0,0,0.8);
-      border-radius: 20px;
-      box-shadow: 0 0 35px rgba(255,255,255,0.2);
-      padding: 35px;
-      width: 95%;
-      max-width: 1000px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.3);
-    }
+  .leaderboard {
+    margin-top: 40px;
+    background: rgba(0,0,0,0.8);
+    border-radius: 20px;
+    box-shadow: 0 0 35px rgba(255,255,255,0.2);
+    padding: 35px;
+    width: 95%;
+    max-width: 1000px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.3);
+    overflow-x: auto;
+  }
 
-    h1 {
-      text-align: center;
-      font-size: 32px;
-      margin-bottom: 25px;
-      color: #fff;
-    }
+  h1 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 25px;
+    color: #fff;
+  }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
 
-    th, td {
-      padding: 16px 20px;
-      text-align: center;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-      font-size: 16px;
-    }
+  th, td {
+    padding: 20px 16px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    font-size: 16px;
+  }
 
-    th {
-      color: #ccc;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+  th {
+    color: #ccc;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 
-    tr {
-      transition: all 0.3s ease;
-      background: rgba(255,255,255,0.05);
-    }
+  tr {
+    transition: all 0.3s ease;
+    background: rgba(255,255,255,0.05);
+    height: 60px; /* taller rows */
+  }
 
-    tr:hover {
-      background: rgba(255,255,255,0.1);
-      transform: scale(1.01);
-    }
+  tr:hover {
+    background: rgba(255,255,255,0.1);
+    transform: scale(1.01);
+  }
 
-    td:first-child {
-      font-weight: bold;
-      color: #fff;
-    }
+  td:first-child {
+    font-weight: bold;
+    color: #fff;
+  }
 
-    .vote-box {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-    }
+  .vote-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
 
-    .arrow {
-      cursor: pointer;
-      font-size: 22px;
-      transition: transform 0.2s;
-      user-select: none;
-      color: #22c55e;
-    }
+  .arrow {
+    cursor: pointer;
+    font-size: 22px;
+    transition: transform 0.2s;
+    user-select: none;
+    color: #22c55e;
+  }
 
-    .arrow:hover { transform: scale(1.3); }
+  .arrow:hover { transform: scale(1.3); }
 
-    .status {
-      text-align: center;
-      margin-top: 15px;
-      font-size: 16px;
-      color: #22c55e;
-    }
-  </style>
+  .status {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 16px;
+    color: #22c55e;
+  }
+</style>
 </head>
 <body>
 
@@ -192,9 +194,8 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-
-  let currentUser = null;
   const status = document.getElementById("status");
+  let currentUser = null;
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -204,36 +205,35 @@
     currentUser = user;
 
     // Load user votes
-    const votesDoc = await getDoc(doc(db, "votes", currentUser.uid));
-    const userVotes = votesDoc.exists() ? votesDoc.data().projects || [] : [];
+    const votesSnap = await getDoc(doc(db, "votes", currentUser.uid));
+    const userVotes = votesSnap.exists() ? votesSnap.data().projects || [] : [];
 
-    document.querySelectorAll(".vote-box .arrow.up").forEach((arrow) => {
+    // Disable already voted arrows
+    document.querySelectorAll(".vote-box .arrow.up").forEach(arrow => {
       const tr = arrow.closest("tr");
-      const project = tr.dataset.project;
-      if (userVotes.includes(project)) arrow.style.pointerEvents = "none";
+      if (userVotes.includes(tr.dataset.project)) arrow.style.pointerEvents = "none";
     });
 
-    // Load total project votes
-    const leaderboardDoc = await getDoc(doc(db, "projects", "monthly"));
-    const projectsData = leaderboardDoc.exists() ? leaderboardDoc.data() : {};
-
-    document.querySelectorAll("tr[data-project]").forEach((tr) => {
+    // Load total votes
+    const leaderboardSnap = await getDoc(doc(db, "projects", "monthly"));
+    const projectsData = leaderboardSnap.exists() ? leaderboardSnap.data() : {};
+    document.querySelectorAll("tr[data-project]").forEach(tr => {
       const project = tr.dataset.project;
-      const countSpan = tr.querySelector(".count");
-      countSpan.textContent = projectsData[project] || 0;
+      tr.querySelector(".count").textContent = projectsData[project] || 0;
     });
   });
 
-  document.querySelectorAll(".vote-box .arrow.up").forEach((arrow) => {
+  document.querySelectorAll(".vote-box .arrow.up").forEach(arrow => {
     arrow.addEventListener("click", async () => {
       if (!currentUser) return;
 
       const tr = arrow.closest("tr");
       const project = tr.dataset.project;
 
+      // Get user votes
       const votesRef = doc(db, "votes", currentUser.uid);
-      const userVotesSnap = await getDoc(votesRef);
-      let userVotes = userVotesSnap.exists() ? userVotesSnap.data().projects || [] : [];
+      const votesSnap = await getDoc(votesRef);
+      let userVotes = votesSnap.exists() ? votesSnap.data().projects || [] : [];
 
       if (userVotes.includes(project) || userVotes.length >= 5) {
         status.textContent = "Max votes reached or already voted for this project";
@@ -243,9 +243,11 @@
       userVotes.push(project);
       await setDoc(votesRef, { projects: userVotes }, { merge: true });
 
-      const projectsRef = doc(db, "projects", "monthly");
-      await updateDoc(projectsRef, { [project]: increment(1) });
+      // Increment project vote (create if missing)
+      const projectRef = doc(db, "projects", "monthly");
+      await setDoc(projectRef, { [project]: increment(1) }, { merge: true });
 
+      // Update count visually
       tr.querySelector(".count").textContent = parseInt(tr.querySelector(".count").textContent) + 1;
       arrow.style.pointerEvents = "none";
       status.textContent = "✅ Vote counted!";

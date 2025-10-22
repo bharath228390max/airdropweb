@@ -50,11 +50,12 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 40px;
-      background-size: cover;
-      background-position: center;
-      cursor: pointer;
+      font-size: 50px;
+      font-weight: bold;
+      color: white;
+      background-color: #333;
       transition: transform 0.3s ease;
+      user-select: none;
     }
 
     .avatar:hover { transform: scale(1.05); }
@@ -98,8 +99,7 @@
 </head>
 <body>
   <div class="profile-card">
-    <div id="avatar" class="avatar">👤</div>
-    <input type="file" id="avatarInput" accept="image/*" style="display:none">
+    <div id="avatar" class="avatar">?</div>
     <input type="text" id="username" placeholder="Enter your name">
     <input type="text" id="link1" placeholder="Your X Profile Link">
     <input type="text" id="link2" placeholder="Any other link">
@@ -109,14 +109,12 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
       authDomain: "rezo-chat.firebaseapp.com",
-      databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "rezo-chat",
       storageBucket: "rezo-chat.appspot.com",
       messagingSenderId: "300513819927",
@@ -126,40 +124,42 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const storage = getStorage(app);
-
-    let currentUser = null;
-    let avatarFile = null;
 
     const avatarDiv = document.getElementById("avatar");
-    const avatarInput = document.getElementById("avatarInput");
     const saveBtn = document.getElementById("saveBtn");
     const status = document.getElementById("status");
 
-    avatarDiv.addEventListener("click", () => avatarInput.click());
+    let currentUser = null;
 
-    avatarInput.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        avatarFile = file;
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          avatarDiv.style.backgroundImage = `url(${event.target.result})`;
-          avatarDiv.textContent = "";
-        };
-        reader.readAsDataURL(file);
+    const colors = [
+      "#FF5733", "#33FF57", "#3357FF", "#FF33A8",
+      "#FFC300", "#DAF7A6", "#FF5733", "#C70039",
+      "#900C3F", "#581845"
+    ];
+
+    function getColorFromLetter(letter) {
+      const index = letter.charCodeAt(0) % colors.length;
+      return colors[index];
+    }
+
+    function updateAvatar(name) {
+      if (!name) {
+        avatarDiv.textContent = "?";
+        avatarDiv.style.backgroundColor = "#333";
+        return;
       }
-    });
+      const firstLetter = name.charAt(0).toUpperCase();
+      avatarDiv.textContent = firstLetter;
+      avatarDiv.style.backgroundColor = getColorFromLetter(firstLetter);
+    }
 
-    // Check if user is logged in
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         status.textContent = "Please login to view your profile.";
         return;
       }
-      currentUser = user;
 
-      // Load saved profile
+      currentUser = user;
       const docRef = doc(db, "profiles", user.uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
@@ -167,10 +167,7 @@
         document.getElementById("username").value = data.username || "";
         document.getElementById("link1").value = data.link1 || "";
         document.getElementById("link2").value = data.link2 || "";
-        if (data.avatarUrl) {
-          avatarDiv.style.backgroundImage = `url(${data.avatarUrl})`;
-          avatarDiv.textContent = "";
-        }
+        updateAvatar(data.username);
       }
     });
 
@@ -179,24 +176,18 @@
         status.textContent = "Please login first.";
         return;
       }
-      status.textContent = "Saving...";
 
-      let avatarUrl = null;
-      if (avatarFile) {
-        const storageRef = ref(storage, `avatars/${currentUser.uid}`);
-        await uploadBytes(storageRef, avatarFile);
-        avatarUrl = await getDownloadURL(storageRef);
-      }
+      status.textContent = "Saving...";
+      const username = document.getElementById("username").value;
+      const link1 = document.getElementById("link1").value;
+      const link2 = document.getElementById("link2").value;
 
       await setDoc(doc(db, "profiles", currentUser.uid), {
-        username: document.getElementById("username").value,
-        link1: document.getElementById("link1").value,
-        link2: document.getElementById("link2").value,
-        avatarUrl
+        username, link1, link2
       }, { merge: true });
 
+      updateAvatar(username);
       status.textContent = "✅ Saved successfully!";
-      avatarFile = null;
     });
   </script>
 </body>

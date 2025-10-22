@@ -10,7 +10,7 @@
     margin: 0;
     padding: 0;
     font-family: 'Orbitron', sans-serif;
-    background: #0a0a0a;
+    background: linear-gradient(-45deg,#000000,#111111,#0a0a0a,#1a1a1a);
     color: white;
     display: flex;
     justify-content: center;
@@ -20,235 +20,182 @@
 
   .leaderboard {
     margin-top: 40px;
-    background: rgba(0,0,0,0.8);
+    background: rgba(255,255,255,0.05);
     border-radius: 20px;
+    width: 90%;
+    max-width: 900px;
     padding: 20px;
-    width: 95%;
-    max-width: 1000px;
-    overflow-x: auto;
-    border: 1px solid rgba(255,255,255,0.3);
+    backdrop-filter: blur(8px);
   }
 
   h1 {
     text-align: center;
     font-size: 28px;
-    margin-bottom: 20px;
-    color: #fff;
+    margin-bottom: 15px;
   }
 
   table {
     width: 100%;
     border-collapse: collapse;
-  }
-
-  th, td {
-    padding: 8px 10px;
-    text-align: center;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-    font-size: 14px;
-  }
-
-  th {
-    color: #ccc;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  tr {
-    transition: all 0.2s ease;
-    background: rgba(255,255,255,0.05);
-    height: 40px;
-  }
-
-  tr:hover {
-    background: rgba(255,255,255,0.1);
-    transform: scale(1.01);
-  }
-
-  td:first-child {
-    font-weight: bold;
     color: #fff;
   }
 
-  .vote-box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
+  th, td {
+    padding: 6px 10px;
+    text-align: center;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
   }
+
+  th { text-transform: uppercase; letter-spacing: 1px; font-size: 14px; }
+
+  tr:hover { background: rgba(255,255,255,0.1); }
+
+  .vote-box { display: flex; justify-content: center; align-items: center; gap: 5px; }
 
   .arrow {
     cursor: pointer;
-    font-size: 18px;
-    color: #22c55e;
     user-select: none;
-    transition: transform 0.2s;
-  }
-
-  .arrow:hover { transform: scale(1.2); }
-
-  .status {
-    text-align: center;
-    margin-top: 10px;
     font-size: 14px;
-    color: #22c55e;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid white;
+    transition: 0.2s;
   }
+
+  .arrow:hover { background: white; color: black; }
+  .arrow.disabled { opacity: 0.5; cursor: default; }
+
 </style>
 </head>
 <body>
-
 <div class="leaderboard">
   <h1>Yappers Per Project</h1>
   <table id="leaderboard">
     <thead>
       <tr>
         <th>No.</th>
-        <th>Name</th>
+        <th>Project</th>
         <th>Yappers Count</th>
         <th>Rewards</th>
-        <th>Categories</th>
+        <th>Category</th>
       </tr>
     </thead>
-    <tbody>
-      <tr data-project="sentient">
-        <td>1</td>
-        <td>Sentient</td>
-        <td>
-          <div class="vote-box">
-            <span class="arrow up">▲</span>
-            <span class="count">0</span>
-          </div>
-        </td>
-        <td>Ask team</td>
-        <td>AI</td>
-      </tr>
-      <tr data-project="idos">
-        <td>2</td>
-        <td>idOS</td>
-        <td>
-          <div class="vote-box">
-            <span class="arrow up">▲</span>
-            <span class="count">0</span>
-          </div>
-        </td>
-        <td>0.8% supply</td>
-        <td>Security</td>
-      </tr>
-      <tr data-project="brevis">
-        <td>3</td>
-        <td>Brevis</td>
-        <td>
-          <div class="vote-box">
-            <span class="arrow up">▲</span>
-            <span class="count">0</span>
-          </div>
-        </td>
-        <td>Unknown</td>
-        <td>ZK</td>
-      </tr>
-      <tr data-project="zama">
-        <td>4</td>
-        <td>Zama</td>
-        <td>
-          <div class="vote-box">
-            <span class="arrow up">▲</span>
-            <span class="count">0</span>
-          </div>
-        </td>
-        <td>$53k + NFTs</td>
-        <td>FHE</td>
-      </tr>
-      <tr data-project="rainbow">
-        <td>5</td>
-        <td>Rainbow</td>
-        <td>
-          <div class="vote-box">
-            <span class="arrow up">▲</span>
-            <span class="count">0</span>
-          </div>
-        </td>
-        <td>idk lil bro</td>
-        <td>Wallet</td>
-      </tr>
-    </tbody>
+    <tbody></tbody>
   </table>
-  <div class="status" id="status"></div>
 </div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
-    authDomain: "rezo-chat.firebaseapp.com",
-    projectId: "rezo-chat",
-    storageBucket: "rezo-chat.appspot.com",
-    messagingSenderId: "300513819927",
-    appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
+  authDomain: "rezo-chat.firebaseapp.com",
+  databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "rezo-chat",
+  storageBucket: "rezo-chat.appspot.com",
+  messagingSenderId: "300513819927",
+  appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const status = document.getElementById("status");
-  let currentUser = null;
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
+const projectsData = [
+  { name: "Sentient", rewards: "Ask team", category: "AI" },
+  { name: "idOS", rewards: "0.8% supply", category: "Security" },
+  { name: "Brevis", rewards: "Unknown", category: "ZK" },
+  { name: "Zama", rewards: "$53k + NFTs", category: "FHE" },
+  { name: "Rainbow", rewards: "idk lil bro", category: "Wallet" }
+];
+
+let currentUser = null;
+
+function renderTable(projects, userVotes) {
+  const tbody = document.querySelector("#leaderboard tbody");
+  tbody.innerHTML = "";
+  projects.forEach((proj, index) => {
+    const tr = document.createElement("tr");
+
+    const tdNo = document.createElement("td"); tdNo.textContent = index + 1;
+    const tdName = document.createElement("td"); tdName.textContent = proj.name;
+    const tdCount = document.createElement("td");
+    const voteBox = document.createElement("div"); voteBox.className = "vote-box";
+
+    const up = document.createElement("span");
+    up.className = "arrow up";
+    up.textContent = "▲";
+
+    if (userVotes.includes(proj.name)) up.classList.add("disabled");
+
+    up.addEventListener("click", async () => {
+      if (!currentUser || userVotes.includes(proj.name)) return;
+      const monthDoc = doc(db, "projects", "monthly");
+      await updateDoc(monthDoc, { [proj.name]: increment(1) });
+
+      const userDoc = doc(db, "votes", currentUser.uid);
+      await updateDoc(userDoc, { projects: [...userVotes, proj.name] });
+
+      userVotes.push(proj.name);
+      up.classList.add("disabled");
+      proj.count++;
+      renderTable(projects, userVotes);
+    });
+
+    const count = document.createElement("span"); count.textContent = proj.count || 0;
+
+    voteBox.appendChild(up);
+    voteBox.appendChild(count);
+    tdCount.appendChild(voteBox);
+
+    const tdRewards = document.createElement("td"); tdRewards.textContent = proj.rewards;
+    const tdCategory = document.createElement("td"); tdCategory.textContent = proj.category;
+
+    tr.append(tdNo, tdName, tdCount, tdRewards, tdCategory);
+    tbody.appendChild(tr);
+  });
+}
+
+async function init() {
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
-      status.textContent = "Please login first";
+      alert("Please login first.");
       return;
     }
     currentUser = user;
 
-    // Load user votes
-    const votesSnap = await getDoc(doc(db, "votes", currentUser.uid));
-    const userVotes = votesSnap.exists() ? votesSnap.data().projects || [] : [];
+    // Initialize monthly projects if missing
+    const monthDocRef = doc(db, "projects", "monthly");
+    const monthSnap = await getDoc(monthDocRef);
+    if (!monthSnap.exists()) {
+      const initObj = {};
+      projectsData.forEach(p => initObj[p.name] = 0);
+      await setDoc(monthDocRef, initObj);
+    }
 
-    // Disable already voted arrows
-    document.querySelectorAll(".vote-box .arrow.up").forEach(arrow => {
-      const tr = arrow.closest("tr");
-      if (userVotes.includes(tr.dataset.project)) arrow.style.pointerEvents = "none";
-    });
+    // Get votes by user
+    const userDocRef = doc(db, "votes", user.uid);
+    const userSnap = await getDoc(userDocRef);
+    if (!userSnap.exists()) {
+      await setDoc(userDocRef, { projects: [] });
+    }
+    const userVotes = userSnap.exists() ? userSnap.data().projects : [];
 
-    // Load total votes
-    const leaderboardSnap = await getDoc(doc(db, "projects", "monthly"));
-    const projectsData = leaderboardSnap.exists() ? leaderboardSnap.data() : {};
-    document.querySelectorAll("tr[data-project]").forEach(tr => {
-      const project = tr.dataset.project;
-      tr.querySelector(".count").textContent = projectsData[project] || 0;
-    });
+    // Load project counts
+    const updatedSnap = await getDoc(monthDocRef);
+    const projects = projectsData.map(p => ({
+      ...p,
+      count: updatedSnap.data()[p.name] || 0
+    }));
+
+    renderTable(projects, userVotes);
   });
+}
 
-  document.querySelectorAll(".vote-box .arrow.up").forEach(arrow => {
-    arrow.addEventListener("click", async () => {
-      if (!currentUser) return;
-
-      const tr = arrow.closest("tr");
-      const project = tr.dataset.project;
-
-      const votesRef = doc(db, "votes", currentUser.uid);
-      const votesSnap = await getDoc(votesRef);
-      let userVotes = votesSnap.exists() ? votesSnap.data().projects || [] : [];
-
-      if (userVotes.includes(project) || userVotes.length >= 5) {
-        status.textContent = "Max votes reached or already voted for this project";
-        return;
-      }
-
-      userVotes.push(project);
-      await setDoc(votesRef, { projects: userVotes }, { merge: true });
-
-      const projectRef = doc(db, "projects", "monthly");
-      await setDoc(projectRef, { [project]: increment(1) }, { merge: true });
-
-      // Update UI
-      tr.querySelector(".count").textContent = parseInt(tr.querySelector(".count").textContent) + 1;
-      arrow.style.pointerEvents = "none";
-      status.textContent = "✅ Vote counted!";
-    });
-  });
+init();
 </script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Yappers per Project</title>
+  <title>Yappers Per Project</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
@@ -10,183 +10,206 @@
       margin: 0;
       padding: 0;
       font-family: 'Orbitron', sans-serif;
-      background: linear-gradient(135deg, #2e026d, #4c1d95, #6d28d9);
+      background: radial-gradient(circle at center, #0a0a0a, #111);
       color: white;
       display: flex;
       justify-content: center;
       align-items: flex-start;
       min-height: 100vh;
+      padding-top: 50px;
     }
 
-    .leaderboard {
-      margin-top: 60px;
-      background: rgba(255, 255, 255, 0.05);
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .project-card {
+      background: rgba(255,255,255,0.05);
+      border: 2px solid rgba(255,255,255,0.2);
       border-radius: 20px;
-      box-shadow: 0 0 40px rgba(168, 85, 247, 0.4);
-      padding: 25px;
-      width: 85%;
-      max-width: 900px;
-      backdrop-filter: blur(10px);
-      animation: fadeIn 0.8s ease-in-out;
-    }
-
-    h1 {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
       text-align: center;
-      color: #e9d5ff;
-      font-size: 30px;
-      text-shadow: 0 0 10px #c084fc, 0 0 25px #7e22ce;
-      margin-bottom: 25px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      backdrop-filter: blur(5px);
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      color: #f3e8ff;
+    .project-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 25px rgba(255,255,255,0.4);
     }
 
-    th, td {
-      padding: 10px 14px;
-      text-align: center;
-      font-size: 15px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-
-    th {
-      color: #c084fc;
-      font-size: 16px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    tr {
-      transition: all 0.3s ease;
-      background: rgba(255,255,255,0.03);
-    }
-
-    tr:hover {
-      background: rgba(255,255,255,0.12);
-      box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
-      transform: scale(1.01);
-    }
-
-    td:first-child {
-      color: #a78bfa;
+    .project-name {
+      font-size: 22px;
       font-weight: bold;
+      color: #e0c0ff;
+    }
+
+    .project-info {
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
     }
 
     .vote-box {
       display: flex;
-      align-items: center;
       justify-content: center;
-      gap: 10px;
+      align-items: center;
+      gap: 15px;
+      margin-top: 10px;
     }
 
-    .arrow {
+    .vote-box button {
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.5);
+      color: white;
       cursor: pointer;
-      user-select: none;
+      transition: all 0.3s ease;
+    }
+
+    .vote-box button:hover {
+      background: white;
+      color: black;
+      transform: scale(1.05);
+    }
+
+    .vote-count {
       font-size: 18px;
-      transition: color 0.2s, transform 0.2s;
+      font-weight: bold;
+      color: #a78bfa;
     }
 
-    .arrow:hover {
-      transform: scale(1.2);
+    h1 {
+      text-align: center;
+      width: 100%;
+      margin-bottom: 30px;
+      font-size: 32px;
+      color: #e9d5ff;
+      text-shadow: 0 0 10px #c084fc;
     }
 
-    .arrow.up { color: #22c55e; }
-    .arrow.down { color: #ef4444; }
+    .status {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #fcd34d;
+    }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
+    @media(max-width:768px) {
+      .vote-box { flex-direction: column; gap: 10px; }
     }
   </style>
 </head>
 <body>
 
-  <div class="leaderboard">
+  <div class="container">
     <h1>Yappers Per Project</h1>
-    <table id="leaderboard">
-      <thead>
-        <tr>
-          <th>No.</th>
-          <th>Name</th>
-          <th>Yappers Count</th>
-          <th>Rewards</th>
-          <th>Categories</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>Sentient</td>
-          <td>
-            <div class="vote-box">
-              <span class="arrow up">▲</span>
-              <span class="count">128</span>
-              <span class="arrow down">▼</span>
-            </div>
-          </td>
-          <td>Ask team</td>
-          <td>AI</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>idOS</td>
-          <td>
-            <div class="vote-box">
-              <span class="arrow up">▲</span>
-              <span class="count">97</span>
-              <span class="arrow down">▼</span>
-            </div>
-          </td>
-          <td>0.8% supply</td>
-          <td>Security</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>Brevis</td>
-          <td>
-            <div class="vote-box">
-              <span class="arrow up">▲</span>
-              <span class="count">83</span>
-              <span class="arrow down">▼</span>
-            </div>
-          </td>
-          <td>Unknown</td>
-          <td>ZK</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>Zama</td>
-          <td>
-            <div class="vote-box">
-              <span class="arrow up">▲</span>
-              <span class="count">110</span>
-              <span class="arrow down">▼</span>
-            </div>
-          </td>
-          <td>$53k + NFTs</td>
-          <td>FHE</td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td>Rainbow</td>
-          <td>
-            <div class="vote-box">
-              <span class="arrow up">▲</span>
-              <span class="count">75</span>
-              <span class="arrow down">▼</span>
-            </div>
-          </td>
-          <td>idk lil bro</td>
-          <td>Wallet</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="status" id="status"></div>
   </div>
 
-  <!-- Link to external JS file -->
-  <script src="vote.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
+      authDomain: "rezo-chat.firebaseapp.com",
+      databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "rezo-chat",
+      storageBucket: "rezo-chat.appspot.com",
+      messagingSenderId: "300513819927",
+      appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const container = document.querySelector('.container');
+    const statusDiv = document.getElementById('status');
+    let currentUser = null;
+
+    const MAX_VOTES = 5; // max votes per month per user
+
+    // Load all projects
+    async function loadProjects() {
+      const projectsQuery = query(collection(db, "projects"), orderBy("votes", "desc"));
+      const snapshot = await getDocs(projectsQuery);
+
+      container.querySelectorAll('.project-card').forEach(el => el.remove());
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const card = document.createElement('div');
+        card.classList.add('project-card');
+        card.dataset.id = docSnap.id;
+
+        card.innerHTML = `
+          <div class="project-name">${data.name}</div>
+          <div class="project-info">Reward: ${data.reward}<br>Category: ${data.category}</div>
+          <div class="vote-box">
+            <button class="vote-btn">Vote</button>
+            <span class="vote-count">${data.votes || 0}</span>
+          </div>
+        `;
+        container.appendChild(card);
+
+        const voteBtn = card.querySelector('.vote-btn');
+        const voteCountSpan = card.querySelector('.vote-count');
+
+        voteBtn.addEventListener('click', async () => {
+          if (!currentUser) { statusDiv.textContent = "Please login first!"; return; }
+
+          // Load user votes
+          const userDocRef = doc(db, "users", currentUser.uid);
+          const userSnap = await getDoc(userDocRef);
+          let userData = userSnap.exists() ? userSnap.data() : { votes: {}, count: 0, lastReset: new Date() };
+
+          // Reset monthly if needed
+          const lastReset = userData.lastReset?.toDate?. ? userData.lastReset.toDate() : new Date(userData.lastReset || 0);
+          const now = new Date();
+          if (now.getMonth() !== lastReset.getMonth() || now.getFullYear() !== lastReset.getFullYear()) {
+            userData.votes = {};
+            userData.count = 0;
+            userData.lastReset = now;
+          }
+
+          // Check if user already voted for this project
+          if (userData.votes[docSnap.id]) { statusDiv.textContent = "You already voted this project!"; return; }
+
+          if (userData.count >= MAX_VOTES) { statusDiv.textContent = "You reached maximum votes this month!"; return; }
+
+          // Increment project votes
+          const projectRef = doc(db, "projects", docSnap.id);
+          await setDoc(projectRef, { votes: (data.votes || 0) + 1 }, { merge: true });
+
+          // Update user vote
+          userData.votes[docSnap.id] = true;
+          userData.count += 1;
+          userData.lastReset = now;
+          await setDoc(userDocRef, userData, { merge: true });
+
+          voteCountSpan.textContent = (data.votes || 0) + 1;
+          statusDiv.textContent = "Vote counted! ✅";
+        });
+      });
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      currentUser = user;
+      loadProjects();
+    });
+
+    loadProjects();
+  </script>
 
 </body>
 </html>

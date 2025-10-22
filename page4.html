@@ -10,7 +10,7 @@
       margin: 0;
       padding: 0;
       font-family: 'Orbitron', sans-serif;
-      background: linear-gradient(135deg, #2e026d, #4c1d95, #6d28d9);
+      background: #0a0a0a;
       color: white;
       display: flex;
       justify-content: center;
@@ -18,96 +18,169 @@
       min-height: 100vh;
     }
 
-    .container {
-      margin-top: 40px;
+    .leaderboard {
+      margin-top: 60px;
+      background: rgba(0,0,0,0.7);
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(255,255,255,0.1);
+      padding: 25px;
       width: 90%;
-      max-width: 1000px;
+      max-width: 900px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.3);
     }
 
     h1 {
       text-align: center;
-      color: #e9d5ff;
-      font-size: 32px;
-      text-shadow: 0 0 10px #c084fc, 0 0 25px #7e22ce;
-      margin-bottom: 25px;
+      font-size: 28px;
+      margin-bottom: 20px;
+      color: #fff;
     }
 
-    .project-card {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 20px;
-      box-shadow: 0 0 25px rgba(168, 85, 247, 0.3);
-      padding: 20px 25px;
-      margin-bottom: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    th {
+      color: #ccc;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    tr {
       transition: all 0.3s ease;
+      background: rgba(255,255,255,0.05);
     }
 
-    .project-card:hover {
-      background: rgba(255,255,255,0.12);
+    tr:hover {
+      background: rgba(255,255,255,0.1);
       transform: scale(1.01);
     }
 
-    .project-name {
-      font-size: 20px;
+    td:first-child {
       font-weight: bold;
-    }
-
-    .project-info {
-      font-size: 14px;
-      color: #d8b4fe;
-      text-align: right;
+      color: #fff;
     }
 
     .vote-box {
       display: flex;
+      justify-content: center;
       align-items: center;
       gap: 10px;
     }
 
-    .vote-btn {
-      padding: 6px 15px;
-      border-radius: 8px;
-      border: 1px solid white;
-      background: rgba(255,255,255,0.1);
-      color: white;
+    .arrow {
       cursor: pointer;
-      transition: all 0.2s ease;
+      font-size: 18px;
+      transition: transform 0.2s;
+      user-select: none;
     }
 
-    .vote-btn:hover {
-      background: white;
-      color: black;
-    }
+    .arrow:hover { transform: scale(1.2); }
 
-    .vote-count {
-      min-width: 25px;
-      text-align: center;
-      font-weight: bold;
-    }
+    .arrow.up { color: #22c55e; }
+    .arrow.down { color: #ef4444; }
 
     .status {
       text-align: center;
       margin-top: 15px;
       font-size: 14px;
-      opacity: 0.8;
-      color: #fff;
+      color: #22c55e;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
+  <div class="leaderboard">
     <h1>Yappers Per Project</h1>
-    <div id="projects"></div>
+    <table id="leaderboard">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Name</th>
+          <th>Yappers Count</th>
+          <th>Rewards</th>
+          <th>Categories</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-project="sentient">
+          <td>1</td>
+          <td>Sentient</td>
+          <td>
+            <div class="vote-box">
+              <span class="arrow up">▲</span>
+              <span class="count">0</span>
+            </div>
+          </td>
+          <td>Ask team</td>
+          <td>AI</td>
+        </tr>
+        <tr data-project="idos">
+          <td>2</td>
+          <td>idOS</td>
+          <td>
+            <div class="vote-box">
+              <span class="arrow up">▲</span>
+              <span class="count">0</span>
+            </div>
+          </td>
+          <td>0.8% supply</td>
+          <td>Security</td>
+        </tr>
+        <tr data-project="brevis">
+          <td>3</td>
+          <td>Brevis</td>
+          <td>
+            <div class="vote-box">
+              <span class="arrow up">▲</span>
+              <span class="count">0</span>
+            </div>
+          </td>
+          <td>Unknown</td>
+          <td>ZK</td>
+        </tr>
+        <tr data-project="zama">
+          <td>4</td>
+          <td>Zama</td>
+          <td>
+            <div class="vote-box">
+              <span class="arrow up">▲</span>
+              <span class="count">0</span>
+            </div>
+          </td>
+          <td>$53k + NFTs</td>
+          <td>FHE</td>
+        </tr>
+        <tr data-project="rainbow">
+          <td>5</td>
+          <td>Rainbow</td>
+          <td>
+            <div class="vote-box">
+              <span class="arrow up">▲</span>
+              <span class="count">0</span>
+            </div>
+          </td>
+          <td>idk lil bro</td>
+          <td>Wallet</td>
+        </tr>
+      </tbody>
+    </table>
     <div class="status" id="status"></div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-    import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
@@ -123,88 +196,67 @@
     const db = getFirestore(app);
 
     let currentUser = null;
-    const projectsDiv = document.getElementById("projects");
-    const statusDiv = document.getElementById("status");
+    const status = document.getElementById("status");
 
-    onAuthStateChanged(auth, user => {
+    onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        statusDiv.textContent = "Please login to vote!";
+        status.textContent = "Please login first";
         return;
       }
       currentUser = user;
-      loadProjects();
+
+      // Load votes for this month
+      const votesDoc = await getDoc(doc(db, "votes", currentUser.uid));
+      const userVotes = votesDoc.exists() ? votesDoc.data().projects || [] : [];
+
+      document.querySelectorAll(".vote-box .arrow.up").forEach((arrow) => {
+        const tr = arrow.closest("tr");
+        const project = tr.dataset.project;
+        if (userVotes.includes(project)) arrow.style.pointerEvents = "none";
+      });
+
+      // Load total votes for projects
+      const leaderboardDoc = await getDoc(doc(db, "projects", "monthly"));
+      const projectsData = leaderboardDoc.exists() ? leaderboardDoc.data() : {};
+
+      document.querySelectorAll("tr[data-project]").forEach((tr) => {
+        const project = tr.dataset.project;
+        const countSpan = tr.querySelector(".count");
+        countSpan.textContent = projectsData[project] || 0;
+      });
     });
 
-    async function loadProjects() {
-      const projectsQuery = query(collection(db, "projects"), orderBy("votes", "desc"));
-      const snapshot = await getDocs(projectsQuery);
+    document.querySelectorAll(".vote-box .arrow.up").forEach((arrow) => {
+      arrow.addEventListener("click", async () => {
+        if (!currentUser) return;
 
-      projectsDiv.innerHTML = ""; // clear previous cards
+        const tr = arrow.closest("tr");
+        const project = tr.dataset.project;
 
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        const card = document.createElement('div');
-        card.classList.add('project-card');
-        card.dataset.id = docSnap.id;
+        const votesRef = doc(db, "votes", currentUser.uid);
+        const userVotesSnap = await getDoc(votesRef);
+        let userVotes = userVotesSnap.exists() ? userVotesSnap.data().projects || [] : [];
 
-        card.innerHTML = `
-          <div>
-            <div class="project-name">${data.name}</div>
-            <div class="project-info">Reward: ${data.reward}<br>Category: ${data.category}</div>
-          </div>
-          <div class="vote-box">
-            <button class="vote-btn">Vote</button>
-            <span class="vote-count">${data.votes || 0}</span>
-          </div>
-        `;
-        projectsDiv.appendChild(card);
+        if (userVotes.includes(project) || userVotes.length >= 5) {
+          status.textContent = "Max votes reached or already voted for this project";
+          return;
+        }
 
-        const voteBtn = card.querySelector('.vote-btn');
-        const voteCountSpan = card.querySelector('.vote-count');
+        userVotes.push(project);
+        await setDoc(votesRef, { projects: userVotes }, { merge: true });
 
-        voteBtn.addEventListener('click', async () => {
-          if (!currentUser) { statusDiv.textContent = "Please login first!"; return; }
-
-          const userDocRef = doc(db, "users", currentUser.uid);
-          const userSnap = await getDoc(userDocRef);
-          let userData = userSnap.exists() ? userSnap.data() : { votes: {}, count: 0, lastReset: new Date() };
-
-          const lastReset = userData.lastReset?.toDate ? userData.lastReset.toDate() : new Date(userData.lastReset || 0);
-          const now = new Date();
-          if (now.getMonth() !== lastReset.getMonth() || now.getFullYear() !== lastReset.getFullYear()) {
-            userData.votes = {};
-            userData.count = 0;
-            userData.lastReset = now;
-          }
-
-          if (userData.votes[docSnap.id]) {
-            statusDiv.textContent = "You already voted this project!";
-            return;
-          }
-
-          if (userData.count >= 5) {
-            statusDiv.textContent = "You reached maximum votes this month!";
-            return;
-          }
-
-          // Increment project votes
-          const projectRef = doc(db, "projects", docSnap.id);
-          await setDoc(projectRef, { votes: (data.votes || 0) + 1 }, { merge: true });
-
-          // Update user voting data
-          userData.votes[docSnap.id] = true;
-          userData.count += 1;
-          userData.lastReset = now;
-          await setDoc(userDocRef, userData, { merge: true });
-
-          voteCountSpan.textContent = (data.votes || 0) + 1;
-          statusDiv.textContent = "Vote counted! ✅";
-
-          // Reload projects sorted by votes
-          loadProjects();
+        // Update project vote count
+        const projectsRef = doc(db, "projects", "monthly");
+        await updateDoc(projectsRef, { [project]: (projectsRef[project] || 0) + 1 }).catch(async ()=>{
+          // If field doesn't exist, initialize
+          await setDoc(projectsRef, { [project]: 1 }, { merge: true });
         });
+
+        tr.querySelector(".count").textContent = parseInt(tr.querySelector(".count").textContent) + 1;
+        arrow.style.pointerEvents = "none";
+        status.textContent = "Vote counted!";
       });
-    }
+    });
   </script>
 
 </body>

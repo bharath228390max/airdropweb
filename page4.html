@@ -10,7 +10,7 @@
     margin: 0;
     padding: 0;
     font-family: 'Orbitron', sans-serif;
-    background: linear-gradient(-45deg,#000000,#111111,#0a0a0a,#1a1a1a);
+    background-color: #000;
     color: white;
     display: flex;
     justify-content: center;
@@ -20,18 +20,19 @@
 
   .leaderboard {
     margin-top: 40px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
     width: 90%;
     max-width: 900px;
     padding: 20px;
-    backdrop-filter: blur(8px);
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(6px);
   }
 
   h1 {
     text-align: center;
     font-size: 28px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
   }
 
   table {
@@ -41,17 +42,26 @@
   }
 
   th, td {
-    padding: 6px 10px;
+    padding: 8px 10px;
     text-align: center;
     font-size: 13px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.15);
   }
 
-  th { text-transform: uppercase; letter-spacing: 1px; font-size: 14px; }
+  th {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 14px;
+  }
 
-  tr:hover { background: rgba(255,255,255,0.1); }
+  tr:hover { background: rgba(255,255,255,0.08); }
 
-  .vote-box { display: flex; justify-content: center; align-items: center; gap: 5px; }
+  .vote-box { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    gap: 5px; 
+  }
 
   .arrow {
     cursor: pointer;
@@ -66,12 +76,19 @@
   .arrow:hover { background: white; color: black; }
   .arrow.disabled { opacity: 0.5; cursor: default; }
 
+  #loading {
+    text-align: center;
+    margin-top: 100px;
+    color: #aaa;
+    font-size: 16px;
+  }
 </style>
 </head>
 <body>
-<div class="leaderboard">
+<div class="leaderboard" id="leaderboard-container">
   <h1>Yappers Per Project</h1>
-  <table id="leaderboard">
+  <div id="loading">Loading leaderboard...</div>
+  <table id="leaderboard" style="display:none;">
     <thead>
       <tr>
         <th>No.</th>
@@ -93,7 +110,6 @@ import { getFirestore, doc, setDoc, getDoc, updateDoc, increment } from "https:/
 const firebaseConfig = {
   apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
   authDomain: "rezo-chat.firebaseapp.com",
-  databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "rezo-chat",
   storageBucket: "rezo-chat.appspot.com",
   messagingSenderId: "300513819927",
@@ -115,8 +131,15 @@ const projectsData = [
 let currentUser = null;
 
 function renderTable(projects, userVotes) {
-  const tbody = document.querySelector("#leaderboard tbody");
+  const loading = document.getElementById("loading");
+  const table = document.getElementById("leaderboard");
+  const tbody = table.querySelector("tbody");
+  loading.style.display = "none";
+  table.style.display = "table";
   tbody.innerHTML = "";
+
+  projects.sort((a, b) => b.count - a.count);
+
   projects.forEach((proj, index) => {
     const tr = document.createElement("tr");
 
@@ -162,12 +185,11 @@ function renderTable(projects, userVotes) {
 async function init() {
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
-      alert("Please login first.");
+      window.location.href = "index.html"; // redirect if not logged in
       return;
     }
     currentUser = user;
 
-    // Initialize monthly projects if missing
     const monthDocRef = doc(db, "projects", "monthly");
     const monthSnap = await getDoc(monthDocRef);
     if (!monthSnap.exists()) {
@@ -176,7 +198,6 @@ async function init() {
       await setDoc(monthDocRef, initObj);
     }
 
-    // Get votes by user
     const userDocRef = doc(db, "votes", user.uid);
     const userSnap = await getDoc(userDocRef);
     if (!userSnap.exists()) {
@@ -184,7 +205,6 @@ async function init() {
     }
     const userVotes = userSnap.exists() ? userSnap.data().projects : [];
 
-    // Load project counts
     const updatedSnap = await getDoc(monthDocRef);
     const projects = projectsData.map(p => ({
       ...p,

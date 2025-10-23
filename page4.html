@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Project Leaderboard</title>
+<title>Ultimate Leaderboard</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500&display=swap');
 
@@ -11,25 +11,26 @@
     margin: 0;
     padding: 0;
     font-family: 'Orbitron', sans-serif;
-    background-color: #0a0a0a;
+    background: #0a0a0a;
     color: #fff;
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: 100vh;
   }
 
   h1 {
-    font-size: 36px;
-    margin: 30px 0 20px 0;
+    font-size: 38px;
+    margin: 40px 0 20px 0;
     letter-spacing: 1px;
     text-align: center;
     color: #fff;
+    text-shadow: 0 0 15px rgba(0,255,255,0.3);
   }
 
   .table-container {
     width: 95%;
-    max-width: 1000px;
-    margin-bottom: 50px;
+    max-width: 1100px;
     overflow-x: auto;
   }
 
@@ -37,13 +38,17 @@
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(4px);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,255,255,0.05);
   }
 
   th, td {
-    padding: 14px 16px;
+    padding: 14px 20px;
     text-align: left;
     border-bottom: 1px solid rgba(255,255,255,0.2);
-    transition: all 0.2s ease;
   }
 
   th {
@@ -51,14 +56,33 @@
     font-size: 14px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    border-bottom: 2px solid rgba(255,255,255,0.3);
+    border-bottom: 2px solid rgba(0,255,255,0.3);
+    background: rgba(255,255,255,0.02);
   }
 
-  tr:hover td {
-    background: rgba(255,255,255,0.05);
+  tr {
+    transition: all 0.3s ease;
   }
 
-  .upvote-btn {
+  tr:hover {
+    background: rgba(0,255,255,0.05);
+  }
+
+  .project-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .project-logo {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid rgba(0,255,255,0.3);
+  }
+
+  .vote-btn {
     padding: 6px 14px;
     background: transparent;
     color: #0ff;
@@ -67,39 +91,48 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-size: 14px;
   }
 
-  .upvote-btn:hover {
+  .vote-btn:hover {
     background: #0ff;
     color: #000;
     transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(0,255,255,0.3);
   }
 
-  .upvote-btn:disabled {
+  .vote-btn:disabled {
     background: #444;
     color: #aaa;
     border-color: #555;
     cursor: default;
+    box-shadow: none;
     transform: scale(1);
   }
 
-  @media (max-width: 600px) {
-    th, td {
-      padding: 10px 8px;
-      font-size: 12px;
-    }
+  .platform-icon {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
 
+  @media (max-width: 768px) {
+    th, td {
+      padding: 10px 12px;
+      font-size: 13px;
+    }
     h1 {
       font-size: 28px;
-      margin: 20px 0 15px 0;
+      margin: 30px 0 15px 0;
     }
+    .project-logo { width: 24px; height: 24px; }
+    .platform-icon { width: 20px; height: 20px; }
   }
 </style>
 </head>
 <body>
 
-<h1>Project Leaderboard</h1>
+<h1>Ultimate Project Leaderboard</h1>
 
 <div class="table-container">
   <table id="leaderboardTable">
@@ -115,45 +148,45 @@
     <tbody>
       <tr>
         <td>1</td>
-        <td>iDOS</td>
-        <td><span class="vote-count">12</span> <button class="upvote-btn">Vote</button></td>
+        <td class="project-cell"><img class="project-logo" src="https://via.placeholder.com/32" alt="iDOS"> iDOS</td>
+        <td><span class="vote-count">12</span> <button class="vote-btn">Vote</button></td>
         <td>100 $YAP</td>
-        <td>Ethereum</td>
+        <td><img class="platform-icon" src="https://via.placeholder.com/24" alt="Ethereum"> Ethereum</td>
       </tr>
       <tr>
         <td>2</td>
-        <td>Sentient</td>
-        <td><span class="vote-count">7</span> <button class="upvote-btn">Vote</button></td>
+        <td class="project-cell"><img class="project-logo" src="https://via.placeholder.com/32" alt="Sentient"> Sentient</td>
+        <td><span class="vote-count">7</span> <button class="vote-btn">Vote</button></td>
         <td>50 $YAP</td>
-        <td>Polygon</td>
+        <td><img class="platform-icon" src="https://via.placeholder.com/24" alt="Polygon"> Polygon</td>
       </tr>
       <tr>
         <td>3</td>
-        <td>RezoX</td>
-        <td><span class="vote-count">18</span> <button class="upvote-btn">Vote</button></td>
+        <td class="project-cell"><img class="project-logo" src="https://via.placeholder.com/32" alt="RezoX"> RezoX</td>
+        <td><span class="vote-count">18</span> <button class="vote-btn">Vote</button></td>
         <td>150 $YAP</td>
-        <td>Solana</td>
+        <td><img class="platform-icon" src="https://via.placeholder.com/24" alt="Solana"> Solana</td>
       </tr>
       <tr>
         <td>4</td>
-        <td>Momentum</td>
-        <td><span class="vote-count">4</span> <button class="upvote-btn">Vote</button></td>
+        <td class="project-cell"><img class="project-logo" src="https://via.placeholder.com/32" alt="Momentum"> Momentum</td>
+        <td><span class="vote-count">4</span> <button class="vote-btn">Vote</button></td>
         <td>25 $YAP</td>
-        <td>Ethereum</td>
+        <td><img class="platform-icon" src="https://via.placeholder.com/24" alt="Ethereum"> Ethereum</td>
       </tr>
       <tr>
         <td>5</td>
-        <td>KloutGG</td>
-        <td><span class="vote-count">10</span> <button class="upvote-btn">Vote</button></td>
+        <td class="project-cell"><img class="project-logo" src="https://via.placeholder.com/32" alt="KloutGG"> KloutGG</td>
+        <td><span class="vote-count">10</span> <button class="vote-btn">Vote</button></td>
         <td>75 $YAP</td>
-        <td>Polygon</td>
+        <td><img class="platform-icon" src="https://via.placeholder.com/24" alt="Polygon"> Polygon</td>
       </tr>
       <tr>
         <td>6</td>
-        <td>Firestarter</td>
-        <td><span class="vote-count">3</span> <button class="upvote-btn">Vote</button></td>
+        <td class="project-cell"><img class="project-logo" src="https://via.placeholder.com/32" alt="Firestarter"> Firestarter</td>
+        <td><span class="vote-count">3</span> <button class="vote-btn">Vote</button></td>
         <td>20 $YAP</td>
-        <td>Solana</td>
+        <td><img class="platform-icon" src="https://via.placeholder.com/24" alt="Solana"> Solana</td>
       </tr>
     </tbody>
   </table>
@@ -161,9 +194,8 @@
 
 <script>
   const table = document.getElementById('leaderboardTable');
-
   table.addEventListener('click', (e) => {
-    if(e.target.classList.contains('upvote-btn')) {
+    if(e.target.classList.contains('vote-btn')) {
       const row = e.target.closest('tr');
       const voteSpan = row.querySelector('.vote-count');
       voteSpan.textContent = parseInt(voteSpan.textContent) + 1;

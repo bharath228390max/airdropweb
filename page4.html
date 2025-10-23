@@ -5,150 +5,193 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Community Leaderboard</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500&display=swap');
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Orbitron',sans-serif;background:hsl(240,10%,4%);color:#fff;padding:2rem 1rem;min-height:100vh;}
-  h1{text-align:center;font-size:3rem;margin-bottom:0.5rem;background:linear-gradient(135deg,hsl(180,100%,50%),hsl(240,100%,60%));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-  .subtitle{text-align:center;color:hsl(240,5%,65%);margin-bottom:2rem;}
-  .table-container{max-width:1000px;margin:0 auto;background:hsl(240,8%,8%);border-radius:.75rem;border:1px solid hsl(240,8%,15%);backdrop-filter:blur(10px);overflow-x:auto;}
-  table{width:100%;border-collapse:collapse;}
-  thead th{text-align:left;padding:1rem 1.5rem;font-size:.75rem;font-weight:600;text-transform:uppercase;color:hsl(240,5%,65%);position:sticky;top:0;background:hsl(240,8%,8%);border-bottom:1px solid hsl(240,8%,15%);}
-  tbody tr{transition:all .3s ease;border-bottom:1px solid rgba(255,255,255,.05);}
-  tbody tr:hover{background: rgba(0,255,255,.05);}
-  td{padding:1rem 1.5rem;vertical-align:middle;}
-  .rank-badge{display:inline-flex;align-items:center;justify-content:center;width:2.5rem;height:2.5rem;border-radius:50%;font-weight:700;font-size:1.125rem;}
-  .rank-1{background:linear-gradient(135deg,hsl(180,100%,50%),hsl(240,100%,60%));animation:glowPulse 2s infinite;color:hsl(240,10%,3.9%);}
-  .rank-2{background:linear-gradient(135deg,hsl(280,80%,60%,.5),hsl(320,85%,60%,.5));color:#fff;border:1px solid rgba(255,255,255,.2);}
-  .rank-3{background:hsl(240,8%,15%);color:hsl(240,5%,65%);border:1px solid rgba(255,255,255,.2);}
-  .rank-other{color:hsl(240,5%,65%);font-weight:500;}
-  .project-name{font-weight:600;font-size:1.125rem;transition:color .2s;}
-  tbody tr:hover .project-name{color:hsl(180,100%,50%);}
-  .votes{font-weight:700;font-size:1.5rem;background:linear-gradient(135deg,hsl(180,100%,50%),hsl(240,100%,60%));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-  .rewards{font-weight:500;color:hsl(280,80%,60%);}
-  .platform-badge{display:inline-flex;padding:.25rem .75rem;border-radius:9999px;font-weight:500;font-size:.75rem;border:1px solid;}
-  .ethereum{background:linear-gradient(to right,hsl(280,80%,50%,.2),hsl(280,80%,60%,.2));border-color:hsl(280,80%,50%,.3);color:hsl(280,80%,70%);}
-  .polygon{background:linear-gradient(to right,hsl(270,80%,50%,.2),hsl(270,80%,60%,.2));border-color:hsl(270,80%,50%,.3);color:hsl(270,80%,70%);}
-  .solana{background:linear-gradient(to right,hsl(180,100%,40%,.2),hsl(180,100%,50%,.2));border-color:hsl(180,100%,50%,.3);color:hsl(180,100%,70%);}
-  .vote-btn{padding:.5rem 1.25rem;border:none;border-radius:.5rem;background:hsl(180,100%,50%);color:hsl(240,10%,3.9%);font-weight:600;font-size:.875rem;cursor:pointer;transition:all .3s;min-width:80px;box-shadow:0 0 20px hsla(180,100%,50%,.5);}
-  .vote-btn:hover{transform:scale(1.05);box-shadow:0 0 30px hsla(180,100%,50%,.8);}
-  .vote-btn:disabled{background:hsl(240,8%,15%);color:hsl(240,5%,65%);cursor:not-allowed;box-shadow:none;border:1px solid hsl(240,8%,15%);}
-  ::-webkit-scrollbar{display:none;}
-  scrollbar-width:none;
-  @keyframes glowPulse{0%,100%{box-shadow:0 0 20px hsla(180,100%,50%,.5);}50%{box-shadow:0 0 30px hsla(180,100%,50%,.8);}}
-  @media(max-width:768px){h1{font-size:2rem} th,td{padding:.75rem .5rem;font-size:.875rem} .project-name{font-size:1rem} .votes{font-size:1.25rem}}
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #000;
+    color: #fff;
+  }
+  .container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 2rem 1rem;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #00fff7, #6a00ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  p.subtitle {
+    font-size: 1rem;
+    color: #aaa;
+  }
+  .table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+  th, td {
+    padding: 0.8rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  th {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: #bbb;
+  }
+  tbody tr:hover {
+    background: rgba(255,255,255,0.05);
+  }
+  .rank-badge {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    line-height: 2rem;
+    text-align: center;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 1rem;
+  }
+  .rank-1 { background: linear-gradient(135deg,#00fff7,#6a00ff); color: #000; }
+  .rank-2 { background: #444; color: #fff; }
+  .rank-3 { background: #333; color: #fff; }
+  .rank-other { color: #aaa; }
+  .project-name {
+    font-weight: 600;
+  }
+  .votes {
+    font-weight: bold;
+    background: linear-gradient(135deg, #00fff7, #6a00ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .rewards { color: #ff80ff; font-weight: 500; }
+  .platform-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .vote-btn {
+    padding: 0.4rem 1rem;
+    background: #00fff7;
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .vote-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #00fff7;
+  }
+  .vote-btn:disabled {
+    background: #222;
+    color: #555;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: scale(1);
+  }
+  @media (max-width: 768px) {
+    h1 { font-size: 2rem; }
+    table { min-width: 500px; }
+  }
 </style>
-
-<script src="https://www.gstatic.com/firebasejs/9.30.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.30.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.30.0/firebase-firestore-compat.js"></script>
-
+</head>
 <body>
-<h1>Community Leaderboard</h1>
-<p class="subtitle">Vote for your favorite projects (max 5 votes per user, reset monthly)</p>
 
-<div class="table-container">
-  <table>
-    <thead>
-      <tr>
-        <th>Rank</th>
-        <th>Project</th>
-        <th>Votes</th>
-        <th>Rewards</th>
-        <th>Platform</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="tableBody"></tbody>
-  </table>
+<div class="container">
+  <div class="header">
+    <h1>Community Leaderboard</h1>
+    <p class="subtitle">Vote for your favorite projects (max 5 votes per user, reset monthly)</p>
+  </div>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Project</th>
+          <th>Votes</th>
+          <th>Rewards</th>
+          <th>Platform</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboardBody">
+        <!-- Rows populated by JS -->
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
-  authDomain: "rezo-chat.firebaseapp.com",
-  databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "rezo-chat",
-  storageBucket: "rezo-chat.firebasestorage.app",
-  messagingSenderId: "300513819927",
-  appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+  const projects = [
+    {id:"iDOS", name:"iDOS", votes:12, rewards:"100 $YAP", platform:"Ethereum"},
+    {id:"Sentient", name:"Sentient", votes:7, rewards:"50 $YAP", platform:"Polygon"},
+    {id:"RezoX", name:"RezoX", votes:18, rewards:"150 $YAP", platform:"Solana"},
+    {id:"Momentum", name:"Momentum", votes:4, rewards:"25 $YAP", platform:"Ethereum"},
+    {id:"KloutGG", name:"KloutGG", votes:10, rewards:"75 $YAP", platform:"Polygon"},
+    {id:"Firestarter", name:"Firestarter", votes:3, rewards:"20 $YAP", platform:"Solana"}
+  ];
 
-auth.onAuthStateChanged(async user=>{
-  if(!user) window.location.href="index.html";
-  else await loadLeaderboard(user.uid);
-});
+  // Votes tracking in localStorage
+  let userVotes = JSON.parse(localStorage.getItem('userVotes')) || {votes:{}, count:0, reset: Date.now()};
 
-async function loadLeaderboard(uid){
-  const tableBody=document.getElementById("tableBody");
-  const snapshot=await db.collection("projects").get();
-  let projects=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
-
-  if(projects.length===0){
-    tableBody.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:2rem;">No projects found. Please add projects in Firestore.</td></tr>`;
-    return;
+  // Reset votes after 30 days
+  if(Date.now() - userVotes.reset > 30*24*60*60*1000) {
+    userVotes = {votes:{}, count:0, reset: Date.now()};
+    localStorage.setItem('userVotes', JSON.stringify(userVotes));
   }
 
-  const userDoc=await db.collection("users").doc(uid).get();
-  let userVotes=userDoc.exists && userDoc.data().votes ? userDoc.data().votes : {};
-
-  function canVote(projectId){
-    const now=new Date();
-    if(Object.keys(userVotes).length>=5 && !userVotes[projectId]) return false;
-    if(userVotes[projectId]){
-      const lastVote=userVotes[projectId].toDate ? userVotes[projectId].toDate() : new Date(userVotes[projectId]);
-      if(now-lastVote<30*24*60*60*1000) return false;
-    }
-    return true;
-  }
-
-  async function vote(projectId){
-    if(!canVote(projectId)) return;
-    const projectRef=db.collection("projects").doc(projectId);
-    await db.runTransaction(async t=>{
-      const doc=await t.get(projectRef);
-      t.update(projectRef,{votes:(doc.data().votes||0)+1});
-    });
-    userVotes[projectId]=new Date();
-    await db.collection("users").doc(uid).set({votes:userVotes},{merge:true});
-    renderTable();
-  }
-
-  function getRankBadge(index){
-    if(index===0) return `<div class="rank-badge rank-1">🥇</div>`;
-    if(index===1) return `<div class="rank-badge rank-2">2</div>`;
-    if(index===2) return `<div class="rank-badge rank-3">3</div>`;
-    return `<div class="rank-badge rank-other">${index+1}</div>`;
-  }
-
-  function getPlatformClass(platform){return platform.toLowerCase();}
-
-  function renderTable(){
-    projects.sort((a,b)=>b.votes-a.votes);
-    tableBody.innerHTML=projects.map((p,i)=>`
+  function renderLeaderboard() {
+    const tbody = document.getElementById('leaderboardBody');
+    const sorted = [...projects].sort((a,b)=>b.votes-a.votes);
+    tbody.innerHTML = sorted.map((p,i)=>`
       <tr>
-        <td>${getRankBadge(i)}</td>
+        <td><span class="rank-badge ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other'}">${i+1}</span></td>
         <td><span class="project-name">${p.name}</span></td>
         <td><span class="votes">${p.votes}</span></td>
         <td><span class="rewards">${p.rewards}</span></td>
-        <td><span class="platform-badge ${getPlatformClass(p.platform)}">${p.platform}</span></td>
-        <td><button class="vote-btn" ${canVote(p.id)?'':'disabled'} onclick="vote('${p.id}')">${canVote(p.id)?'Vote':'Voted'}</button></td>
+        <td><span class="platform-badge">${p.platform}</span></td>
+        <td>
+          <button class="vote-btn" data-id="${p.id}" ${userVotes.votes[p.id]?'disabled':''}>
+            ${userVotes.votes[p.id]?'Voted':'Vote'}
+          </button>
+        </td>
       </tr>
     `).join('');
+
+    // Add click listeners
+    document.querySelectorAll('.vote-btn').forEach(btn=>{
+      btn.onclick = ()=>{
+        const id = btn.dataset.id;
+        if(userVotes.count >= 5){ alert("Max 5 votes per month!"); return; }
+        if(userVotes.votes[id]) return;
+        const project = projects.find(p=>p.id===id);
+        project.votes++;
+        userVotes.votes[id]=true;
+        userVotes.count++;
+        localStorage.setItem('userVotes', JSON.stringify(userVotes));
+        renderLeaderboard();
+      }
+    });
   }
 
-  renderTable();
-
-  db.collection("projects").onSnapshot(snapshot=>{
-    snapshot.docChanges().forEach(change=>{
-      const index=projects.findIndex(p=>p.id===change.doc.id);
-      if(index>=0) projects[index]={id:change.doc.id,...change.doc.data()};
-    });
-    renderTable();
-  });
-}
+  renderLeaderboard();
 </script>
+
 </body>
 </html>

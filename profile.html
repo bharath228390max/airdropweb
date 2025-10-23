@@ -128,7 +128,6 @@
     const avatarDiv = document.getElementById("avatar");
     const saveBtn = document.getElementById("saveBtn");
     const status = document.getElementById("status");
-
     let currentUser = null;
 
     const colors = [
@@ -155,19 +154,27 @@
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        status.textContent = "Please login to view your profile.";
+        window.location.href = "index.html";
         return;
       }
 
       currentUser = user;
       const docRef = doc(db, "profiles", user.uid);
       const docSnap = await getDoc(docRef);
+
       if (docSnap.exists()) {
         const data = docSnap.data();
         document.getElementById("username").value = data.username || "";
         document.getElementById("link1").value = data.link1 || "";
         document.getElementById("link2").value = data.link2 || "";
         updateAvatar(data.username);
+      } else {
+        // Create empty profile if none exists
+        await setDoc(docRef, {
+          username: "",
+          link1: "",
+          link2: ""
+        });
       }
     });
 
@@ -177,17 +184,27 @@
         return;
       }
 
+      const username = document.getElementById("username").value.trim();
+      const link1 = document.getElementById("link1").value.trim();
+      const link2 = document.getElementById("link2").value.trim();
+
+      if (!username) {
+        status.textContent = "Please enter your name.";
+        return;
+      }
+
       status.textContent = "Saving...";
-      const username = document.getElementById("username").value;
-      const link1 = document.getElementById("link1").value;
-      const link2 = document.getElementById("link2").value;
 
-      await setDoc(doc(db, "profiles", currentUser.uid), {
-        username, link1, link2
-      }, { merge: true });
+      try {
+        await setDoc(doc(db, "profiles", currentUser.uid), {
+          username, link1, link2
+        }, { merge: true });
 
-      updateAvatar(username);
-      status.textContent = "✅ Saved successfully!";
+        updateAvatar(username);
+        status.textContent = "✅ Profile saved successfully!";
+      } catch (err) {
+        status.textContent = "❌ Error saving: " + err.message;
+      }
     });
   </script>
 </body>

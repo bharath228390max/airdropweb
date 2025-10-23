@@ -66,6 +66,10 @@
       cursor: pointer;
       color: #000;
       font-weight: bold;
+      transition: 0.2s ease;
+    }
+    button:hover {
+      transform: scale(1.05);
     }
   </style>
 </head>
@@ -80,11 +84,14 @@
   </div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+    import { 
+      getFirestore, collection, addDoc, onSnapshot, 
+      query, orderBy, serverTimestamp, getDoc, doc 
+    } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
-    // ✅ Use same Firebase config as your other pages
+    // ✅ Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
       authDomain: "rezo-chat.firebaseapp.com",
@@ -106,13 +113,13 @@
     // 🔐 Check login state
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        window.location.href = "index.html"; // not logged in
+        window.location.href = "index.html"; // redirect if not logged in
         return;
       }
 
       const uid = user.uid;
-      let username = "Unknown";
-      let avatarUrl = "https://i.imgur.com/0y0y0y0.png";
+      let username = "User";
+      let avatarUrl = "https://i.imgur.com/dR5VqQw.png"; // default avatar
 
       try {
         const docRef = doc(db, "profiles", uid);
@@ -123,10 +130,10 @@
           if (data.avatarUrl) avatarUrl = data.avatarUrl;
         }
       } catch (e) {
-        console.error("Error fetching profile:", e);
+        console.error("Error loading profile:", e);
       }
 
-      // Real-time chat
+      // 📡 Real-time chat messages
       const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
       onSnapshot(q, (snapshot) => {
         messagesDiv.innerHTML = "";
@@ -139,22 +146,31 @@
             <div><strong>${msg.username}:</strong> ${msg.text}</div>
           `;
           messagesDiv.appendChild(div);
-          messagesDiv.scrollTop = messagesDiv.scrollHeight;
         });
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
       });
 
-      // Send new message
+      // 📨 Send message
       sendBtn.addEventListener("click", async () => {
         const text = messageInput.value.trim();
-        if (text === "") return;
-        await addDoc(collection(db, "messages"), {
-          uid,
-          username,
-          avatarUrl,
-          text,
-          timestamp: serverTimestamp()
-        });
-        messageInput.value = "";
+        if (!text) return;
+        try {
+          await addDoc(collection(db, "messages"), {
+            uid,
+            username,
+            avatarUrl,
+            text,
+            timestamp: serverTimestamp()
+          });
+          messageInput.value = "";
+        } catch (e) {
+          console.error("Send error:", e);
+        }
+      });
+
+      // Enter key sends too
+      messageInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendBtn.click();
       });
     });
   </script>

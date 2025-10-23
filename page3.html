@@ -5,49 +5,102 @@
   <title>Rezo – Make Connections</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+    /* Full page background image */
     body {
       margin: 0;
       padding: 0;
-      background-color: #000;
-      color: white;
       font-family: 'Orbitron', sans-serif;
+      background: url('./background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      height: 100vh;
+      overflow: hidden;
     }
+
+    /* Chat container */
     .chat-container {
       width: 90%;
       max-width: 800px;
       margin: 50px auto;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.6); /* dark overlay for readability */
       border-radius: 15px;
       padding: 20px;
-    }
-    .messages {
-      height: 400px;
-      overflow-y: auto;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      padding-bottom: 10px;
-    }
-    .message {
       display: flex;
-      align-items: center;
-      margin: 10px 0;
+      flex-direction: column;
       gap: 10px;
     }
+
+    .chat-container h2 {
+      text-align: center;
+      color: #00ffcc;
+      margin-bottom: 10px;
+    }
+
+    /* Messages area */
+    .messages {
+      flex: 1;
+      height: 400px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding-bottom: 10px;
+    }
+
+    .message {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
     .message img {
       width: 40px;
       height: 40px;
       border-radius: 50%;
       border: 1px solid #666;
     }
-    .message strong {
-      color: #00ffcc;
-      margin-right: 5px;
+
+    .bubble-container {
+      display: flex;
+      flex-direction: column;
     }
+
+    .username {
+      font-size: 0.75em;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 3px;
+    }
+
+    .bubble {
+      max-width: 70%;
+      padding: 10px 15px;
+      border-radius: 15px;
+      background-color: rgba(0, 255, 204, 0.1);
+      color: #00ffcc;
+      word-wrap: break-word;
+    }
+
+    .my-message {
+      flex-direction: row-reverse;
+    }
+
+    .my-message .bubble {
+      background-color: #00ffcc;
+      color: #000;
+      border-bottom-right-radius: 0;
+    }
+
+    .my-message .username {
+      text-align: right;
+    }
+
     .input-area {
       display: flex;
       margin-top: 10px;
       gap: 10px;
     }
+
     input {
       flex: 1;
       padding: 10px;
@@ -56,7 +109,9 @@
       background: rgba(255,255,255,0.1);
       color: white;
       font-family: 'Orbitron', sans-serif;
+      outline: none;
     }
+
     button {
       padding: 10px 20px;
       border: none;
@@ -68,9 +123,26 @@
       font-weight: bold;
       transition: 0.2s ease;
     }
+
     button:hover {
       transform: scale(1.05);
     }
+
+    /* Scrollbar styling */
+    .messages::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .messages::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.05);
+      border-radius: 4px;
+    }
+
+    .messages::-webkit-scrollbar-thumb {
+      background: rgba(0,255,204,0.3);
+      border-radius: 4px;
+    }
+
   </style>
 </head>
 <body>
@@ -91,7 +163,6 @@
       query, orderBy, serverTimestamp, getDoc, doc 
     } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
-    // ✅ Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
       authDomain: "rezo-chat.firebaseapp.com",
@@ -110,16 +181,15 @@
     const messageInput = document.getElementById("messageInput");
     const sendBtn = document.getElementById("sendBtn");
 
-    // 🔐 Check login state
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        window.location.href = "index.html"; // redirect if not logged in
+        window.location.href = "index.html";
         return;
       }
 
       const uid = user.uid;
       let username = "User";
-      let avatarUrl = "https://i.imgur.com/dR5VqQw.png"; // default avatar
+      let avatarUrl = "https://i.imgur.com/dR5VqQw.png";
 
       try {
         const docRef = doc(db, "profiles", uid);
@@ -133,7 +203,6 @@
         console.error("Error loading profile:", e);
       }
 
-      // 📡 Real-time chat messages
       const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
       onSnapshot(q, (snapshot) => {
         messagesDiv.innerHTML = "";
@@ -141,16 +210,19 @@
           const msg = doc.data();
           const div = document.createElement("div");
           div.className = "message";
+          if (msg.uid === uid) div.classList.add("my-message");
           div.innerHTML = `
             <img src="${msg.avatarUrl}" alt="pfp">
-            <div><strong>${msg.username}:</strong> ${msg.text}</div>
+            <div class="bubble-container">
+              <div class="username">${msg.username}</div>
+              <div class="bubble">${msg.text}</div>
+            </div>
           `;
           messagesDiv.appendChild(div);
         });
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
       });
 
-      // 📨 Send message
       sendBtn.addEventListener("click", async () => {
         const text = messageInput.value.trim();
         if (!text) return;
@@ -168,7 +240,6 @@
         }
       });
 
-      // Enter key sends too
       messageInput.addEventListener("keypress", (e) => {
         if (e.key === "Enter") sendBtn.click();
       });

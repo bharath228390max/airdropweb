@@ -107,6 +107,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebas
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
   authDomain: "rezo-chat.firebaseapp.com",
@@ -130,6 +131,7 @@ const projectsData = [
 
 let currentUser = null;
 
+// Render the leaderboard table
 function renderTable(projects, userVotes) {
   const loading = document.getElementById("loading");
   const table = document.getElementById("leaderboard");
@@ -138,6 +140,7 @@ function renderTable(projects, userVotes) {
   table.style.display = "table";
   tbody.innerHTML = "";
 
+  // Sort by count descending
   projects.sort((a, b) => b.count - a.count);
 
   projects.forEach((proj, index) => {
@@ -145,6 +148,7 @@ function renderTable(projects, userVotes) {
 
     const tdNo = document.createElement("td"); tdNo.textContent = index + 1;
     const tdName = document.createElement("td"); tdName.textContent = proj.name;
+
     const tdCount = document.createElement("td");
     const voteBox = document.createElement("div"); voteBox.className = "vote-box";
 
@@ -156,6 +160,7 @@ function renderTable(projects, userVotes) {
 
     up.addEventListener("click", async () => {
       if (!currentUser || userVotes.includes(proj.name)) return;
+
       const monthDoc = doc(db, "projects", "monthly");
       await updateDoc(monthDoc, { [proj.name]: increment(1) });
 
@@ -182,14 +187,17 @@ function renderTable(projects, userVotes) {
   });
 }
 
+// Initialize page
 async function init() {
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
-      window.location.href = "index.html"; // redirect if not logged in
+      // Redirect to login if not authenticated
+      window.location.href = "index.html";
       return;
     }
     currentUser = user;
 
+    // Initialize monthly counts if missing
     const monthDocRef = doc(db, "projects", "monthly");
     const monthSnap = await getDoc(monthDocRef);
     if (!monthSnap.exists()) {
@@ -198,13 +206,13 @@ async function init() {
       await setDoc(monthDocRef, initObj);
     }
 
+    // Fetch user's votes
     const userDocRef = doc(db, "votes", user.uid);
     const userSnap = await getDoc(userDocRef);
-    if (!userSnap.exists()) {
-      await setDoc(userDocRef, { projects: [] });
-    }
+    if (!userSnap.exists()) await setDoc(userDocRef, { projects: [] });
     const userVotes = userSnap.exists() ? userSnap.data().projects : [];
 
+    // Load project counts
     const updatedSnap = await getDoc(monthDocRef);
     const projects = projectsData.map(p => ({
       ...p,

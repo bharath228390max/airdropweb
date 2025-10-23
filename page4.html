@@ -10,7 +10,7 @@
   body{font-family:'Orbitron',sans-serif;background:hsl(240,10%,4%);color:#fff;padding:2rem 1rem;min-height:100vh;}
   h1{text-align:center;font-size:3rem;margin-bottom:0.5rem;background:linear-gradient(135deg,hsl(180,100%,50%),hsl(240,100%,60%));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
   .subtitle{text-align:center;color:hsl(240,5%,65%);margin-bottom:2rem;}
-  .table-container{max-width:1000px;margin:0 auto;background:hsl(240,8%,8%);border-radius:.75rem;border:1px solid hsl(240,8%,15%);backdrop-filter:blur(10px);overflow:hidden;}
+  .table-container{max-width:1000px;margin:0 auto;background:hsl(240,8%,8%);border-radius:.75rem;border:1px solid hsl(240,8%,15%);backdrop-filter:blur(10px);overflow-x:auto;}
   table{width:100%;border-collapse:collapse;}
   thead th{text-align:left;padding:1rem 1.5rem;font-size:.75rem;font-weight:600;text-transform:uppercase;color:hsl(240,5%,65%);position:sticky;top:0;background:hsl(240,8%,8%);border-bottom:1px solid hsl(240,8%,15%);}
   tbody tr{transition:all .3s ease;border-bottom:1px solid rgba(255,255,255,.05);}
@@ -38,7 +38,6 @@
   @media(max-width:768px){h1{font-size:2rem} th,td{padding:.75rem .5rem;font-size:.875rem} .project-name{font-size:1rem} .votes{font-size:1.25rem}}
 </style>
 
-<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.30.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.30.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.30.0/firebase-firestore-compat.js"></script>
@@ -64,91 +63,92 @@
 </div>
 
 <script>
-  // Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
-    authDomain: "rezo-chat.firebaseapp.com",
-    databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "rezo-chat",
-    storageBucket: "rezo-chat.firebasestorage.app",
-    messagingSenderId: "300513819927",
-    appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+const firebaseConfig = {
+  apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
+  authDomain: "rezo-chat.firebaseapp.com",
+  databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "rezo-chat",
+  storageBucket: "rezo-chat.firebasestorage.app",
+  messagingSenderId: "300513819927",
+  appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-  // Redirect to index.html if not logged in
-  auth.onAuthStateChanged(async user => {
-    if (!user) window.location.href = "index.html";
-    else await loadLeaderboard(user.uid);
-  });
+auth.onAuthStateChanged(async user=>{
+  if(!user) window.location.href="index.html";
+  else await loadLeaderboard(user.uid);
+});
 
-  async function loadLeaderboard(uid){
-    const tableBody = document.getElementById("tableBody");
-    const projectsSnapshot = await db.collection("projects").get();
-    let projects = projectsSnapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
+async function loadLeaderboard(uid){
+  const tableBody=document.getElementById("tableBody");
+  const snapshot=await db.collection("projects").get();
+  let projects=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
 
-    const userDoc = await db.collection("users").doc(uid).get();
-    let userVotes = userDoc.exists && userDoc.data().votes ? userDoc.data().votes : {};
-
-    function canVote(projectId){
-      const now = new Date();
-      if(Object.keys(userVotes).length >= 5 && !userVotes[projectId]) return false;
-      if(userVotes[projectId]){
-        const lastVote = userVotes[projectId].toDate ? userVotes[projectId].toDate() : new Date(userVotes[projectId]);
-        if(now - lastVote < 30*24*60*60*1000) return false;
-      }
-      return true;
-    }
-
-    async function vote(projectId){
-      if(!canVote(projectId)) return;
-      const projectRef = db.collection("projects").doc(projectId);
-      await db.runTransaction(async t=>{
-        const doc = await t.get(projectRef);
-        t.update(projectRef,{votes:(doc.data().votes||0)+1});
-      });
-      userVotes[projectId] = new Date();
-      await db.collection("users").doc(uid).set({votes:userVotes},{merge:true});
-      renderTable();
-    }
-
-    function getRankBadge(index){
-      if(index===0) return `<div class="rank-badge rank-1">🥇</div>`;
-      if(index===1) return `<div class="rank-badge rank-2">2</div>`;
-      if(index===2) return `<div class="rank-badge rank-3">3</div>`;
-      return `<div class="rank-badge rank-other">${index+1}</div>`;
-    }
-
-    function getPlatformClass(platform){return platform.toLowerCase();}
-
-    function renderTable(){
-      projects.sort((a,b)=>b.votes-a.votes);
-      tableBody.innerHTML = projects.map((p,i)=>`
-        <tr>
-          <td>${getRankBadge(i)}</td>
-          <td><span class="project-name">${p.name}</span></td>
-          <td><span class="votes">${p.votes}</span></td>
-          <td><span class="rewards">${p.rewards}</span></td>
-          <td><span class="platform-badge ${getPlatformClass(p.platform)}">${p.platform}</span></td>
-          <td><button class="vote-btn" ${canVote(p.id)?'':'disabled'} onclick="vote('${p.id}')">${canVote(p.id)?'Vote':'Voted'}</button></td>
-        </tr>
-      `).join('');
-    }
-
-    renderTable();
-
-    // Real-time updates
-    db.collection("projects").onSnapshot(snapshot=>{
-      snapshot.docChanges().forEach(change=>{
-        const index = projects.findIndex(p=>p.id===change.doc.id);
-        if(index>=0) projects[index] = {id:change.doc.id,...change.doc.data()};
-      });
-      renderTable();
-    });
+  if(projects.length===0){
+    tableBody.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:2rem;">No projects found. Please add projects in Firestore.</td></tr>`;
+    return;
   }
-</script>
 
+  const userDoc=await db.collection("users").doc(uid).get();
+  let userVotes=userDoc.exists && userDoc.data().votes ? userDoc.data().votes : {};
+
+  function canVote(projectId){
+    const now=new Date();
+    if(Object.keys(userVotes).length>=5 && !userVotes[projectId]) return false;
+    if(userVotes[projectId]){
+      const lastVote=userVotes[projectId].toDate ? userVotes[projectId].toDate() : new Date(userVotes[projectId]);
+      if(now-lastVote<30*24*60*60*1000) return false;
+    }
+    return true;
+  }
+
+  async function vote(projectId){
+    if(!canVote(projectId)) return;
+    const projectRef=db.collection("projects").doc(projectId);
+    await db.runTransaction(async t=>{
+      const doc=await t.get(projectRef);
+      t.update(projectRef,{votes:(doc.data().votes||0)+1});
+    });
+    userVotes[projectId]=new Date();
+    await db.collection("users").doc(uid).set({votes:userVotes},{merge:true});
+    renderTable();
+  }
+
+  function getRankBadge(index){
+    if(index===0) return `<div class="rank-badge rank-1">🥇</div>`;
+    if(index===1) return `<div class="rank-badge rank-2">2</div>`;
+    if(index===2) return `<div class="rank-badge rank-3">3</div>`;
+    return `<div class="rank-badge rank-other">${index+1}</div>`;
+  }
+
+  function getPlatformClass(platform){return platform.toLowerCase();}
+
+  function renderTable(){
+    projects.sort((a,b)=>b.votes-a.votes);
+    tableBody.innerHTML=projects.map((p,i)=>`
+      <tr>
+        <td>${getRankBadge(i)}</td>
+        <td><span class="project-name">${p.name}</span></td>
+        <td><span class="votes">${p.votes}</span></td>
+        <td><span class="rewards">${p.rewards}</span></td>
+        <td><span class="platform-badge ${getPlatformClass(p.platform)}">${p.platform}</span></td>
+        <td><button class="vote-btn" ${canVote(p.id)?'':'disabled'} onclick="vote('${p.id}')">${canVote(p.id)?'Vote':'Voted'}</button></td>
+      </tr>
+    `).join('');
+  }
+
+  renderTable();
+
+  db.collection("projects").onSnapshot(snapshot=>{
+    snapshot.docChanges().forEach(change=>{
+      const index=projects.findIndex(p=>p.id===change.doc.id);
+      if(index>=0) projects[index]={id:change.doc.id,...change.doc.data()};
+    });
+    renderTable();
+  });
+}
+</script>
 </body>
 </html>

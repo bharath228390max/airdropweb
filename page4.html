@@ -16,10 +16,7 @@
     margin: auto;
     padding: 2rem 1rem;
   }
-  .header {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
+  .header { text-align: center; margin-bottom: 2rem; }
   h1 {
     font-size: 3rem;
     margin-bottom: 0.5rem;
@@ -27,43 +24,13 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-  p.subtitle {
-    font-size: 1rem;
-    color: #aaa;
-  }
-  .table-container {
-    overflow-x: auto;
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.2);
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 700px;
-  }
-  th, td {
-    padding: 0.8rem 1rem;
-    text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  th {
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    color: #bbb;
-  }
-  tbody tr:hover {
-    background: rgba(255,255,255,0.05);
-  }
-  .rank-badge {
-    display: inline-block;
-    width: 2rem;
-    height: 2rem;
-    line-height: 2rem;
-    text-align: center;
-    border-radius: 50%;
-    font-weight: bold;
-    font-size: 1rem;
-  }
+  p.subtitle { font-size: 1rem; color: #aaa; }
+  .table-container { overflow-x: auto; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); }
+  table { width: 100%; border-collapse: collapse; min-width: 700px; }
+  th, td { padding: 0.8rem 1rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  th { font-size: 0.85rem; text-transform: uppercase; color: #bbb; }
+  tbody tr:hover { background: rgba(255,255,255,0.05); }
+  .rank-badge { display: inline-block; width: 2rem; height: 2rem; line-height: 2rem; text-align: center; border-radius: 50%; font-weight: bold; font-size: 1rem; }
   .rank-1 { background: linear-gradient(135deg,#00fff7,#6a00ff); color: #000; }
   .rank-2 { background: #444; color: #fff; }
   .rank-3 { background: #333; color: #fff; }
@@ -84,6 +51,7 @@
     <h1>Community Leaderboard</h1>
     <p class="subtitle">Vote for your favorite projects (max 5 votes per user, reset monthly)</p>
   </div>
+
   <div class="table-container">
     <table>
       <thead>
@@ -101,13 +69,13 @@
   </div>
 </div>
 
-<!-- Firebase SDK -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <script>
-  // Firebase config (your project)
+  // Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
     authDomain: "rezo-chat.firebaseapp.com",
@@ -122,12 +90,13 @@
   const auth = firebase.auth();
 
   // Redirect if not logged in
-  auth.onAuthStateChanged(user => {
-    if(!user) window.location.href = "index.html"; // login page
+  auth.onAuthStateChanged(user=>{
+    if(!user) window.location.href="index.html";
+    else renderLeaderboard(user.uid);
   });
 
-  // Define projects (can be updated in database later)
-  const projectList = [
+  // Initialize projects if not exist
+  const projects = [
     {id:"iDOS", name:"iDOS", rewards:"100 $YAP", platform:"Ethereum"},
     {id:"Sentient", name:"Sentient", rewards:"50 $YAP", platform:"Polygon"},
     {id:"RezoX", name:"RezoX", rewards:"150 $YAP", platform:"Solana"},
@@ -136,66 +105,55 @@
     {id:"Firestarter", name:"Firestarter", rewards:"20 $YAP", platform:"Solana"}
   ];
 
-  // Initialize votes in database if not exist
-  projectList.forEach(p => {
-    db.ref('projects/'+p.id).once('value').then(snapshot => {
-      if(!snapshot.exists()){
-        db.ref('projects/'+p.id).set({votes:0, name:p.name, rewards:p.rewards, platform:p.platform});
-      }
+  projects.forEach(p=>{
+    db.ref('projects/'+p.id).once('value').then(snap=>{
+      if(!snap.exists()) db.ref('projects/'+p.id).set({votes:0,name:p.name,rewards:p.rewards,platform:p.platform});
     });
   });
 
-  // Track user votes
-  let userVotes = {};
-  const userId = firebase.auth().currentUser?.uid;
-  if(localStorage.getItem('userVotes')){
-    const data = JSON.parse(localStorage.getItem('userVotes'));
-    // Reset after 30 days
-    if(Date.now() - data.reset > 30*24*60*60*1000){
-      userVotes = {};
-      localStorage.setItem('userVotes', JSON.stringify({votes:{}, reset:Date.now(), count:0}));
-    } else {
-      userVotes = data.votes;
-    }
-  }
+  // Render leaderboard
+  function renderLeaderboard(userId){
+    db.ref('projects').on('value', snap=>{
+      const data = snap.val();
+      const tbody = document.getElementById('leaderboardBody');
+      const sorted = Object.entries(data).sort((a,b)=>b[1].votes - a[1].votes);
 
-  function renderLeaderboard(data){
-    const tbody = document.getElementById('leaderboardBody');
-    const sorted = Object.values(data).sort((a,b)=>b.votes - a.votes);
-    tbody.innerHTML = sorted.map((p,i)=>`
-      <tr>
-        <td><span class="rank-badge ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other'}">${i+1}</span></td>
-        <td><span class="project-name">${p.name}</span></td>
-        <td><span class="votes">${p.votes}</span></td>
-        <td><span class="rewards">${p.rewards}</span></td>
-        <td><span class="platform-badge">${p.platform}</span></td>
-        <td>
-          <button class="vote-btn" data-id="${p.name}" ${userVotes[p.name]?'disabled':''}>
-            ${userVotes[p.name]?'Voted':'Vote'}
-          </button>
-        </td>
-      </tr>
-    `).join('');
+      db.ref('userVotes/'+userId).once('value').then(userSnap=>{
+        const userVotes = userSnap.val() || {};
 
-    // Add event listeners
-    document.querySelectorAll('.vote-btn').forEach(btn=>{
-      btn.onclick = ()=>{
-        const pid = btn.dataset.id;
-        if(Object.keys(userVotes).length >=5){ alert("Max 5 votes per month!"); return; }
-        if(userVotes[pid]) return;
-        db.ref('projects/'+pid+'/votes').transaction(current=>{
-          return (current||0)+1;
+        tbody.innerHTML = sorted.map(([pid,p],i)=>`
+          <tr>
+            <td><span class="rank-badge ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other'}">${i+1}</span></td>
+            <td><span class="project-name">${p.name}</span></td>
+            <td><span class="votes">${p.votes}</span></td>
+            <td><span class="rewards">${p.rewards}</span></td>
+            <td><span class="platform-badge">${p.platform}</span></td>
+            <td>
+              <button class="vote-btn" data-id="${pid}" ${userVotes[pid]?'disabled':''}>
+                ${userVotes[pid]?'Voted':'Vote'}
+              </button>
+            </td>
+          </tr>
+        `).join('');
+
+        // Vote button click
+        document.querySelectorAll('.vote-btn').forEach(btn=>{
+          btn.onclick = ()=>{
+            const pid = btn.dataset.id;
+            if(Object.keys(userVotes).length>=5){ alert("Max 5 votes per month!"); return; }
+            if(userVotes[pid]) return;
+
+            // Increment votes in Firebase
+            db.ref('projects/'+pid+'/votes').transaction(current=> (current||0)+1);
+
+            // Save user vote with timestamp
+            db.ref('userVotes/'+userId+'/'+pid).set(Date.now());
+          }
         });
-        userVotes[pid]=true;
-        localStorage.setItem('userVotes', JSON.stringify({votes:userVotes, reset:Date.now(), count:Object.keys(userVotes).length}));
-      }
+      });
     });
   }
-
-  // Listen for real-time updates
-  db.ref('projects').on('value', snapshot => {
-    renderLeaderboard(snapshot.val());
-  });
 </script>
+
 </body>
 </html>

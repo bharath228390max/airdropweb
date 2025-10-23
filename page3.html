@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Rezo – Community Chat</title>
+  <title>Rezo – Make Connections</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
     body {
@@ -71,7 +71,7 @@
 </head>
 <body>
   <div class="chat-container">
-    <h2>Community Chat</h2>
+    <h2>Make Connections</h2>
     <div class="messages" id="messages"></div>
     <div class="input-area">
       <input type="text" id="messageInput" placeholder="Type your message..." />
@@ -84,7 +84,7 @@
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // ✅ Use the same Firebase project as your login page
+    // ✅ Use same Firebase config as your other pages
     const firebaseConfig = {
       apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
       authDomain: "rezo-chat.firebaseapp.com",
@@ -103,9 +103,10 @@
     const messageInput = document.getElementById("messageInput");
     const sendBtn = document.getElementById("sendBtn");
 
+    // 🔐 Check login state
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        window.location.href = "index.html"; // redirect if not logged in
+        window.location.href = "index.html"; // not logged in
         return;
       }
 
@@ -113,7 +114,6 @@
       let username = "Unknown";
       let avatarUrl = "https://i.imgur.com/0y0y0y0.png";
 
-      // Fetch profile info
       try {
         const docRef = doc(db, "profiles", uid);
         const snap = await getDoc(docRef);
@@ -126,7 +126,7 @@
         console.error("Error fetching profile:", e);
       }
 
-      // Realtime chat listener
+      // Real-time chat
       const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
       onSnapshot(q, (snapshot) => {
         messagesDiv.innerHTML = "";
@@ -143,7 +143,7 @@
         });
       });
 
-      // Send message
+      // Send new message
       sendBtn.addEventListener("click", async () => {
         const text = messageInput.value.trim();
         if (text === "") return;

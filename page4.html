@@ -68,47 +68,13 @@
   .rank-2 { background: #444; color: #fff; }
   .rank-3 { background: #333; color: #fff; }
   .rank-other { color: #aaa; }
-  .project-name {
-    font-weight: 600;
-  }
-  .votes {
-    font-weight: bold;
-    background: linear-gradient(135deg, #00fff7, #6a00ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
+  .project-name { font-weight: 600; }
+  .votes { font-weight: bold; background: linear-gradient(135deg, #00fff7, #6a00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   .rewards { color: #ff80ff; font-weight: 500; }
-  .platform-badge {
-    display: inline-block;
-    padding: 0.2rem 0.6rem;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    border: 1px solid rgba(255,255,255,0.2);
-  }
-  .vote-btn {
-    padding: 0.4rem 1rem;
-    background: #00fff7;
-    color: #000;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  .vote-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 10px #00fff7;
-  }
-  .vote-btn:disabled {
-    background: #222;
-    color: #555;
-    cursor: not-allowed;
-    box-shadow: none;
-    transform: scale(1);
-  }
-  @media (max-width: 768px) {
-    h1 { font-size: 2rem; }
-    table { min-width: 500px; }
-  }
+  .platform-badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.2); }
+  .vote-btn { padding: 0.4rem 1rem; background: #00fff7; color: #000; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+  .vote-btn:hover { transform: scale(1.05); box-shadow: 0 0 10px #00fff7; }
+  .vote-btn:disabled { background: #222; color: #555; cursor: not-allowed; box-shadow: none; transform: scale(1); }
 </style>
 </head>
 <body>
@@ -130,35 +96,72 @@
           <th>Action</th>
         </tr>
       </thead>
-      <tbody id="leaderboardBody">
-        <!-- Rows populated by JS -->
-      </tbody>
+      <tbody id="leaderboardBody"></tbody>
     </table>
   </div>
 </div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
 <script>
-  const projects = [
-    {id:"iDOS", name:"iDOS", votes:12, rewards:"100 $YAP", platform:"Ethereum"},
-    {id:"Sentient", name:"Sentient", votes:7, rewards:"50 $YAP", platform:"Polygon"},
-    {id:"RezoX", name:"RezoX", votes:18, rewards:"150 $YAP", platform:"Solana"},
-    {id:"Momentum", name:"Momentum", votes:4, rewards:"25 $YAP", platform:"Ethereum"},
-    {id:"KloutGG", name:"KloutGG", votes:10, rewards:"75 $YAP", platform:"Polygon"},
-    {id:"Firestarter", name:"Firestarter", votes:3, rewards:"20 $YAP", platform:"Solana"}
+  // Firebase config (your project)
+  const firebaseConfig = {
+    apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
+    authDomain: "rezo-chat.firebaseapp.com",
+    databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "rezo-chat",
+    storageBucket: "rezo-chat.firebasestorage.app",
+    messagingSenderId: "300513819927",
+    appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const auth = firebase.auth();
+
+  // Redirect if not logged in
+  auth.onAuthStateChanged(user => {
+    if(!user) window.location.href = "index.html"; // login page
+  });
+
+  // Define projects (can be updated in database later)
+  const projectList = [
+    {id:"iDOS", name:"iDOS", rewards:"100 $YAP", platform:"Ethereum"},
+    {id:"Sentient", name:"Sentient", rewards:"50 $YAP", platform:"Polygon"},
+    {id:"RezoX", name:"RezoX", rewards:"150 $YAP", platform:"Solana"},
+    {id:"Momentum", name:"Momentum", rewards:"25 $YAP", platform:"Ethereum"},
+    {id:"KloutGG", name:"KloutGG", rewards:"75 $YAP", platform:"Polygon"},
+    {id:"Firestarter", name:"Firestarter", rewards:"20 $YAP", platform:"Solana"}
   ];
 
-  // Votes tracking in localStorage
-  let userVotes = JSON.parse(localStorage.getItem('userVotes')) || {votes:{}, count:0, reset: Date.now()};
+  // Initialize votes in database if not exist
+  projectList.forEach(p => {
+    db.ref('projects/'+p.id).once('value').then(snapshot => {
+      if(!snapshot.exists()){
+        db.ref('projects/'+p.id).set({votes:0, name:p.name, rewards:p.rewards, platform:p.platform});
+      }
+    });
+  });
 
-  // Reset votes after 30 days
-  if(Date.now() - userVotes.reset > 30*24*60*60*1000) {
-    userVotes = {votes:{}, count:0, reset: Date.now()};
-    localStorage.setItem('userVotes', JSON.stringify(userVotes));
+  // Track user votes
+  let userVotes = {};
+  const userId = firebase.auth().currentUser?.uid;
+  if(localStorage.getItem('userVotes')){
+    const data = JSON.parse(localStorage.getItem('userVotes'));
+    // Reset after 30 days
+    if(Date.now() - data.reset > 30*24*60*60*1000){
+      userVotes = {};
+      localStorage.setItem('userVotes', JSON.stringify({votes:{}, reset:Date.now(), count:0}));
+    } else {
+      userVotes = data.votes;
+    }
   }
 
-  function renderLeaderboard() {
+  function renderLeaderboard(data){
     const tbody = document.getElementById('leaderboardBody');
-    const sorted = [...projects].sort((a,b)=>b.votes-a.votes);
+    const sorted = Object.values(data).sort((a,b)=>b.votes - a.votes);
     tbody.innerHTML = sorted.map((p,i)=>`
       <tr>
         <td><span class="rank-badge ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other'}">${i+1}</span></td>
@@ -167,31 +170,32 @@
         <td><span class="rewards">${p.rewards}</span></td>
         <td><span class="platform-badge">${p.platform}</span></td>
         <td>
-          <button class="vote-btn" data-id="${p.id}" ${userVotes.votes[p.id]?'disabled':''}>
-            ${userVotes.votes[p.id]?'Voted':'Vote'}
+          <button class="vote-btn" data-id="${p.name}" ${userVotes[p.name]?'disabled':''}>
+            ${userVotes[p.name]?'Voted':'Vote'}
           </button>
         </td>
       </tr>
     `).join('');
 
-    // Add click listeners
+    // Add event listeners
     document.querySelectorAll('.vote-btn').forEach(btn=>{
       btn.onclick = ()=>{
-        const id = btn.dataset.id;
-        if(userVotes.count >= 5){ alert("Max 5 votes per month!"); return; }
-        if(userVotes.votes[id]) return;
-        const project = projects.find(p=>p.id===id);
-        project.votes++;
-        userVotes.votes[id]=true;
-        userVotes.count++;
-        localStorage.setItem('userVotes', JSON.stringify(userVotes));
-        renderLeaderboard();
+        const pid = btn.dataset.id;
+        if(Object.keys(userVotes).length >=5){ alert("Max 5 votes per month!"); return; }
+        if(userVotes[pid]) return;
+        db.ref('projects/'+pid+'/votes').transaction(current=>{
+          return (current||0)+1;
+        });
+        userVotes[pid]=true;
+        localStorage.setItem('userVotes', JSON.stringify({votes:userVotes, reset:Date.now(), count:Object.keys(userVotes).length}));
       }
     });
   }
 
-  renderLeaderboard();
+  // Listen for real-time updates
+  db.ref('projects').on('value', snapshot => {
+    renderLeaderboard(snapshot.val());
+  });
 </script>
-
 </body>
 </html>

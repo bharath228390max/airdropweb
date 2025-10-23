@@ -11,66 +11,100 @@
     margin: 0;
     padding: 0;
     font-family: 'Orbitron', sans-serif;
-    background-color: #000;
+    background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
     color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   h1 {
     text-align: center;
-    padding: 20px 0;
+    padding: 30px 20px 10px 20px;
     font-weight: 500;
-    font-size: 32px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    margin: 0 20px 20px 20px;
+    font-size: 36px;
+    letter-spacing: 1px;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255,255,255,0.2);
   }
 
   .table-container {
     width: 90%;
-    max-width: 900px;
-    margin: 0 auto 50px auto;
+    max-width: 1000px;
+    margin-bottom: 50px;
     overflow-x: auto;
   }
 
   table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(5px);
-    border-radius: 10px;
+    backdrop-filter: blur(8px);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.7);
     overflow: hidden;
   }
 
   th, td {
-    padding: 12px 15px;
+    padding: 15px 20px;
     text-align: left;
     border-bottom: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
   }
 
   th {
     font-weight: 500;
     letter-spacing: 0.5px;
     background: rgba(255,255,255,0.1);
-  }
-
-  tr:hover {
-    background: rgba(255,255,255,0.05);
-  }
-
-  .upvote-btn {
-    padding: 6px 12px;
-    background: #111;
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    text-transform: uppercase;
     font-size: 14px;
   }
 
-  .upvote-btn:hover {
-    background: #fff;
+  tr:hover td {
+    background: rgba(255,255,255,0.08);
+  }
+
+  .upvote-btn {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #00ffcc, #00aaff);
     color: #000;
-    border-color: #fff;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-size: 14px;
+    box-shadow: 0 4px 15px rgba(0,255,255,0.3);
+  }
+
+  .upvote-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,255,255,0.5);
+  }
+
+  .upvote-btn:disabled {
+    background: #444;
+    color: #aaa;
+    cursor: default;
+    box-shadow: none;
+  }
+
+  @media (max-width: 600px) {
+    th, td {
+      padding: 12px 10px;
+      font-size: 12px;
+    }
+
+    .upvote-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    h1 {
+      font-size: 28px;
+      padding: 20px 10px 10px 10px;
+    }
   }
 </style>
 </head>
@@ -142,7 +176,7 @@
   table.addEventListener('click', (e) => {
     if (e.target.classList.contains('upvote-btn')) {
       const row = e.target.closest('tr');
-      const votesCell = row.querySelectorAll('td')[3]; // votes column
+      const votesCell = row.querySelectorAll('td')[3];
       votesCell.textContent = parseInt(votesCell.textContent) + 1;
       e.target.disabled = true;
       e.target.textContent = 'Voted';

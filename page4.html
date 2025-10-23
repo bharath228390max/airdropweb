@@ -3,245 +3,393 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Next-Level Leaderboard</title>
+<title>Project Leaderboard - Vote & Earn Rewards</title>
+<meta name="description" content="Vote for your favorite blockchain projects and earn crypto rewards. Real-time leaderboard featuring the best Web3 projects.">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500&display=swap');
-
-  body {
+  * {
     margin: 0;
     padding: 0;
-    font-family: 'Orbitron', sans-serif;
-    background: #0a0a0a;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: hsl(240, 10%, 3.9%);
+    color: hsl(0, 0%, 98%);
     min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: slideUp 0.5s ease-out;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: hsl(240, 8%, 8%);
+    border: 1px solid hsl(240, 8%, 15%);
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+
+  .badge-icon {
+    width: 16px;
+    height: 16px;
+    color: hsl(180, 100%, 50%);
   }
 
   h1 {
-    font-size: 36px;
-    margin: 40px 0 20px 0;
-    letter-spacing: 1px;
-    text-align: center;
-    color: #fff;
-    text-shadow: 0 0 15px rgba(0,255,255,0.3);
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, hsl(180, 100%, 50%), hsl(240, 100%, 60%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
   }
 
-  .leaderboard {
-    width: 95%;
-    max-width: 1000px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  .subtitle {
+    font-size: 1.125rem;
+    color: hsl(240, 5%, 64.9%);
+    max-width: 42rem;
+    margin: 0 auto;
   }
 
-  .card {
-    display: flex;
-    justify-content: space-between;
+  .table-container {
+    background: hsl(240, 8%, 8%);
+    border: 1px solid hsl(240, 8%, 15%);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead {
+    border-bottom: 1px solid hsl(240, 8%, 15%);
+  }
+
+  th {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: hsl(240, 5%, 64.9%);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid hsl(240, 8%, 15%, 0.3);
+    transition: background 0.2s ease;
+  }
+
+  tbody tr:hover {
+    background: hsl(240, 8%, 15%, 0.3);
+  }
+
+  td {
+    padding: 1rem 1.5rem;
+  }
+
+  .rank-badge {
+    display: inline-flex;
     align-items: center;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 12px;
-    padding: 16px 20px;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-
-  .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 25px rgba(0,255,255,0.3);
-  }
-
-  .rank {
-    font-size: 20px;
-    font-weight: 500;
-    width: 40px;
-    text-align: center;
-  }
-
-  .project-info {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex: 1;
-  }
-
-  .project-logo {
-    width: 50px;
-    height: 50px;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: 50%;
-    border: 1px solid rgba(0,255,255,0.3);
-    object-fit: cover;
+    font-weight: 700;
+    font-size: 1.125rem;
+  }
+
+  .rank-1 {
+    background: linear-gradient(135deg, hsl(180, 100%, 50%), hsl(240, 100%, 60%));
+    animation: glowPulse 2s ease-in-out infinite;
+    color: hsl(240, 10%, 3.9%);
+  }
+
+  .rank-2 {
+    background: linear-gradient(135deg, hsl(280, 80%, 60%, 0.5), hsl(320, 85%, 60%, 0.5));
+    border: 1px solid hsl(280, 80%, 60%, 0.5);
+    color: hsl(0, 0%, 98%);
+  }
+
+  .rank-3 {
+    background: hsl(240, 8%, 15%);
+    border: 1px solid hsl(240, 8%, 15%);
+    color: hsl(240, 5%, 64.9%);
+  }
+
+  .rank-other {
+    color: hsl(240, 5%, 64.9%);
+    font-weight: 500;
   }
 
   .project-name {
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 1.125rem;
+    font-weight: 600;
+    transition: color 0.2s ease;
   }
 
-  .details {
-    display: flex;
-    gap: 40px;
-    align-items: center;
+  tr:hover .project-name {
+    color: hsl(180, 100%, 50%);
   }
 
   .votes {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 16px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, hsl(180, 100%, 50%), hsl(240, 100%, 60%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .rewards {
+    font-size: 1rem;
+    font-weight: 500;
+    color: hsl(280, 80%, 60%);
+  }
+
+  .platform-badge {
+    display: inline-flex;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid;
+  }
+
+  .ethereum {
+    background: linear-gradient(to right, hsl(280, 80%, 50%, 0.2), hsl(280, 80%, 60%, 0.2));
+    border-color: hsl(280, 80%, 50%, 0.3);
+    color: hsl(280, 80%, 70%);
+  }
+
+  .polygon {
+    background: linear-gradient(to right, hsl(270, 80%, 50%, 0.2), hsl(270, 80%, 60%, 0.2));
+    border-color: hsl(270, 80%, 50%, 0.3);
+    color: hsl(270, 80%, 70%);
+  }
+
+  .solana {
+    background: linear-gradient(to right, hsl(180, 100%, 40%, 0.2), hsl(180, 100%, 50%, 0.2));
+    border-color: hsl(180, 100%, 50%, 0.3);
+    color: hsl(180, 100%, 70%);
   }
 
   .vote-btn {
-    padding: 6px 14px;
-    background: transparent;
-    color: #0ff;
-    border: 1px solid #0ff;
-    border-radius: 6px;
-    font-weight: 500;
+    padding: 0.5rem 1.25rem;
+    background: hsl(180, 100%, 50%);
+    color: hsl(240, 10%, 3.9%);
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 80px;
+    box-shadow: 0 0 20px hsl(180, 100%, 50%, 0.5);
   }
 
   .vote-btn:hover {
-    background: #0ff;
-    color: #000;
     transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(0,255,255,0.3);
+    box-shadow: 0 0 30px hsl(180, 100%, 50%, 0.8);
   }
 
   .vote-btn:disabled {
-    background: #444;
-    color: #aaa;
-    border-color: #555;
-    cursor: default;
+    background: hsl(240, 8%, 15%);
+    color: hsl(240, 5%, 64.9%);
+    cursor: not-allowed;
     transform: scale(1);
     box-shadow: none;
+    border: 1px solid hsl(240, 8%, 15%);
   }
 
-  .reward {
-    font-size: 16px;
-    color: #fff;
+  .footer {
+    text-align: center;
+    margin-top: 2rem;
+    color: hsl(240, 5%, 64.9%);
+    font-size: 0.875rem;
   }
 
-  .platform {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    color: #fff;
+  .trophy-icon {
+    width: 1.25rem;
+    height: 1.25rem;
   }
 
-  .platform img {
-    width: 24px;
-    height: 24px;
+  @keyframes glowPulse {
+    0%, 100% {
+      box-shadow: 0 0 20px hsl(180, 100%, 50%, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 30px hsl(180, 100%, 50%, 0.8);
+    }
   }
 
-  /* Top 3 highlight */
-  .card:nth-child(1) {
-    border: 2px solid gold;
-    box-shadow: 0 6px 25px rgba(255,215,0,0.4);
-  }
-
-  .card:nth-child(2) {
-    border: 2px solid silver;
-    box-shadow: 0 6px 25px rgba(192,192,192,0.4);
-  }
-
-  .card:nth-child(3) {
-    border: 2px solid #cd7f32;
-    box-shadow: 0 6px 25px rgba(205,127,50,0.4);
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @media (max-width: 768px) {
-    .details {
-      gap: 20px;
+    h1 {
+      font-size: 2rem;
     }
-    .project-logo { width: 40px; height: 40px; }
-    .project-name { font-size: 16px; }
-    .votes, .reward, .platform { font-size: 14px; }
+
+    th, td {
+      padding: 0.75rem 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .project-name {
+      font-size: 1rem;
+    }
+
+    .votes {
+      font-size: 1.25rem;
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
   }
 </style>
 </head>
 <body>
+  <div class="container">
+    <div class="header">
+      <div class="badge">
+        <svg class="badge-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+        </svg>
+        <span>Live Rankings</span>
+      </div>
+      <h1>Project Leaderboard</h1>
+      <p class="subtitle">Vote for your favorite projects and earn rewards</p>
+    </div>
 
-<h1>Next-Level Leaderboard</h1>
+    <div class="table-container">
+      <table id="leaderboardTable">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Project</th>
+            <th>Votes</th>
+            <th>Rewards</th>
+            <th>Platform</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- Rows will be inserted by JavaScript -->
+        </tbody>
+      </table>
+    </div>
 
-<div class="leaderboard">
-
-  <div class="card">
-    <div class="rank">1</div>
-    <div class="project-info"><img class="project-logo" src="https://via.placeholder.com/50" alt="iDOS"><div class="project-name">iDOS</div></div>
-    <div class="details">
-      <div class="votes"><span class="vote-count">12</span> <button class="vote-btn">Vote</button></div>
-      <div class="reward">100 $YAP</div>
-      <div class="platform"><img src="https://via.placeholder.com/24" alt="ETH"> Ethereum</div>
+    <div class="footer">
+      <p>Rankings update in real-time based on community votes</p>
     </div>
   </div>
 
-  <div class="card">
-    <div class="rank">2</div>
-    <div class="project-info"><img class="project-logo" src="https://via.placeholder.com/50" alt="Sentient"><div class="project-name">Sentient</div></div>
-    <div class="details">
-      <div class="votes"><span class="vote-count">7</span> <button class="vote-btn">Vote</button></div>
-      <div class="reward">50 $YAP</div>
-      <div class="platform"><img src="https://via.placeholder.com/24" alt="Polygon"> Polygon</div>
-    </div>
-  </div>
+  <script>
+    const projects = [
+      { id: 1, name: "iDOS", votes: 12, rewards: "100 $YAP", platform: "Ethereum" },
+      { id: 2, name: "Sentient", votes: 7, rewards: "50 $YAP", platform: "Polygon" },
+      { id: 3, name: "RezoX", votes: 18, rewards: "150 $YAP", platform: "Solana" },
+      { id: 4, name: "Momentum", votes: 4, rewards: "25 $YAP", platform: "Ethereum" },
+      { id: 5, name: "KloutGG", votes: 10, rewards: "75 $YAP", platform: "Polygon" },
+      { id: 6, name: "Firestarter", votes: 3, rewards: "20 $YAP", platform: "Solana" }
+    ];
 
-  <div class="card">
-    <div class="rank">3</div>
-    <div class="project-info"><img class="project-logo" src="https://via.placeholder.com/50" alt="RezoX"><div class="project-name">RezoX</div></div>
-    <div class="details">
-      <div class="votes"><span class="vote-count">18</span> <button class="vote-btn">Vote</button></div>
-      <div class="reward">150 $YAP</div>
-      <div class="platform"><img src="https://via.placeholder.com/24" alt="Solana"> Solana</div>
-    </div>
-  </div>
+    const votedProjects = new Set();
 
-  <div class="card">
-    <div class="rank">4</div>
-    <div class="project-info"><img class="project-logo" src="https://via.placeholder.com/50" alt="Momentum"><div class="project-name">Momentum</div></div>
-    <div class="details">
-      <div class="votes"><span class="vote-count">4</span> <button class="vote-btn">Vote</button></div>
-      <div class="reward">25 $YAP</div>
-      <div class="platform"><img src="https://via.placeholder.com/24" alt="ETH"> Ethereum</div>
-    </div>
-  </div>
+    const trophyIcon = `<svg class="trophy-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6m0 0V3m0 6h12M6 3h12m0 6h1.5a2.5 2.5 0 0 0 0-5H18m0 0V3m-6 18h.01M8 21h8m-4-3v3m4-18H8m8 0v1.5m-8-1.5v1.5"></path>
+      <path d="M8 9s1.5 2 4 2 4-2 4-2"></path>
+    </svg>`;
 
-  <div class="card">
-    <div class="rank">5</div>
-    <div class="project-info"><img class="project-logo" src="https://via.placeholder.com/50" alt="KloutGG"><div class="project-name">KloutGG</div></div>
-    <div class="details">
-      <div class="votes"><span class="vote-count">10</span> <button class="vote-btn">Vote</button></div>
-      <div class="reward">75 $YAP</div>
-      <div class="platform"><img src="https://via.placeholder.com/24" alt="Polygon"> Polygon</div>
-    </div>
-  </div>
+    function getRankBadge(index) {
+      if (index === 0) {
+        return `<div class="rank-badge rank-1">${trophyIcon}</div>`;
+      }
+      if (index === 1) {
+        return `<div class="rank-badge rank-2">2</div>`;
+      }
+      if (index === 2) {
+        return `<div class="rank-badge rank-3">3</div>`;
+      }
+      return `<div class="rank-badge rank-other">${index + 1}</div>`;
+    }
 
-  <div class="card">
-    <div class="rank">6</div>
-    <div class="project-info"><img class="project-logo" src="https://via.placeholder.com/50" alt="Firestarter"><div class="project-name">Firestarter</div></div>
-    <div class="details">
-      <div class="votes"><span class="vote-count">3</span> <button class="vote-btn">Vote</button></div>
-      <div class="reward">20 $YAP</div>
-      <div class="platform"><img src="https://via.placeholder.com/24" alt="Solana"> Solana</div>
-    </div>
-  </div>
+    function getPlatformClass(platform) {
+      return platform.toLowerCase();
+    }
 
-</div>
+    function renderTable() {
+      const sortedProjects = [...projects].sort((a, b) => b.votes - a.votes);
+      const tableBody = document.getElementById('tableBody');
+      
+      tableBody.innerHTML = sortedProjects.map((project, index) => `
+        <tr>
+          <td>${getRankBadge(index)}</td>
+          <td><span class="project-name">${project.name}</span></td>
+          <td><span class="votes">${project.votes}</span></td>
+          <td><span class="rewards">${project.rewards}</span></td>
+          <td><span class="platform-badge ${getPlatformClass(project.platform)}">${project.platform}</span></td>
+          <td>
+            <button 
+              class="vote-btn" 
+              data-id="${project.id}"
+              ${votedProjects.has(project.id) ? 'disabled' : ''}
+            >
+              ${votedProjects.has(project.id) ? 'Voted' : 'Vote'}
+            </button>
+          </td>
+        </tr>
+      `).join('');
 
-<script>
-  document.querySelectorAll('.vote-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const card = btn.closest('.card');
-      const voteSpan = card.querySelector('.vote-count');
-      voteSpan.textContent = parseInt(voteSpan.textContent) + 1;
-      btn.disabled = true;
-      btn.textContent = 'Voted';
-    });
-  });
-</script>
+      // Add event listeners to buttons
+      document.querySelectorAll('.vote-btn').forEach(btn => {
+        btn.addEventListener('click', handleVote);
+      });
+    }
 
+    function handleVote(e) {
+      const projectId = parseInt(e.target.getAttribute('data-id'));
+      if (votedProjects.has(projectId)) return;
+
+      const project = projects.find(p => p.id === projectId);
+      if (project) {
+        project.votes++;
+        votedProjects.add(projectId);
+        renderTable();
+      }
+    }
+
+    // Initial render
+    renderTable();
+  </script>
 </body>
 </html>

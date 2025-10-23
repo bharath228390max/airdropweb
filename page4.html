@@ -11,8 +11,8 @@
     margin: 0;
     padding: 0;
     font-family: 'Orbitron', sans-serif;
-    background-color: #0a0a0a;
-    color: #ffffff;
+    background-color: #000;
+    color: #fff;
   }
 
   h1 {
@@ -20,8 +20,7 @@
     padding: 20px 0;
     font-weight: 500;
     font-size: 32px;
-    letter-spacing: 1px;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
     margin: 0 20px 20px 20px;
   }
 
@@ -44,7 +43,7 @@
   th, td {
     padding: 12px 15px;
     text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
   }
 
   th {
@@ -59,9 +58,9 @@
 
   .upvote-btn {
     padding: 6px 12px;
-    background: #1c1c1c;
+    background: #111;
     color: #fff;
-    border: 1px solid rgba(255,255,255,0.3);
+    border: 1px solid rgba(255,255,255,0.2);
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -83,6 +82,7 @@
   <table id="yappersTable">
     <thead>
       <tr>
+        <th>ID</th>
         <th>Project</th>
         <th>Yappers</th>
         <th>Votes</th>
@@ -90,41 +90,61 @@
       </tr>
     </thead>
     <tbody>
-      <!-- Sample rows, will dynamically update later -->
       <tr>
-        <td>Project Alpha</td>
+        <td>1</td>
+        <td>iDOS</td>
         <td>23</td>
         <td>12</td>
         <td><button class="upvote-btn">Upvote</button></td>
       </tr>
       <tr>
-        <td>Project Beta</td>
+        <td>2</td>
+        <td>Sentient</td>
         <td>15</td>
         <td>7</td>
         <td><button class="upvote-btn">Upvote</button></td>
       </tr>
       <tr>
-        <td>Project Gamma</td>
+        <td>3</td>
+        <td>RezoX</td>
+        <td>30</td>
+        <td>18</td>
+        <td><button class="upvote-btn">Upvote</button></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Momentum</td>
+        <td>11</td>
+        <td>4</td>
+        <td><button class="upvote-btn">Upvote</button></td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>KloutGG</td>
+        <td>19</td>
+        <td>10</td>
+        <td><button class="upvote-btn">Upvote</button></td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>Firestarter</td>
         <td>8</td>
         <td>3</td>
         <td><button class="upvote-btn">Upvote</button></td>
       </tr>
-      <!-- Empty rows for visual balance -->
-      <tr><td colspan="4">&nbsp;</td></tr>
     </tbody>
   </table>
 </div>
 
 <script>
-  // Upvote button functionality
   const table = document.getElementById('yappersTable');
 
   table.addEventListener('click', (e) => {
     if (e.target.classList.contains('upvote-btn')) {
       const row = e.target.closest('tr');
-      const votesCell = row.querySelectorAll('td')[2];
+      const votesCell = row.querySelectorAll('td')[3]; // votes column
       votesCell.textContent = parseInt(votesCell.textContent) + 1;
-      e.target.disabled = true; // prevent multiple clicks
+      e.target.disabled = true;
       e.target.textContent = 'Voted';
     }
   });

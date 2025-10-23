@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultimate Leaderboard</title>
+<title>Next-Level Leaderboard</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500&display=swap');
 
@@ -20,7 +20,7 @@
   }
 
   h1 {
-    font-size: 38px;
+    font-size: 36px;
     margin: 40px 0 20px 0;
     letter-spacing: 1px;
     text-align: center;
@@ -28,58 +28,68 @@
     text-shadow: 0 0 15px rgba(0,255,255,0.3);
   }
 
-  .table-container {
+  .leaderboard {
     width: 95%;
-    max-width: 1100px;
-    overflow-x: auto;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    border-spacing: 0;
-    background: rgba(255,255,255,0.03);
-    backdrop-filter: blur(4px);
+  .card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.2);
     border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,255,255,0.05);
+    padding: 16px 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
   }
 
-  th, td {
-    padding: 14px 20px;
-    text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 25px rgba(0,255,255,0.3);
   }
 
-  th {
+  .rank {
+    font-size: 20px;
     font-weight: 500;
-    font-size: 14px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    border-bottom: 2px solid rgba(0,255,255,0.3);
-    background: rgba(255,255,255,0.02);
+    width: 40px;
+    text-align: center;
   }
 
-  tr {
-    transition: all 0.3s ease;
-  }
-
-  tr:hover {
-    background: rgba(0,255,255,0.05);
-  }
-
-  .project-cell {
+  .project-info {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
+    flex: 1;
   }
 
   .project-logo {
-    width: 32px;
-    height: 32px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    object-fit: cover;
     border: 1px solid rgba(0,255,255,0.3);
+    object-fit: cover;
+  }
+
+  .project-name {
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .details {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .votes {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
   }
 
   .vote-btn {
@@ -105,103 +115,131 @@
     color: #aaa;
     border-color: #555;
     cursor: default;
-    box-shadow: none;
     transform: scale(1);
+    box-shadow: none;
   }
 
-  .platform-icon {
+  .reward {
+    font-size: 16px;
+    color: #fff;
+  }
+
+  .platform {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #fff;
+  }
+
+  .platform img {
     width: 24px;
     height: 24px;
-    vertical-align: middle;
-    margin-right: 6px;
+  }
+
+  /* Top 3 highlight */
+  .card:nth-child(1) {
+    border: 2px solid gold;
+    box-shadow: 0 6px 25px rgba(255,215,0,0.4);
+  }
+
+  .card:nth-child(2) {
+    border: 2px solid silver;
+    box-shadow: 0 6px 25px rgba(192,192,192,0.4);
+  }
+
+  .card:nth-child(3) {
+    border: 2px solid #cd7f32;
+    box-shadow: 0 6px 25px rgba(205,127,50,0.4);
   }
 
   @media (max-width: 768px) {
-    th, td {
-      padding: 10px 12px;
-      font-size: 13px;
+    .details {
+      gap: 20px;
     }
-    h1 {
-      font-size: 28px;
-      margin: 30px 0 15px 0;
-    }
-    .project-logo { width: 24px; height: 24px; }
-    .platform-icon { width: 20px; height: 20px; }
+    .project-logo { width: 40px; height: 40px; }
+    .project-name { font-size: 16px; }
+    .votes, .reward, .platform { font-size: 14px; }
   }
 </style>
 </head>
 <body>
 
-<h1>Ultimate Project Leaderboard</h1>
+<h1>Next-Level Leaderboard</h1>
 
-<div class="table-container">
-  <table id="leaderboardTable">
-    <thead>
-      <tr>
-        <th>S.No.</th>
-        <th>Project</th>
-        <th>Vote</th>
-        <th>Rewards</th>
-        <th>Platform</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>1</td>
-        <td class="project-cell"><img class="project-logo" src="https://via.placeholder.com/32" alt="iDOS"> iDOS</td>
-        <td><span class="vote-count">12</span> <button class="vote-btn">Vote</button></td>
-        <td>100 $YAP</td>
-        <td><img class="platform-icon" src="https://via.placeholder.com/24" alt="Ethereum"> Ethereum</td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td class="project-cell"><img class="project-logo" src="https://via.placeholder.com/32" alt="Sentient"> Sentient</td>
-        <td><span class="vote-count">7</span> <button class="vote-btn">Vote</button></td>
-        <td>50 $YAP</td>
-        <td><img class="platform-icon" src="https://via.placeholder.com/24" alt="Polygon"> Polygon</td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td class="project-cell"><img class="project-logo" src="https://via.placeholder.com/32" alt="RezoX"> RezoX</td>
-        <td><span class="vote-count">18</span> <button class="vote-btn">Vote</button></td>
-        <td>150 $YAP</td>
-        <td><img class="platform-icon" src="https://via.placeholder.com/24" alt="Solana"> Solana</td>
-      </tr>
-      <tr>
-        <td>4</td>
-        <td class="project-cell"><img class="project-logo" src="https://via.placeholder.com/32" alt="Momentum"> Momentum</td>
-        <td><span class="vote-count">4</span> <button class="vote-btn">Vote</button></td>
-        <td>25 $YAP</td>
-        <td><img class="platform-icon" src="https://via.placeholder.com/24" alt="Ethereum"> Ethereum</td>
-      </tr>
-      <tr>
-        <td>5</td>
-        <td class="project-cell"><img class="project-logo" src="https://via.placeholder.com/32" alt="KloutGG"> KloutGG</td>
-        <td><span class="vote-count">10</span> <button class="vote-btn">Vote</button></td>
-        <td>75 $YAP</td>
-        <td><img class="platform-icon" src="https://via.placeholder.com/24" alt="Polygon"> Polygon</td>
-      </tr>
-      <tr>
-        <td>6</td>
-        <td class="project-cell"><img class="project-logo" src="https://via.placeholder.com/32" alt="Firestarter"> Firestarter</td>
-        <td><span class="vote-count">3</span> <button class="vote-btn">Vote</button></td>
-        <td>20 $YAP</td>
-        <td><img class="platform-icon" src="https://via.placeholder.com/24" alt="Solana"> Solana</td>
-      </tr>
-    </tbody>
-  </table>
+<div class="leaderboard">
+
+  <div class="card">
+    <div class="rank">1</div>
+    <div class="project-info"><img class="project-logo" src="https://via.placeholder.com/50" alt="iDOS"><div class="project-name">iDOS</div></div>
+    <div class="details">
+      <div class="votes"><span class="vote-count">12</span> <button class="vote-btn">Vote</button></div>
+      <div class="reward">100 $YAP</div>
+      <div class="platform"><img src="https://via.placeholder.com/24" alt="ETH"> Ethereum</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="rank">2</div>
+    <div class="project-info"><img class="project-logo" src="https://via.placeholder.com/50" alt="Sentient"><div class="project-name">Sentient</div></div>
+    <div class="details">
+      <div class="votes"><span class="vote-count">7</span> <button class="vote-btn">Vote</button></div>
+      <div class="reward">50 $YAP</div>
+      <div class="platform"><img src="https://via.placeholder.com/24" alt="Polygon"> Polygon</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="rank">3</div>
+    <div class="project-info"><img class="project-logo" src="https://via.placeholder.com/50" alt="RezoX"><div class="project-name">RezoX</div></div>
+    <div class="details">
+      <div class="votes"><span class="vote-count">18</span> <button class="vote-btn">Vote</button></div>
+      <div class="reward">150 $YAP</div>
+      <div class="platform"><img src="https://via.placeholder.com/24" alt="Solana"> Solana</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="rank">4</div>
+    <div class="project-info"><img class="project-logo" src="https://via.placeholder.com/50" alt="Momentum"><div class="project-name">Momentum</div></div>
+    <div class="details">
+      <div class="votes"><span class="vote-count">4</span> <button class="vote-btn">Vote</button></div>
+      <div class="reward">25 $YAP</div>
+      <div class="platform"><img src="https://via.placeholder.com/24" alt="ETH"> Ethereum</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="rank">5</div>
+    <div class="project-info"><img class="project-logo" src="https://via.placeholder.com/50" alt="KloutGG"><div class="project-name">KloutGG</div></div>
+    <div class="details">
+      <div class="votes"><span class="vote-count">10</span> <button class="vote-btn">Vote</button></div>
+      <div class="reward">75 $YAP</div>
+      <div class="platform"><img src="https://via.placeholder.com/24" alt="Polygon"> Polygon</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="rank">6</div>
+    <div class="project-info"><img class="project-logo" src="https://via.placeholder.com/50" alt="Firestarter"><div class="project-name">Firestarter</div></div>
+    <div class="details">
+      <div class="votes"><span class="vote-count">3</span> <button class="vote-btn">Vote</button></div>
+      <div class="reward">20 $YAP</div>
+      <div class="platform"><img src="https://via.placeholder.com/24" alt="Solana"> Solana</div>
+    </div>
+  </div>
+
 </div>
 
 <script>
-  const table = document.getElementById('leaderboardTable');
-  table.addEventListener('click', (e) => {
-    if(e.target.classList.contains('vote-btn')) {
-      const row = e.target.closest('tr');
-      const voteSpan = row.querySelector('.vote-count');
+  document.querySelectorAll('.vote-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('.card');
+      const voteSpan = card.querySelector('.vote-count');
       voteSpan.textContent = parseInt(voteSpan.textContent) + 1;
-      e.target.disabled = true;
-      e.target.textContent = 'Voted';
-    }
+      btn.disabled = true;
+      btn.textContent = 'Voted';
+    });
   });
 </script>
 

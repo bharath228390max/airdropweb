@@ -2,228 +2,133 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Yappers per Project</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500&display=swap');
 
   body {
     margin: 0;
     padding: 0;
     font-family: 'Orbitron', sans-serif;
-    background-color: #000;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-  }
-
-  .leaderboard {
-    margin-top: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    width: 90%;
-    max-width: 900px;
-    padding: 20px;
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(6px);
+    background-color: #0a0a0a;
+    color: #ffffff;
   }
 
   h1 {
     text-align: center;
-    font-size: 28px;
-    margin-bottom: 20px;
+    padding: 20px 0;
+    font-weight: 500;
+    font-size: 32px;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    margin: 0 20px 20px 20px;
+  }
+
+  .table-container {
+    width: 90%;
+    max-width: 900px;
+    margin: 0 auto 50px auto;
+    overflow-x: auto;
   }
 
   table {
     width: 100%;
     border-collapse: collapse;
-    color: #fff;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(5px);
+    border-radius: 10px;
+    overflow: hidden;
   }
 
   th, td {
-    padding: 8px 10px;
-    text-align: center;
-    font-size: 13px;
-    border-bottom: 1px solid rgba(255,255,255,0.15);
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
   }
 
   th {
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    background: rgba(255,255,255,0.1);
   }
 
-  tr:hover { background: rgba(255,255,255,0.08); }
-
-  .vote-box { 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    gap: 5px; 
+  tr:hover {
+    background: rgba(255,255,255,0.05);
   }
 
-  .arrow {
+  .upvote-btn {
+    padding: 6px 12px;
+    background: #1c1c1c;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 6px;
     cursor: pointer;
-    user-select: none;
+    transition: all 0.2s ease;
     font-size: 14px;
-    padding: 2px 6px;
-    border-radius: 4px;
-    border: 1px solid white;
-    transition: 0.2s;
   }
 
-  .arrow:hover { background: white; color: black; }
-  .arrow.disabled { opacity: 0.5; cursor: default; }
-
-  #loading {
-    text-align: center;
-    margin-top: 100px;
-    color: #aaa;
-    font-size: 16px;
+  .upvote-btn:hover {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
   }
 </style>
 </head>
 <body>
-<div class="leaderboard" id="leaderboard-container">
-  <h1>Yappers Per Project</h1>
-  <div id="loading">Loading leaderboard...</div>
-  <table id="leaderboard" style="display:none;">
+
+<h1>Yappers per Project</h1>
+
+<div class="table-container">
+  <table id="yappersTable">
     <thead>
       <tr>
-        <th>No.</th>
         <th>Project</th>
-        <th>Yappers Count</th>
-        <th>Rewards</th>
-        <th>Category</th>
+        <th>Yappers</th>
+        <th>Votes</th>
+        <th>Action</th>
       </tr>
     </thead>
-    <tbody></tbody>
+    <tbody>
+      <!-- Sample rows, will dynamically update later -->
+      <tr>
+        <td>Project Alpha</td>
+        <td>23</td>
+        <td>12</td>
+        <td><button class="upvote-btn">Upvote</button></td>
+      </tr>
+      <tr>
+        <td>Project Beta</td>
+        <td>15</td>
+        <td>7</td>
+        <td><button class="upvote-btn">Upvote</button></td>
+      </tr>
+      <tr>
+        <td>Project Gamma</td>
+        <td>8</td>
+        <td>3</td>
+        <td><button class="upvote-btn">Upvote</button></td>
+      </tr>
+      <!-- Empty rows for visual balance -->
+      <tr><td colspan="4">&nbsp;</td></tr>
+    </tbody>
   </table>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+<script>
+  // Upvote button functionality
+  const table = document.getElementById('yappersTable');
 
-// Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
-  authDomain: "rezo-chat.firebaseapp.com",
-  projectId: "rezo-chat",
-  storageBucket: "rezo-chat.appspot.com",
-  messagingSenderId: "300513819927",
-  appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-const projectsData = [
-  { name: "Sentient", rewards: "Ask team", category: "AI" },
-  { name: "idOS", rewards: "0.8% supply", category: "Security" },
-  { name: "Brevis", rewards: "Unknown", category: "ZK" },
-  { name: "Zama", rewards: "$53k + NFTs", category: "FHE" },
-  { name: "Rainbow", rewards: "idk lil bro", category: "Wallet" }
-];
-
-let currentUser = null;
-
-// Render the leaderboard table
-function renderTable(projects, userVotes) {
-  const loading = document.getElementById("loading");
-  const table = document.getElementById("leaderboard");
-  const tbody = table.querySelector("tbody");
-  loading.style.display = "none";
-  table.style.display = "table";
-  tbody.innerHTML = "";
-
-  // Sort by count descending
-  projects.sort((a, b) => b.count - a.count);
-
-  projects.forEach((proj, index) => {
-    const tr = document.createElement("tr");
-
-    const tdNo = document.createElement("td"); tdNo.textContent = index + 1;
-    const tdName = document.createElement("td"); tdName.textContent = proj.name;
-
-    const tdCount = document.createElement("td");
-    const voteBox = document.createElement("div"); voteBox.className = "vote-box";
-
-    const up = document.createElement("span");
-    up.className = "arrow up";
-    up.textContent = "▲";
-
-    if (userVotes.includes(proj.name)) up.classList.add("disabled");
-
-    up.addEventListener("click", async () => {
-      if (!currentUser || userVotes.includes(proj.name)) return;
-
-      const monthDoc = doc(db, "projects", "monthly");
-      await updateDoc(monthDoc, { [proj.name]: increment(1) });
-
-      const userDoc = doc(db, "votes", currentUser.uid);
-      await updateDoc(userDoc, { projects: [...userVotes, proj.name] });
-
-      userVotes.push(proj.name);
-      up.classList.add("disabled");
-      proj.count++;
-      renderTable(projects, userVotes);
-    });
-
-    const count = document.createElement("span"); count.textContent = proj.count || 0;
-
-    voteBox.appendChild(up);
-    voteBox.appendChild(count);
-    tdCount.appendChild(voteBox);
-
-    const tdRewards = document.createElement("td"); tdRewards.textContent = proj.rewards;
-    const tdCategory = document.createElement("td"); tdCategory.textContent = proj.category;
-
-    tr.append(tdNo, tdName, tdCount, tdRewards, tdCategory);
-    tbody.appendChild(tr);
-  });
-}
-
-// Initialize page
-async function init() {
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      // Redirect to login if not authenticated
-      window.location.href = "index.html";
-      return;
+  table.addEventListener('click', (e) => {
+    if (e.target.classList.contains('upvote-btn')) {
+      const row = e.target.closest('tr');
+      const votesCell = row.querySelectorAll('td')[2];
+      votesCell.textContent = parseInt(votesCell.textContent) + 1;
+      e.target.disabled = true; // prevent multiple clicks
+      e.target.textContent = 'Voted';
     }
-    currentUser = user;
-
-    // Initialize monthly counts if missing
-    const monthDocRef = doc(db, "projects", "monthly");
-    const monthSnap = await getDoc(monthDocRef);
-    if (!monthSnap.exists()) {
-      const initObj = {};
-      projectsData.forEach(p => initObj[p.name] = 0);
-      await setDoc(monthDocRef, initObj);
-    }
-
-    // Fetch user's votes
-    const userDocRef = doc(db, "votes", user.uid);
-    const userSnap = await getDoc(userDocRef);
-    if (!userSnap.exists()) await setDoc(userDocRef, { projects: [] });
-    const userVotes = userSnap.exists() ? userSnap.data().projects : [];
-
-    // Load project counts
-    const updatedSnap = await getDoc(monthDocRef);
-    const projects = projectsData.map(p => ({
-      ...p,
-      count: updatedSnap.data()[p.name] || 0
-    }));
-
-    renderTable(projects, userVotes);
   });
-}
-
-init();
 </script>
+
 </body>
 </html>

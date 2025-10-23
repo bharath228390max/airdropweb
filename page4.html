@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Next-Level Project Leaderboard</title>
+<title>Community Leaderboard</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500&display=swap');
 
@@ -13,14 +13,13 @@
     font-family: 'Orbitron', sans-serif;
     background: hsl(240, 10%, 4%);
     color: #fff;
-    min-height: 100vh;
     padding: 2rem 1rem;
   }
 
   h1 {
     text-align: center;
     font-size: 3rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     background: linear-gradient(135deg, hsl(180, 100%, 50%), hsl(240, 100%, 60%));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -29,17 +28,18 @@
   .subtitle {
     text-align:center;
     color:hsl(240,5%,65%);
-    margin-bottom:3rem;
+    margin-bottom:2rem;
   }
 
   .table-container {
-    max-width: 1200px;
+    max-width: 1000px;
     margin:0 auto;
     background:hsl(240,8%,8%);
     border-radius: 0.75rem;
     border:1px solid hsl(240,8%,15%);
-    overflow:hidden;
-    backdrop-filter: blur(12px);
+    overflow-y: auto;
+    max-height: 500px;
+    backdrop-filter: blur(10px);
   }
 
   table { width:100%; border-collapse:collapse; }
@@ -51,7 +51,11 @@
     font-weight:600;
     text-transform:uppercase;
     color:hsl(240,5%,65%);
+    position: sticky;
+    top:0;
+    background:hsl(240,8%,8%);
     border-bottom:1px solid hsl(240,8%,15%);
+    z-index:1;
   }
 
   tbody tr {
@@ -61,10 +65,7 @@
 
   tbody tr:hover { background: rgba(0,255,255,0.05); }
 
-  td {
-    padding: 1rem 1.5rem;
-    vertical-align: middle;
-  }
+  td { padding: 1rem 1.5rem; vertical-align: middle; }
 
   .rank-badge {
     display:inline-flex;
@@ -77,164 +78,107 @@
     font-size:1.125rem;
   }
 
-  .rank-1 {
-    background: linear-gradient(135deg, hsl(180,100%,50%), hsl(240,100%,60%));
-    animation: glowPulse 2s infinite;
-    color:hsl(240,10%,3.9%);
-  }
-
-  .rank-2 {
-    background: linear-gradient(135deg, hsl(280,80%,60%,0.5), hsl(320,85%,60%,0.5));
-    border:1px solid hsl(280,80%,60%,0.5);
-    color:#fff;
-  }
-
-  .rank-3 {
-    background:hsl(240,8%,15%);
-    border:1px solid hsl(240,8%,15%);
-    color:hsl(240,5%,65%);
-  }
-
-  .rank-other {
-    color:hsl(240,5%,65%);
-    font-weight:500;
-  }
+  .rank-1 { background: linear-gradient(135deg, hsl(180,100%,50%), hsl(240,100%,60%)); animation: glowPulse 2s infinite; color:hsl(240,10%,3.9%);}
+  .rank-2 { background: linear-gradient(135deg, hsl(280,80%,60%,0.5), hsl(320,85%,60%,0.5)); color:#fff; border:1px solid rgba(255,255,255,0.2);}
+  .rank-3 { background:hsl(240,8%,15%); color:hsl(240,5%,65%); border:1px solid rgba(255,255,255,0.2);}
+  .rank-other { color:hsl(240,5%,65%); font-weight:500;}
 
   .project-name { font-weight:600; font-size:1.125rem; transition:color 0.2s; }
-
   tbody tr:hover .project-name { color:hsl(180,100%,50%); }
 
-  .votes {
-    font-weight:700;
-    font-size:1.5rem;
-    background: linear-gradient(135deg, hsl(180,100%,50%), hsl(240,100%,60%));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
+  .votes { font-weight:700; font-size:1.5rem; background: linear-gradient(135deg, hsl(180,100%,50%), hsl(240,100%,60%)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
 
   .rewards { font-weight:500; color:hsl(280,80%,60%); }
 
-  .platform-badge {
-    display:inline-flex;
-    padding:0.25rem 0.75rem;
-    border-radius:9999px;
-    font-weight:500;
-    font-size:0.75rem;
-    border:1px solid;
-  }
+  .platform-badge { display:inline-flex; padding:0.25rem 0.75rem; border-radius:9999px; font-weight:500; font-size:0.75rem; border:1px solid; }
 
   .ethereum { background: linear-gradient(to right, hsl(280,80%,50%,0.2), hsl(280,80%,60%,0.2)); border-color:hsl(280,80%,50%,0.3); color:hsl(280,80%,70%);}
   .polygon { background: linear-gradient(to right, hsl(270,80%,50%,0.2), hsl(270,80%,60%,0.2)); border-color:hsl(270,80%,50%,0.3); color:hsl(270,80%,70%);}
   .solana { background: linear-gradient(to right, hsl(180,100%,40%,0.2), hsl(180,100%,50%,0.2)); border-color:hsl(180,100%,50%,0.3); color:hsl(180,100%,70%); }
 
-  .vote-btn {
-    padding:0.5rem 1.25rem;
-    border:none;
-    border-radius:0.5rem;
-    background:hsl(180,100%,50%);
-    color:hsl(240,10%,3.9%);
-    font-weight:600;
-    font-size:0.875rem;
-    cursor:pointer;
-    transition: all 0.3s;
-    min-width:80px;
-    box-shadow:0 0 20px hsla(180,100%,50%,0.5);
-  }
+  .vote-btn { padding:0.5rem 1.25rem; border:none; border-radius:0.5rem; background:hsl(180,100%,50%); color:hsl(240,10%,3.9%); font-weight:600; font-size:0.875rem; cursor:pointer; transition:all 0.3s; min-width:80px; box-shadow:0 0 20px hsla(180,100%,50%,0.5); }
+  .vote-btn:hover { transform:scale(1.05); box-shadow:0 0 30px hsla(180,100%,50%,0.8);}
+  .vote-btn:disabled { background:hsl(240,8%,15%); color:hsl(240,5%,65%); cursor:not-allowed; box-shadow:none; border:1px solid hsl(240,8%,15%); }
 
-  .vote-btn:hover {
-    transform:scale(1.05);
-    box-shadow:0 0 30px hsla(180,100%,50%,0.8);
-  }
+  @keyframes glowPulse {0%,100%{box-shadow:0 0 20px hsla(180,100%,50%,0.5);}50%{box-shadow:0 0 30px hsla(180,100%,50%,0.8);}}
 
-  .vote-btn:disabled {
-    background:hsl(240,8%,15%);
-    color:hsl(240,5%,65%);
-    cursor:not-allowed;
-    box-shadow:none;
-    border:1px solid hsl(240,8%,15%);
-  }
-
-  @keyframes glowPulse {
-    0%,100% { box-shadow:0 0 20px hsla(180,100%,50%,0.5);}
-    50% { box-shadow:0 0 30px hsla(180,100%,50%,0.8);}
-  }
-
-  @media (max-width:768px) {
-    h1 { font-size:2rem; }
-    th, td { padding:0.75rem 0.5rem; font-size:0.875rem; }
-    .project-name { font-size:1rem; }
-    .votes { font-size:1.25rem; }
+  @media (max-width:768px){
+    h1{ font-size:2rem; }
+    th, td{ padding:0.75rem 0.5rem; font-size:0.875rem; }
+    .project-name{ font-size:1rem; }
+    .votes{ font-size:1.25rem; }
   }
 </style>
 </head>
 <body>
 
-  <h1>Project Leaderboard</h1>
-  <p class="subtitle">Vote for your favorite projects and earn rewards</p>
+<h1>Community Leaderboard</h1>
+<p class="subtitle">Vote for your favorite projects and see real-time rankings</p>
 
-  <div class="table-container">
-    <table id="leaderboardTable">
-      <thead>
-        <tr>
-          <th>Rank</th>
-          <th>Project</th>
-          <th>Votes</th>
-          <th>Rewards</th>
-          <th>Platform</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody"></tbody>
-    </table>
-  </div>
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Project</th>
+        <th>Votes</th>
+        <th>Rewards</th>
+        <th>Platform</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
 
-  <script>
-    const projects = [
-      {id:1,name:"iDOS",votes:12,rewards:"100 $YAP",platform:"Ethereum"},
-      {id:2,name:"Sentient",votes:7,rewards:"50 $YAP",platform:"Polygon"},
-      {id:3,name:"RezoX",votes:18,rewards:"150 $YAP",platform:"Solana"},
-      {id:4,name:"Momentum",votes:4,rewards:"25 $YAP",platform:"Ethereum"},
-      {id:5,name:"KloutGG",votes:10,rewards:"75 $YAP",platform:"Polygon"},
-      {id:6,name:"Firestarter",votes:3,rewards:"20 $YAP",platform:"Solana"}
-    ];
+<script>
+const projects=[
+  {id:1,name:"iDOS",votes:12,rewards:"100 $YAP",platform:"Ethereum"},
+  {id:2,name:"Sentient",votes:7,rewards:"50 $YAP",platform:"Polygon"},
+  {id:3,name:"RezoX",votes:18,rewards:"150 $YAP",platform:"Solana"},
+  {id:4,name:"Momentum",votes:4,rewards:"25 $YAP",platform:"Ethereum"},
+  {id:5,name:"KloutGG",votes:10,rewards:"75 $YAP",platform:"Polygon"},
+  {id:6,name:"Firestarter",votes:3,rewards:"20 $YAP",platform:"Solana"},
+  {id:7,name:"NewProj",votes:2,rewards:"10 $YAP",platform:"Ethereum"},
+  {id:8,name:"Alpha",votes:1,rewards:"5 $YAP",platform:"Solana"}
+];
 
-    const votedProjects = new Set();
+const votedProjects=new Set();
 
-    function getRankBadge(index) {
-      if(index===0) return `<div class="rank-badge rank-1">🥇</div>`;
-      if(index===1) return `<div class="rank-badge rank-2">2</div>`;
-      if(index===2) return `<div class="rank-badge rank-3">3</div>`;
-      return `<div class="rank-badge rank-other">${index+1}</div>`;
-    }
+function getRankBadge(index){
+  if(index===0) return `<div class="rank-badge rank-1">🥇</div>`;
+  if(index===1) return `<div class="rank-badge rank-2">2</div>`;
+  if(index===2) return `<div class="rank-badge rank-3">3</div>`;
+  return `<div class="rank-badge rank-other">${index+1}</div>`;
+}
 
-    function getPlatformClass(platform){ return platform.toLowerCase(); }
+function getPlatformClass(platform){ return platform.toLowerCase(); }
 
-    function renderTable(){
-      const sorted = [...projects].sort((a,b)=>b.votes-a.votes);
-      const tableBody = document.getElementById('tableBody');
-      tableBody.innerHTML = sorted.map((p,i)=>`
-        <tr>
-          <td>${getRankBadge(i)}</td>
-          <td><span class="project-name">${p.name}</span></td>
-          <td><span class="votes">${p.votes}</span></td>
-          <td><span class="rewards">${p.rewards}</span></td>
-          <td><span class="platform-badge ${getPlatformClass(p.platform)}">${p.platform}</span></td>
-          <td><button class="vote-btn" data-id="${p.id}" ${votedProjects.has(p.id)?'disabled':''}>${votedProjects.has(p.id)?'Voted':'Vote'}</button></td>
-        </tr>
-      `).join('');
+function renderTable(){
+  const sorted=[...projects].sort((a,b)=>b.votes-a.votes);
+  const tableBody=document.getElementById('tableBody');
+  tableBody.innerHTML=sorted.map((p,i)=>`
+    <tr>
+      <td>${getRankBadge(i)}</td>
+      <td><span class="project-name">${p.name}</span></td>
+      <td><span class="votes">${p.votes}</span></td>
+      <td><span class="rewards">${p.rewards}</span></td>
+      <td><span class="platform-badge ${getPlatformClass(p.platform)}">${p.platform}</span></td>
+      <td><button class="vote-btn" data-id="${p.id}" ${votedProjects.has(p.id)?'disabled':''}>${votedProjects.has(p.id)?'Voted':'Vote'}</button></td>
+    </tr>
+  `).join('');
+  document.querySelectorAll('.vote-btn').forEach(btn=>btn.addEventListener('click',handleVote));
+}
 
-      document.querySelectorAll('.vote-btn').forEach(btn=>btn.addEventListener('click',handleVote));
-    }
+function handleVote(e){
+  const id=parseInt(e.target.dataset.id);
+  if(votedProjects.has(id)) return;
+  const project=projects.find(p=>p.id===id);
+  if(project){ project.votes++; votedProjects.add(id); renderTable(); }
+}
 
-    function handleVote(e){
-      const id = parseInt(e.target.dataset.id);
-      if(votedProjects.has(id)) return;
-      const project = projects.find(p=>p.id===id);
-      if(project){ project.votes++; votedProjects.add(id); renderTable(); }
-    }
-
-    renderTable();
-  </script>
+renderTable();
+</script>
 
 </body>
 </html>

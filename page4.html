@@ -11,7 +11,7 @@
     margin: 0;
     padding: 0;
     font-family: 'Orbitron', sans-serif;
-    background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+    background-color: #000;
     color: #fff;
     display: flex;
     flex-direction: column;
@@ -20,89 +20,76 @@
 
   h1 {
     text-align: center;
-    padding: 30px 20px 10px 20px;
+    padding: 25px 20px 10px 20px;
     font-weight: 500;
-    font-size: 36px;
-    letter-spacing: 1px;
-    color: #fff;
-    text-shadow: 0 0 10px rgba(255,255,255,0.2);
+    font-size: 32px;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin: 0 0 20px 0;
   }
 
   .table-container {
     width: 90%;
-    max-width: 1000px;
+    max-width: 900px;
     margin-bottom: 50px;
     overflow-x: auto;
   }
 
   table {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(8px);
-    border-radius: 15px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.7);
-    overflow: hidden;
+    border-collapse: collapse;
   }
 
   th, td {
-    padding: 15px 20px;
+    padding: 12px 15px;
     text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
   }
 
   th {
     font-weight: 500;
-    letter-spacing: 0.5px;
-    background: rgba(255,255,255,0.1);
-    text-transform: uppercase;
     font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid rgba(255,255,255,0.3);
   }
 
   tr:hover td {
-    background: rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.05);
   }
 
   .upvote-btn {
-    padding: 8px 16px;
-    background: linear-gradient(135deg, #00ffcc, #00aaff);
-    color: #000;
+    padding: 6px 12px;
+    background: transparent;
+    color: #0ff;
     font-weight: 500;
-    border: none;
-    border-radius: 8px;
+    border: 1px solid #0ff;
+    border-radius: 6px;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.2s ease;
     font-size: 14px;
-    box-shadow: 0 4px 15px rgba(0,255,255,0.3);
   }
 
   .upvote-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,255,255,0.5);
+    background: #0ff;
+    color: #000;
   }
 
   .upvote-btn:disabled {
     background: #444;
     color: #aaa;
+    border-color: #555;
     cursor: default;
-    box-shadow: none;
   }
 
   @media (max-width: 600px) {
     th, td {
-      padding: 12px 10px;
-      font-size: 12px;
-    }
-
-    .upvote-btn {
-      padding: 6px 12px;
+      padding: 10px 8px;
       font-size: 12px;
     }
 
     h1 {
-      font-size: 28px;
+      font-size: 26px;
       padding: 20px 10px 10px 10px;
     }
   }
@@ -110,79 +97,65 @@
 </head>
 <body>
 
-<h1>Yappers per Project</h1>
+<h1>Project Leaderboard</h1>
 
 <div class="table-container">
-  <table id="yappersTable">
+  <table id="leaderboardTable">
     <thead>
       <tr>
-        <th>ID</th>
+        <th>S.No.</th>
         <th>Project</th>
-        <th>Yappers</th>
-        <th>Votes</th>
-        <th>Action</th>
+        <th>Vote</th>
+        <th>Rewards</th>
+        <th>Platform</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td>1</td>
         <td>iDOS</td>
-        <td>23</td>
         <td>12</td>
-        <td><button class="upvote-btn">Upvote</button></td>
+        <td>100 $YAP</td>
+        <td>Ethereum</td>
       </tr>
       <tr>
         <td>2</td>
         <td>Sentient</td>
-        <td>15</td>
         <td>7</td>
-        <td><button class="upvote-btn">Upvote</button></td>
+        <td>50 $YAP</td>
+        <td>Polygon</td>
       </tr>
       <tr>
         <td>3</td>
         <td>RezoX</td>
-        <td>30</td>
         <td>18</td>
-        <td><button class="upvote-btn">Upvote</button></td>
+        <td>150 $YAP</td>
+        <td>Solana</td>
       </tr>
       <tr>
         <td>4</td>
         <td>Momentum</td>
-        <td>11</td>
         <td>4</td>
-        <td><button class="upvote-btn">Upvote</button></td>
+        <td>25 $YAP</td>
+        <td>Ethereum</td>
       </tr>
       <tr>
         <td>5</td>
         <td>KloutGG</td>
-        <td>19</td>
         <td>10</td>
-        <td><button class="upvote-btn">Upvote</button></td>
+        <td>75 $YAP</td>
+        <td>Polygon</td>
       </tr>
       <tr>
         <td>6</td>
         <td>Firestarter</td>
-        <td>8</td>
         <td>3</td>
-        <td><button class="upvote-btn">Upvote</button></td>
+        <td>20 $YAP</td>
+        <td>Solana</td>
       </tr>
     </tbody>
   </table>
 </div>
-
-<script>
-  const table = document.getElementById('yappersTable');
-
-  table.addEventListener('click', (e) => {
-    if (e.target.classList.contains('upvote-btn')) {
-      const row = e.target.closest('tr');
-      const votesCell = row.querySelectorAll('td')[3];
-      votesCell.textContent = parseInt(votesCell.textContent) + 1;
-      e.target.disabled = true;
-      e.target.textContent = 'Voted';
-    }
-  });
-</script>
 
 </body>
 </html>

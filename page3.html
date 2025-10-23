@@ -1,87 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Page 3 - Messages</title>
-<style>
-  /* Your existing styles remain unchanged */
-</style>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <meta charset="UTF-8">
+  <title>Engage Chat</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: white;
+      font-family: 'Orbitron', sans-serif;
+    }
+    .chat-container {
+      width: 90%;
+      max-width: 800px;
+      margin: 50px auto;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      padding: 20px;
+    }
+    .messages {
+      height: 400px;
+      overflow-y: auto;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 10px;
+    }
+    .message {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+      gap: 10px;
+    }
+    .message img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid #666;
+    }
+    .message strong {
+      color: #00ffcc;
+      margin-right: 5px;
+    }
+    .input-area {
+      display: flex;
+      margin-top: 10px;
+      gap: 10px;
+    }
+    input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-family: 'Orbitron', sans-serif;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      background: #00ffcc;
+      font-family: 'Orbitron', sans-serif;
+      cursor: pointer;
+      color: #000;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
+  <div class="chat-container">
+    <h2>Engage for Engage | Follow for Follow | Make Connections</h2>
+    <div class="messages" id="messages"></div>
+    <div class="input-area">
+      <input type="text" id="messageInput" placeholder="Type your message..." />
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
 
-<!-- Your existing HTML/UI for page3 -->
-<div id="messages-container"></div>
+  <!-- Firebase -->
+  <script type="module">
+    // Import Firebase SDK
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-<input type="text" id="message-input" placeholder="Type your message">
-<button onclick="sendMessage()">Send</button>
+    // 🔥 Your Firebase Config (from your existing project)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDnJ6tMJw16UXa4vV3X4G-2E7qFhZLOr2Y",
+      authDomain: "rezo-io.firebaseapp.com",
+      projectId: "rezo-io",
+      storageBucket: "rezo-io.appspot.com",
+      messagingSenderId: "165982382662",
+      appId: "1:165982382662:web:8c4abec0f65b2c2ad37c22"
+    };
 
-<script>
-  // ====== Firebase Configuration ======
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_ID",
-    appId: "YOUR_APP_ID"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  // ====== Check Login ======
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      window.currentUser = {
-        name: user.displayName || "Anonymous",
-        photoURL: user.photoURL || "default-profile.png",
-        uid: user.uid
-      };
-      loadMessages();
-    } else {
-      alert("You must log in to access this page.");
-      window.location.href = "login.html"; // redirect to login
-    }
-  });
+    const messagesDiv = document.getElementById("messages");
+    const messageInput = document.getElementById("messageInput");
+    const sendBtn = document.getElementById("sendBtn");
 
-  // ====== Load Messages ======
-  function loadMessages() {
-    db.collection("messages").orderBy("timestamp")
-      .onSnapshot(snapshot => {
-        const container = document.getElementById("messages-container");
-        container.innerHTML = ""; // clear previous
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          const messageDiv = document.createElement("div");
-          messageDiv.style.marginBottom = "10px";
-          messageDiv.innerHTML = `
-            <img src="${data.photoURL}" style="width:30px;height:30px;border-radius:50%;vertical-align:middle;">
-            <strong>${data.name}:</strong> ${data.text}
+    // ✅ Only allow logged in users
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      const uid = user.uid;
+      let username = "Unknown";
+      let avatarUrl = "https://i.imgur.com/0y0y0y0.png";
+
+      // Fetch username & avatar from Firestore "profiles"
+      try {
+        const response = await fetch(`https://firestore.googleapis.com/v1/projects/rezo-io/databases/(default)/documents/profiles/${uid}`);
+        if (response.ok) {
+          const data = await response.json();
+          const fields = data.fields;
+          if (fields?.username) username = fields.username.stringValue;
+          if (fields?.avatarUrl?.stringValue) avatarUrl = fields.avatarUrl.stringValue || avatarUrl;
+        }
+      } catch (err) {
+        console.error("Profile fetch failed:", err);
+      }
+
+      // Realtime chat listener
+      const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
+      onSnapshot(q, (snapshot) => {
+        messagesDiv.innerHTML = "";
+        snapshot.forEach((doc) => {
+          const msg = doc.data();
+          const div = document.createElement("div");
+          div.className = "message";
+          div.innerHTML = `
+            <img src="${msg.avatarUrl}" alt="pfp">
+            <div><strong>${msg.username}:</strong> ${msg.text}</div>
           `;
-          container.appendChild(messageDiv);
+          messagesDiv.appendChild(div);
+          messagesDiv.scrollTop = messagesDiv.scrollHeight;
         });
       });
-  }
 
-  // ====== Send Message ======
-  function sendMessage() {
-    const input = document.getElementById("message-input");
-    const text = input.value.trim();
-    if (!text) return;
-
-    db.collection("messages").add({
-      name: window.currentUser.name,
-      photoURL: window.currentUser.photoURL,
-      text: text,
-      uid: window.currentUser.uid,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      // Send message
+      sendBtn.addEventListener("click", async () => {
+        const text = messageInput.value.trim();
+        if (text === "") return;
+        await addDoc(collection(db, "messages"), {
+          uid,
+          username,
+          avatarUrl,
+          text,
+          timestamp: serverTimestamp()
+        });
+        messageInput.value = "";
+      });
     });
-
-    input.value = "";
-  }
-</script>
+  </script>
 </body>
 </html>

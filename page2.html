@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Rezo - Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ mobile scaling -->
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
@@ -150,6 +151,8 @@
       transition: transform 0.4s ease, box-shadow 0.4s ease;
       position: relative;
       z-index: 2;
+      padding: 20px;
+      box-sizing: border-box;
     }
 
     .big-top-box:hover {
@@ -189,6 +192,8 @@
       position: relative;
       overflow: hidden;
       z-index: 3;
+      padding: 20px;
+      box-sizing: border-box;
     }
 
     .promo-box::before {
@@ -239,11 +244,66 @@
       transform: scale(1.05);
     }
 
-    @media (max-width: 992px) { .box-item { flex: 1 1 calc(45% - 30px); } }
-    @media (max-width: 600px) { 
-      .box-item { flex: 1 1 100%; height: 200px; } 
-      .promo-box, .big-top-box { height: 200px; }
-      .top-right-buttons { padding: 10px 15px; gap: 10px; }
+    /* ✅ Tablet */
+    @media (max-width: 992px) {
+      .box-item { flex: 1 1 calc(45% - 30px); }
+      .big-top-box, .promo-box { height: 220px; }
+    }
+
+    /* ✅ Mobile */
+    @media (max-width: 768px) {
+      .top-right-buttons {
+        justify-content: center;
+        gap: 12px;
+        padding: 10px 15px;
+      }
+
+      .top-right-buttons button {
+        font-size: 14px;
+        padding: 8px 14px;
+      }
+
+      .big-top-box {
+        height: auto;
+        padding: 25px 15px;
+      }
+
+      .big-top-box h2 { font-size: 24px; }
+      .big-top-box p { font-size: 15px; }
+
+      .top-boxes {
+        flex-direction: column;
+        gap: 25px;
+        width: 95%;
+      }
+
+      .box-item {
+        flex: 1 1 100%;
+        height: 190px;
+        padding: 12px;
+      }
+
+      .box-item h2 { font-size: 20px; }
+      .box-item p { font-size: 15px; }
+
+      .promo-box {
+        height: auto;
+        padding: 25px 15px;
+      }
+
+      .promo-box h2 { font-size: 22px; }
+      .promo-box p { font-size: 14px; }
+      .promo-btn { font-size: 14px; padding: 8px 18px; }
+    }
+
+    /* ✅ Small Phones */
+    @media (max-width: 480px) {
+      .big-top-box h2 { font-size: 20px; }
+      .big-top-box p { font-size: 13px; }
+      .box-item h2 { font-size: 18px; }
+      .box-item p { font-size: 13px; }
+      .promo-box h2 { font-size: 20px; }
+      .promo-box p { font-size: 13px; }
     }
   </style>
 </head>
@@ -265,7 +325,7 @@
     <p>Need money to run my site tho, contact in X below</p>
   </div>
 
-  <!-- 9 Box Grid: 6 first row, 2 second row, 1 empty space -->
+  <!-- 9 Box Grid -->
   <div class="top-boxes">
     <div class="box-item">
       <h2>Airdrop Opportunities</h2>
@@ -291,8 +351,6 @@
       <h2>Dev community</h2>
       <p>Connect with other devs.</p>
     </div>
-
-    <!-- Second row: 2 new boxes -->
     <div class="box-item" onclick="window.location.href='page5.html'">
       <h2>Engage for Engage</h2>
       <p>Engage on tweets to level up on LBs.</p>
@@ -301,8 +359,6 @@
       <h2>Follow for Follow</h2>
       <p>Grow accounts with this page.</p>
     </div>
-
-    <!-- Empty space for visual balance -->
     <div class="box-item" style="background: transparent; border: none; box-shadow: none; pointer-events: none;"></div>
   </div>
 

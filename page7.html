@@ -19,8 +19,21 @@ body {
   color: white;
 }
 
+/* Stars background */
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  opacity: 0.8;
+  animation: floatStars linear infinite;
+}
+@keyframes floatStars {
+  0% { transform: translateY(0) translateX(0); }
+  100% { transform: translateY(-800px) translateX(50px); }
+}
+
 h1 {
-  color: gold;
+  color: #3ea6ff; /* blue */
   margin-top: 20px;
   letter-spacing: 1px;
   display: flex;
@@ -29,9 +42,9 @@ h1 {
 }
 
 .add-friend-btn {
-  background: gold;
+  background: #3ea6ff;
   border: none;
-  color: black;
+  color: white;
   padding: 8px 20px;
   font-weight: bold;
   border-radius: 5px;
@@ -59,7 +72,7 @@ h1 {
   width: 8px;
 }
 .main-box::-webkit-scrollbar-thumb {
-  background: gold;
+  background: #3ea6ff;
   border-radius: 10px;
 }
 
@@ -96,7 +109,7 @@ h1 {
 
 .friend-name {
   font-weight: bold;
-  color: gold;
+  color: #3ea6ff;
 }
 
 .friend-text {
@@ -106,9 +119,9 @@ h1 {
 }
 
 .reply-btn {
-  background: gold;
+  background: #3ea6ff;
   border: none;
-  color: black;
+  color: white;
   padding: 6px 12px;
   font-weight: bold;
   border-radius: 5px;
@@ -137,6 +150,7 @@ h1 {
   gap: 15px;
   width: 300px;
   color: white;
+  position: relative;
 }
 
 #friendPopup input {
@@ -151,16 +165,22 @@ h1 {
   padding: 10px;
   border-radius: 5px;
   border: none;
-  background: gold;
-  color: black;
+  background: #3ea6ff;
+  color: white;
   font-weight: bold;
   cursor: pointer;
 }
 
+/* Popup buttons container */
+#popupBtns {
+  display:flex; 
+  justify-content: space-between;
+}
+
 .back-btn {
-  background: gold;
+  background: #3ea6ff;
   border: none;
-  color: black;
+  color: white;
   padding: 6px 12px;
   font-weight: bold;
   border-radius: 5px;
@@ -170,21 +190,25 @@ h1 {
 </head>
 <body>
 
+<!-- Stars background -->
+<div class="star" style="width:2px; height:2px; top:10%; left:20%; animation-duration:25s;"></div>
+<div class="star" style="width:3px; height:3px; top:50%; left:70%; animation-duration:30s;"></div>
+<div class="star" style="width:2px; height:2px; top:30%; left:50%; animation-duration:20s;"></div>
+<div class="star" style="width:1px; height:1px; top:70%; left:40%; animation-duration:35s;"></div>
+
 <h1>
   Engage your friends
   <button class="add-friend-btn" id="showPopupBtn">Add Friends +</button>
 </h1>
 
-<div class="main-box" id="feedBox">
-  <!-- Friend posts will appear here -->
-</div>
+<div class="main-box" id="feedBox"></div>
 
 <!-- Popup -->
 <div id="friendPopup">
   <div>
     <span>Enter Friend's UserID</span>
     <input type="text" id="friendUserId" placeholder="@username">
-    <div style="display:flex; justify-content:space-between;">
+    <div id="popupBtns">
       <button id="addFriendBtn">OK</button>
       <button id="backBtn" class="back-btn">Back</button>
     </div>
@@ -252,9 +276,8 @@ async function initializeUserDoc() {
       friends: [],
       link1: "",
       link2: "",
-      username: user.email.split("@")[0] || "User"
+      username: auth.currentUser.email.split("@")[0] || "User"
     });
-    console.log("User doc initialized");
   }
 }
 
@@ -319,13 +342,11 @@ addFriendBtn.addEventListener('click', async () => {
   const currentData = docSnap.data();
   const existing = currentData.friends || [];
 
-  // Check for duplicates
   if (existing.some(f => f.name === friendId)) {
     alert("Friend already added");
     return;
   }
 
-  // For demo, create dummy post for friend
   const newFriend = {
     name: friendId,
     text: `This is the latest tweet from @${friendId}`,

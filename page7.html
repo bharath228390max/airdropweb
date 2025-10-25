@@ -15,6 +15,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  overflow: hidden;
   color: white;
 }
 
@@ -24,23 +25,23 @@ h1 {
   letter-spacing: 1px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
 }
 
-#addFriendBtn {
+.add-friend-btn {
+  background: gold;
+  border: none;
+  color: black;
   padding: 8px 20px;
-  font-size: 22px;
-  border-radius: 12px;
-  border: 2px solid gold;
-  background: transparent;
-  color: gold;
+  font-weight: bold;
+  border-radius: 5px;
   cursor: pointer;
 }
 
 .main-box {
   width: 80%;
   height: 70vh;
-  margin-top: 20px;
+  margin-top: 10px;
   border: 1px solid white;
   border-radius: 10px;
   background: rgba(255,255,255,0.02);
@@ -70,11 +71,24 @@ h1 {
   border-radius: 15px;
   padding: 12px 16px;
   box-shadow: 0 0 10px rgba(255,255,255,0.1);
+  align-items: center;
   justify-content: space-between;
+}
+
+.friend-left {
+  display: flex;
+  gap: 12px;
   align-items: center;
 }
 
-.friend-bubble .content {
+.friend-bubble img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.4);
+}
+
+.friend-content {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -91,80 +105,88 @@ h1 {
   color: white;
 }
 
-.friend-bubble button {
-  padding: 6px 14px;
-  border-radius: 8px;
-  border: 1.5px solid gold;
-  background: transparent;
-  color: gold;
+.reply-btn {
+  background: gold;
+  border: none;
+  color: black;
+  padding: 6px 12px;
+  font-weight: bold;
+  border-radius: 5px;
   cursor: pointer;
 }
 
-.friend-bubble button:hover {
-  background: gold;
-  color: black;
-}
-
+/* Popup styles */
 #friendPopup {
   position: fixed;
-  top:0; left:0; width:100%; height:100%;
-  background: rgba(0,0,0,0.9);
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.85);
   display: none;
   justify-content: center;
   align-items: center;
   z-index: 10;
 }
 
-#friendPopup .popup-box {
+#friendPopup div {
   background: rgba(255,255,255,0.05);
   padding: 30px;
-  border-radius: 15px;
-  border: 2px solid gold;
+  border: 1px solid white;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   gap: 15px;
   width: 300px;
+  color: white;
 }
 
 #friendPopup input {
   padding: 10px;
-  border-radius: 10px;
-  border: 1.5px solid gold;
-  background: transparent;
+  border-radius: 5px;
+  border: 1px solid white;
+  background: rgba(255,255,255,0.02);
   color: white;
 }
 
 #friendPopup button {
-  padding: 8px 15px;
-  border-radius: 10px;
-  border: 1.5px solid gold;
-  background: transparent;
-  color: gold;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background: gold;
+  color: black;
+  font-weight: bold;
   cursor: pointer;
 }
 
-#friendPopup button:hover {
+.back-btn {
   background: gold;
+  border: none;
   color: black;
+  padding: 6px 12px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
 }
 </style>
 </head>
 <body>
 
-<h1>Engage your friends <button id="addFriendBtn">Add Friends +</button></h1>
+<h1>
+  Engage your friends
+  <button class="add-friend-btn" id="showPopupBtn">Add Friends +</button>
+</h1>
 
 <div class="main-box" id="feedBox">
   <!-- Friend posts will appear here -->
 </div>
 
-<!-- Friend popup -->
+<!-- Popup -->
 <div id="friendPopup">
-  <div class="popup-box">
-    <label>Enter Friend ID:</label>
-    <input type="text" id="friendIdInput" placeholder="@username">
+  <div>
+    <span>Enter Friend's UserID</span>
+    <input type="text" id="friendUserId" placeholder="@username">
     <div style="display:flex; justify-content:space-between;">
-      <button id="popupBackBtn">Back</button>
-      <button id="popupAddBtn">OK</button>
+      <button id="addFriendBtn">OK</button>
+      <button id="backBtn" class="back-btn">Back</button>
     </div>
   </div>
 </div>
@@ -177,6 +199,7 @@ import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from "https:
 const firebaseConfig = {
   apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
   authDomain: "rezo-chat.firebaseapp.com",
+  databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "rezo-chat",
   storageBucket: "rezo-chat.firebasestorage.app",
   messagingSenderId: "300513819927",
@@ -188,69 +211,133 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const feedBox = document.getElementById('feedBox');
-const addFriendBtn = document.getElementById('addFriendBtn');
+const showPopupBtn = document.getElementById('showPopupBtn');
 const friendPopup = document.getElementById('friendPopup');
-const popupAddBtn = document.getElementById('popupAddBtn');
-const popupBackBtn = document.getElementById('popupBackBtn');
-const friendIdInput = document.getElementById('friendIdInput');
+const addFriendBtn = document.getElementById('addFriendBtn');
+const backBtn = document.getElementById('backBtn');
+const friendUserIdInput = document.getElementById('friendUserId');
 
-let currentUserId = null;
-
-// Check auth
-onAuthStateChanged(auth, user => {
-  if(!user) window.location.href = "page2.html";
-  currentUserId = user.uid;
-  loadFriends();
-});
+let currentUserId;
 
 // Show popup
-addFriendBtn.onclick = () => {
-  friendPopup.style.display = "flex";
-}
+showPopupBtn.addEventListener('click', () => {
+  friendPopup.style.display = 'flex';
+});
 
 // Hide popup
-popupBackBtn.onclick = () => {
-  friendPopup.style.display = "none";
+backBtn.addEventListener('click', () => {
+  friendPopup.style.display = 'none';
+  friendUserIdInput.value = '';
+});
+
+// Wait for auth
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUserId = user.uid;
+    await initializeUserDoc();
+    await loadFriends();
+  } else {
+    alert("You must be signed in to view this page.");
+    window.location.href = "page2.html";
+  }
+});
+
+// Initialize document
+async function initializeUserDoc() {
+  const userDocRef = doc(db, "profiles", currentUserId);
+  const docSnap = await getDoc(userDocRef);
+  if (!docSnap.exists()) {
+    await setDoc(userDocRef, {
+      avatarUrl: null,
+      friends: [],
+      link1: "",
+      link2: "",
+      username: user.email.split("@")[0] || "User"
+    });
+    console.log("User doc initialized");
+  }
+}
+
+// Load friends feed
+async function loadFriends() {
+  feedBox.innerHTML = "";
+  const userDocRef = doc(db, "profiles", currentUserId);
+  const docSnap = await getDoc(userDocRef);
+  if (!docSnap.exists()) return;
+  const data = docSnap.data();
+  const friends = data.friends || [];
+
+  friends.forEach(f => {
+    if (!f.name || !f.text) return;
+    const bubble = document.createElement('div');
+    bubble.className = 'friend-bubble';
+
+    const leftDiv = document.createElement('div');
+    leftDiv.className = 'friend-left';
+
+    const img = document.createElement('img');
+    img.src = f.img || "https://via.placeholder.com/50";
+
+    const content = document.createElement('div');
+    content.className = 'friend-content';
+
+    const name = document.createElement('div');
+    name.className = 'friend-name';
+    name.innerText = f.name;
+
+    const text = document.createElement('div');
+    text.className = 'friend-text';
+    text.innerText = f.text;
+
+    content.appendChild(name);
+    content.appendChild(text);
+    leftDiv.appendChild(img);
+    leftDiv.appendChild(content);
+
+    const replyBtn = document.createElement('button');
+    replyBtn.className = 'reply-btn';
+    replyBtn.innerText = 'Reply';
+    replyBtn.onclick = () => {
+      window.open(f.link1 || "#", "_blank");
+    };
+
+    bubble.appendChild(leftDiv);
+    bubble.appendChild(replyBtn);
+    feedBox.appendChild(bubble);
+  });
 }
 
 // Add friend
-popupAddBtn.onclick = async () => {
-  const friendId = friendIdInput.value.trim();
-  if(!friendId) return alert("Enter a friend ID");
-  const userRef = doc(db, "profiles", currentUserId);
-  const userSnap = await getDoc(userRef);
-  if(!userSnap.exists()) await setDoc(userRef, {friends: []});
-  const friends = userSnap.data()?.friends || [];
-  if(friends.includes(friendId)) return alert("Friend already added");
+addFriendBtn.addEventListener('click', async () => {
+  const friendId = friendUserIdInput.value.trim();
+  if (!friendId) return alert("Enter a user ID");
 
-  await updateDoc(userRef, {friends: arrayUnion(friendId)});
-  friendIdInput.value = "";
-  friendPopup.style.display = "none";
-  loadFriends();
-}
+  const userDocRef = doc(db, "profiles", currentUserId);
+  const docSnap = await getDoc(userDocRef);
+  if (!docSnap.exists()) return;
 
-// Load friends
-async function loadFriends() {
-  feedBox.innerHTML = "";
-  const userRef = doc(db, "profiles", currentUserId);
-  const userSnap = await getDoc(userRef);
-  const friends = userSnap.data()?.friends || [];
-  for(const fId of friends){
-    const fRef = doc(db, "profiles", fId);
-    const fSnap = await getDoc(fRef);
-    const latestPost = fSnap.data()?.latestPost || "No latest post yet";
-    const bubble = document.createElement('div');
-    bubble.className = 'friend-bubble';
-    bubble.innerHTML = `
-      <div class="content">
-        <div class="friend-name">${fId}</div>
-        <div class="friend-text">${latestPost}</div>
-      </div>
-      <button onclick="window.location.href='page8.html?user=${fId}'">Reply</button>
-    `;
-    feedBox.appendChild(bubble);
+  const currentData = docSnap.data();
+  const existing = currentData.friends || [];
+
+  // Check for duplicates
+  if (existing.some(f => f.name === friendId)) {
+    alert("Friend already added");
+    return;
   }
-}
+
+  // For demo, create dummy post for friend
+  const newFriend = {
+    name: friendId,
+    text: `This is the latest tweet from @${friendId}`,
+    img: `https://via.placeholder.com/50/${Math.floor(Math.random()*16777215).toString(16)}`,
+    link1: `https://x.com/${friendId}`
+  };
+
+  await updateDoc(userDocRef, { friends: arrayUnion(newFriend) });
+  friendPopup.style.display = 'none';
+  friendUserIdInput.value = '';
+  await loadFriends();
+});
 </script>
 
 </body>

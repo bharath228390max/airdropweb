@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Rezo - Twitter Friends (Firebase Auth + Firestore)</title>
+
+<!-- Firebase v12 modular imports -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+  // ---------- REPLACE with your project's config if needed ----------
+  const firebaseConfig = {
+    apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
+    authDomain: "rezo-chat.firebaseapp.com",
+    databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "rezo-chat",
+    storageBucket: "rezo-chat.firebasestorage.app",
+    messagingSenderId: "300513819927",
+    appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
+  };
+  // -----------------------------------------------------------------
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // UI references
+  const loginFormHtml = `
+    <div style="display:flex;gap:8px;align-items:center;">
+      <input id="email" placeholder="email" style="padding:6px;border-radius:6px;border:1px solid #666;background:transparent;color:white" />
+      <input id="password" placeholder="password" type="password" style="padding:6px;border-radius:6px;border:1px solid #666;background:transparent;color:white" />
+      <button id="loginBtn" style="padding:8px 12px;border:1px solid gold;border-radius:6px;background:transparent;color:white;cursor:pointer">Login</button>
+      <button id="logoutBtn" style="padding:8px 12px;border:1px solid #999;border-radius:6px;background:transparent;color:#ccc;cursor:pointer;display:none">Logout</button>
+      <span id="authMsg" style="margin-left:12px;color:#ccc;font-size:13px"></span>
+    </div>
+  `;
+  document.getElementById('authArea').innerHTML = loginFormHtml;
+
+  document.getElementById('loginBtn').addEventListener('click', async () => {
+    const email = document.getElementById('email').value.trim();
+    const pass = document.getElementById('password').value;
+    if(!email || !pass) return alert('Enter email + password');
+    try {
+      const userCred = await signInWithEmailAndPassword(auth, email, pass);
+      console.log('Signed in:', userCred.user.uid);
+      document.getElementById('authMsg').textContent = `Signed in as ${userCred.user.email}`;
+    } catch(e) {
+      console.error('Login error', e);
+      alert('Login failed — check console for details');
+    }
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await signOut(auth);
+  });
+
+  // Map username => bubble element
+  const friendBubbles = {};
+  const feedBox = document.getElementById('feedBox');
+
+  // When auth state changes
+  let CURRENT_UID = null;
+  onAuthStateChanged(auth, async (user) => {
+    if(user){
+      CURRENT_UID = user.uid;
+      document.getElementById('loginBtn').style.display = 'none';
+      document.getElementById('logoutBtn').style.display = 'inline-block';
+      document.getElementById('authMsg').textContent = `Signed in as ${user.email}`;
+      console.log('User signed in:', user.uid);
+
+      // Load stored friends for this user (order preserved)
+      await loadFriendsFromFirestore();
+    } else {
+      CURRENT_UID = null;
+      document.getElementById('loginBtn').style.display = 'inline-block';
+      document.getElementById('logoutBtn').style.display = 'none';
+      document.getElementById('authMsg').textContent = 'Not signed in';
+      console.log('User signed out');
+      // clear UI
+      feedBox.innerHTML = '';
+      Object.keys(friendBubbles).forEach(k => delete friendBubbles[k]);
+    }
+  });
+
+  // Add friend button
+  window.addFriend = async function(){
+    if(!CURRENT_UID) return alert('Sign in first');
+    const input = document.getElementById('friendInput');
+    let username = input.value.trim().replace(/^@/,'');
+    if(!username) return alert('Enter username (without @)');
+    input.value = '';
+    console.log('Add friend:', username);
+
+    try {
+      // read existing friends array
+      const userDocRef = doc(db, 'users', CURRENT_UID);
+      const snap = await getDoc(userDocRef);
+      let friends = [];
+      if(snap.exists()){
+        friends = snap.data().friends || [];
+        console.log('existing friends', friends);
+      }
+      if(!friends.includes(username)){
+        friends.push(username);
+        await setDoc(userDocRef, { friends }, { merge: true });
+        console.log('Saved friends to Firestore', friends);
+      } else {
+        console.log('username already present');
+      }
+    } catch(e){
+      console.error('Firestore write failed', e);
+      alert('Failed to save friend (check console)');
+      return;
+    }
+
+    // fetch and update the bubble immediately
+    await fetchAndShowLatest(username);
+  };
+
+  // Load friends list from Firestore (in add-order) and fetch tweets
+  async function loadFriendsFromFirestore(){
+    if(!CURRENT_UID) return;
+    feedBox.innerHTML = '';
+    Object.keys(friendBubbles).forEach(k => delete friendBubbles[k]);
+
+    try {
+      const userDocRef = doc(db, 'users', CURRENT_UID);
+      const snap = await getDoc(userDocRef);
+      if(!snap.exists()){
+        console.log('No friends stored yet');
+        return;
+      }
+      const friends = snap.data().friends || [];
+      console.log('Loaded friends from Firestore:', friends);
+      // fetch latest tweet for each friend in the stored order
+      for(const username of friends){
+        await fetchAndShowLatest(username);
+      }
+    } catch(e){
+      console.error('Error loading friends', e);
+    }
+  }
+
+  // fetch latest tweet via TwitRSS + AllOrigins proxy, parse, and show only if <24h
+  async function fetchAndShowLatest(username){
+    console.log('Fetching latest for', username);
+    try {
+      // AllOrigins to bypass CORS
+      const proxy = 'https://api.allorigins.win/get?url=';
+      const target = encodeURIComponent(`https://twitrss.me/twitter_user_to_rss/?user=${username}`);
+      const res = await fetch(proxy + target);
+      if(!res.ok) throw new Error('Network response not ok: ' + res.status);
+      const json = await res.json();
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(json.contents, 'text/xml');
+      const items = xml.querySelectorAll('item');
+      if(items.length === 0){
+        console.log('No items for', username);
+        // create placeholder bubble if not exist (optional)
+        if(!friendBubbles[username]) createBubble(username, '(no tweets in feed)', null);
+        return;
+      }
+      const latest = items[0];
+      const title = latest.querySelector('title')?.textContent?.trim() || '';
+      const link = latest.querySelector('link')?.textContent?.trim() || '';
+      const pubDateText = latest.querySelector('pubDate')?.textContent;
+      const pubDate = pubDateText ? new Date(pubDateText) : null;
+
+      // check <24h
+      if(!pubDate){
+        console.log('no pubDate for item; showing anyway');
+      } else {
+        const hoursAgo = (Date.now() - pubDate.getTime()) / (1000*3600);
+        if(hoursAgo > 24){
+          console.log('Latest tweet older than 24h for', username, '-> skipping update');
+          // Do not remove bubble; keep existing bubble if present. If none, create placeholder
+          if(!friendBubbles[username]) createBubble(username, '(no tweets in last 24h)', null);
+          return;
+        }
+      }
+
+      // If we have data, create or update bubble (bubble order must stay as added)
+      if(friendBubbles[username]){
+        // update text and reply link without moving element
+        const el = friendBubbles[username];
+        el.querySelector('.friend-text').innerText = title;
+        const btn = el.querySelector('.reply-btn');
+        btn.onclick = () => { if(link) window.open(link, '_blank'); else alert('No tweet URL'); };
+        console.log('Updated bubble for', username);
+      } else {
+        createBubble(username, title, link);
+      }
+    } catch(e){
+      console.error('fetchAndShowLatest error for', username, e);
+      if(!friendBubbles[username]) createBubble(username, '(error fetching)', null);
+    }
+  }
+
+  // create a bubble and append at the end (order preserved)
+  function createBubble(username, text, link){
+    const bubble = document.createElement('div');
+    bubble.className = 'friend-bubble';
+    bubble.style.display = 'flex';
+    bubble.style.justifyContent = 'space-between';
+    bubble.style.alignItems = 'flex-start';
+    bubble.style.gap = '12px';
+
+    const info = document.createElement('div');
+    info.className = 'friend-info';
+    info.style.display = 'flex';
+    info.style.gap = '12px';
+    info.style.flex = '1';
+
+    const img = document.createElement('img');
+    img.src = `https://unavatar.io/twitter/${username}`;
+    img.alt = username;
+    img.width = 40; img.height = 40;
+    img.style.borderRadius = '50%';
+    img.style.border = '1px solid rgba(255,255,255,0.4)';
+
+    const content = document.createElement('div');
+    content.className = 'friend-content';
+    content.style.display = 'flex';
+    content.style.flexDirection = 'column';
+    content.style.gap = '4px';
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'friend-name';
+    nameEl.style.color = 'gold';
+    nameEl.style.fontWeight = '700';
+    nameEl.innerText = username;
+
+    const textEl = document.createElement('div');
+    textEl.className = 'friend-text';
+    textEl.style.color = 'white';
+    textEl.innerText = text || '';
+
+    content.appendChild(nameEl);
+    content.appendChild(textEl);
+    info.appendChild(img);
+    info.appendChild(content);
+
+    const replyBtn = document.createElement('button');
+    replyBtn.className = 'reply-btn';
+    replyBtn.style.padding = '6px 12px';
+    replyBtn.style.fontSize = '14px';
+    replyBtn.style.color = 'white';
+    replyBtn.style.background = 'transparent';
+    replyBtn.style.border = '1px solid gold';
+    replyBtn.style.borderRadius = '8px';
+    replyBtn.style.cursor = 'pointer';
+    replyBtn.innerText = 'Reply';
+    replyBtn.onclick = () => {
+      if(link) window.open(link, '_blank');
+      else alert('No tweet URL for this friend.');
+    };
+
+    bubble.appendChild(info);
+    bubble.appendChild(replyBtn);
+    feedBox.appendChild(bubble);
+
+    friendBubbles[username] = bubble;
+  }
+
+  // auto refresh every 60s for existing bubbles (updates in-place)
+  setInterval(()=>{
+    const names = Object.keys(friendBubbles);
+    for(const name of names) fetchAndShowLatest(name);
+  }, 60000);
+
+  // expose debug/helper on window if needed
+  window._rezo_debug = { fetchAndShowLatest, createBubble, friendBubbles };
+
+</script>
+
+<!-- Basic styles and layout (kept minimal — you already had yours above) -->
+<style>
+  :root{ --gold: #ffd700; --muted: rgba(255,255,255,0.06); }
+  body{ margin:0; background:#000; color:#fff; font-family: 'Orbitron', sans-serif; display:flex; flex-direction:column; align-items:center; }
+  .header{ width:80%; margin-top:20px; display:flex; justify-content:center; gap:16px; align-items:center; }
+  .header h1{ color:var(--gold); font-size:28px; margin:0; }
+  #friendInput{ padding:8px 10px; border-radius:6px; border:1px solid var(--gold); background:transparent; color:#fff; }
+  #addBtn{ padding:8px 12px; border-radius:8px; border:1px solid var(--gold); background:transparent; color:#fff; cursor:pointer; }
+  .main-box{ width:80%; height:70vh; margin-top:18px; border:1px solid #fff; border-radius:10px; overflow:auto; padding:12px; box-sizing:border-box; background:rgba(255,255,255,0.02); }
+  .friend-bubble{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; background:var(--muted); border-radius:12px; padding:10px; border:1px solid rgba(255,255,255,0.12); margin-bottom:10px; }
+</style>
+
+<!-- Simple page body -->
+<body>
+  <div id="authArea"></div>
+
+  <div class="header">
+    <h1>Engage your friends</h1>
+    <input id="friendInput" placeholder="@username" />
+    <button id="addBtn" onclick="addFriend()">Add Friends +</button>
+  </div>
+
+  <div class="main-box" id="feedBox"></div>
+</body>
+</html>

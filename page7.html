@@ -1,148 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Engage with Friends</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Orbitron', sans-serif;
-      background-color: black;
-      color: white;
-      overflow-x: hidden;
-    }
+<meta charset="UTF-8">
+<title>Engage with Friends</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Orbitron', sans-serif;
+    background: black;
+    color: white;
+    overflow-x: hidden;
+  }
 
-    /* Stars Background */
-    .stars {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(white, rgba(255, 255, 255, 0) 70%) repeat;
-      background-size: 3px 3px;
-      z-index: 0;
-    }
+  .stars {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: url('https://www.transparenttextures.com/patterns/stardust.png');
+    z-index: 0;
+  }
 
-    .container {
-      position: relative;
-      z-index: 1;
-      padding: 20px;
-      text-align: center;
-    }
+  .container {
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+    text-align: center;
+  }
 
-    h2 {
-      color: #2a6fff;
-      margin-bottom: 20px;
-    }
+  h2 {
+    color: #2979ff;
+  }
 
-    .friend {
-      border: 1px solid #2a6fff;
-      background-color: rgba(255, 255, 255, 0.08);
-      margin: 12px auto;
-      padding: 12px;
-      border-radius: 15px;
-      width: 85%;
-      max-width: 480px;
-      text-align: left;
-    }
+  .friend {
+    border: 1px solid #2979ff;
+    border-radius: 15px;
+    background-color: rgba(255,255,255,0.05);
+    padding: 12px;
+    margin: 12px auto;
+    width: 85%;
+    max-width: 480px;
+    text-align: left;
+  }
 
-    .friend img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      vertical-align: middle;
-      margin-right: 10px;
-    }
+  .friend img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 10px;
+  }
 
-    .friend-name {
-      color: #2a6fff;
-      font-weight: bold;
-    }
+  .friend-name {
+    color: #2979ff;
+    font-weight: bold;
+  }
 
-    .friend-text {
-      color: #d9e4ff;
-      font-size: 14px;
-      margin-top: 6px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  .friend-text {
+    color: #dce7ff;
+    margin-top: 6px;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-    .reply-btn {
-      margin-top: 8px;
-      padding: 5px 10px;
-      background-color: #2a6fff;
-      border: none;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 12px;
-    }
+  .reply-btn {
+    margin-top: 8px;
+    padding: 5px 10px;
+    border: none;
+    background-color: #2979ff;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+  }
 
-    /* Popup */
-    .popup {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      justify-content: center;
-      align-items: center;
-      z-index: 10;
-    }
+  .add-btn {
+    background-color: #2979ff;
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    margin-top: 10px;
+  }
 
-    .popup-content {
-      background-color: #0a0a0a;
-      border: 1px solid #2a6fff;
-      border-radius: 15px;
-      padding: 20px;
-      width: 300px;
-      text-align: center;
-      color: #fff;
-    }
+  /* Popup */
+  .popup {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+  }
 
-    .popup-content input {
-      width: 90%;
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #2a6fff;
-      background-color: #000;
-      color: #fff;
-      margin-bottom: 10px;
-    }
+  .popup-content {
+    background-color: #0a0a0a;
+    border: 1px solid #2979ff;
+    border-radius: 15px;
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+    color: #fff;
+  }
 
-    .popup-buttons {
-      display: flex;
-      justify-content: space-around;
-    }
+  .popup-content input {
+    width: 90%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #2979ff;
+    background-color: #000;
+    color: #fff;
+    margin-bottom: 10px;
+  }
 
-    .popup-buttons button {
-      padding: 6px 12px;
-      border: none;
-      border-radius: 8px;
-      background-color: #2a6fff;
-      color: white;
-      font-family: 'Orbitron', sans-serif;
-      cursor: pointer;
-    }
+  .popup-buttons {
+    display: flex;
+    justify-content: space-around;
+  }
 
-    .add-btn {
-      background-color: #2a6fff;
-      border: none;
-      color: white;
-      padding: 8px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-family: 'Orbitron', sans-serif;
-      margin-top: 10px;
-    }
-  </style>
+  .popup-buttons button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #2979ff;
+    color: white;
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+  }
+</style>
 </head>
 <body>
   <div class="stars"></div>
-
   <div class="container">
     <h2>Engage with Friends</h2>
     <div id="friendsList"></div>
@@ -161,108 +157,106 @@
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, updateDoc, arrayUnion, setDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, updateDoc, arrayUnion, setDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
-      authDomain: "rezo-chat.firebaseapp.com",
-      databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "rezo-chat",
-      storageBucket: "rezo-chat.firebasestorage.app",
-      messagingSenderId: "300513819927",
-      appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
+    authDomain: "rezo-chat.firebaseapp.com",
+    databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "rezo-chat",
+    storageBucket: "rezo-chat.firebasestorage.app",
+    messagingSenderId: "300513819927",
+    appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
 
-    const openPopupBtn = document.getElementById("openPopupBtn");
-    const popup = document.getElementById("popup");
-    const closePopupBtn = document.getElementById("closePopupBtn");
-    const addFriendBtn = document.getElementById("addFriendBtn");
-    const friendIdInput = document.getElementById("friendIdInput");
-    const friendsList = document.getElementById("friendsList");
+  const popup = document.getElementById("popup");
+  const openPopupBtn = document.getElementById("openPopupBtn");
+  const closePopupBtn = document.getElementById("closePopupBtn");
+  const addFriendBtn = document.getElementById("addFriendBtn");
+  const friendIdInput = document.getElementById("friendIdInput");
+  const friendsList = document.getElementById("friendsList");
 
-    openPopupBtn.addEventListener("click", () => popup.style.display = "flex");
-    closePopupBtn.addEventListener("click", () => popup.style.display = "none");
+  openPopupBtn.addEventListener("click", () => popup.style.display = "flex");
+  closePopupBtn.addEventListener("click", () => popup.style.display = "none");
 
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = "page2.html";
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "page2.html";
+      return;
+    }
+
+    const profileRef = doc(db, "profiles", user.uid);
+    const snap = await getDoc(profileRef);
+
+    if (!snap.exists()) {
+      await setDoc(profileRef, { friends: [] });
+      return;
+    }
+
+    const friends = snap.data().friends || [];
+    renderFriends(friends);
+
+    addFriendBtn.addEventListener("click", async () => {
+      const username = friendIdInput.value.trim();
+      if (!username) return alert("Enter username");
+
+      const current = (await getDoc(profileRef)).data().friends || [];
+      if (current.find(f => f.name === username)) {
+        alert("Friend already added");
         return;
       }
 
-      const profileRef = doc(db, "profiles", user.uid);
-      const profileSnap = await getDoc(profileRef);
+      const newFriend = {
+        name: username,
+        img: `https://unavatar.io/${username}`,
+        text: await getFakeTweet(username)
+      };
 
-      if (profileSnap.exists()) {
-        const data = profileSnap.data();
-        const friends = data.friends || [];
-        renderFriends(friends);
-      } else {
-        await setDoc(profileRef, { friends: [] });
-      }
-
-      addFriendBtn.addEventListener("click", async () => {
-        const username = friendIdInput.value.trim();
-        if (!username) return alert("Enter a valid username");
-
-        const snap = await getDoc(profileRef);
-        const currentFriends = snap.exists() ? (snap.data().friends || []) : [];
-
-        if (currentFriends.find(f => f.name === username)) {
-          alert("Friend already added!");
-          return;
-        }
-
-        const newFriend = {
-          name: username,
-          img: `https://unavatar.io/${username}`,
-          text: await getFakeTweet(username)
-        };
-
-        await updateDoc(profileRef, {
-          friends: arrayUnion(newFriend)
-        });
-
-        popup.style.display = "none";
-        friendIdInput.value = "";
-        renderFriends([...currentFriends, newFriend]);
+      await updateDoc(profileRef, {
+        friends: arrayUnion(newFriend)
       });
+
+      renderFriends([...current, newFriend]);
+      friendIdInput.value = "";
+      popup.style.display = "none";
     });
+  });
 
-    function renderFriends(friends) {
-      friendsList.innerHTML = "";
-      friends.forEach(friend => {
-        const div = document.createElement("div");
-        div.className = "friend";
-        div.innerHTML = `
-          <img src="${friend.img}" alt="">
-          <span class="friend-name">@${friend.name}</span>
-          <div class="friend-text">${friend.text}</div>
-          <button class="reply-btn">Reply</button>
-        `;
-        div.querySelector(".reply-btn").addEventListener("click", () => {
-          window.location.href = `reply.html?user=${encodeURIComponent(friend.name)}`;
-        });
-        friendsList.appendChild(div);
+  function renderFriends(friends) {
+    friendsList.innerHTML = "";
+    friends.forEach(f => {
+      const div = document.createElement("div");
+      div.className = "friend";
+      div.innerHTML = `
+        <img src="${f.img}" alt="">
+        <span class="friend-name">@${f.name}</span>
+        <div class="friend-text">${f.text}</div>
+        <button class="reply-btn">Reply</button>
+      `;
+      div.querySelector(".reply-btn").addEventListener("click", () => {
+        window.location.href = "reply.html?user=" + encodeURIComponent(f.name);
       });
-    }
+      friendsList.appendChild(div);
+    });
+  }
 
-    async function getFakeTweet(username) {
-      const samples = [
-        "Exploring a new chapter today 🚀",
-        "Just vibing and coding something cool.",
-        "Building ideas that matter ✨",
-        "Sometimes silence speaks volumes.",
-        "The future is bright — stay tuned."
-      ];
-      return samples[Math.floor(Math.random() * samples.length)];
-    }
-  </script>
+  async function getFakeTweet(username) {
+    const tweets = [
+      "Just posted a new update — stay tuned!",
+      "Exploring something cool right now 🚀",
+      "Working on ideas that matter ✨",
+      "The future is bright, keep building.",
+      "Silence speaks louder than words sometimes."
+    ];
+    return tweets[Math.floor(Math.random() * tweets.length)];
+  }
+</script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Rezo - Engage Your Friends</title>
+<title>Rezo Twitter Friends Feed</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
 
@@ -19,39 +19,33 @@ body {
   color: white;
 }
 
-.header {
+h1 {
+  color: gold;
   margin-top: 20px;
-  display: flex;
-  align-items: center;
-  gap: 20px;
+  letter-spacing: 1px;
 }
 
-.header h1 {
-  color: gold;
-  font-size: 30px;
-  margin: 0;
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 10px;
 }
 
 #addFriendBtn {
-  padding: 10px 20px;
-  font-size: 30px;
-  border-radius: 10px;
+  padding: 10px 25px;
+  font-size: 22px;
+  border-radius: 12px;
   border: 2px solid gold;
   background: transparent;
   color: gold;
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-#addFriendBtn:hover {
-  background: gold;
-  color: black;
 }
 
 .main-box {
   width: 80%;
   height: 70vh;
-  margin-top: 20px;
   border: 1px solid white;
   border-radius: 10px;
   background: rgba(255,255,255,0.02);
@@ -63,7 +57,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  position: relative;
 }
 
 .main-box::-webkit-scrollbar {
@@ -76,22 +69,16 @@ body {
 
 .friend-bubble {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
   gap: 12px;
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.6);
   border-radius: 15px;
   padding: 12px 16px;
   box-shadow: 0 0 10px rgba(255,255,255,0.1);
+  align-items: center;
 }
 
-.friend-info {
-  display: flex;
-  gap: 12px;
-}
-
-.friend-info img {
+.friend-bubble img {
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -116,21 +103,50 @@ body {
 }
 
 .reply-btn {
+  margin-left: auto;
   padding: 6px 12px;
   font-size: 14px;
   border-radius: 8px;
-  border: 1.5px solid gold;
+  border: 1px solid gold;
   background: transparent;
   color: gold;
   cursor: pointer;
-  height: fit-content;
-  align-self: flex-start;
 }
 
-.reply-btn:hover {
-  background: gold;
-  color: black;
+#addFriendModal {
+  position: fixed;
+  top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.8);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
+
+#addFriendModal .modal-content {
+  background: rgba(255,255,255,0.02);
+  padding: 30px;
+  border: 2px solid gold;
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  min-width: 300px;
+}
+
+#addFriendModal input {
+  padding:10px; font-size:16px; border-radius:10px; border:1px solid white; background:transparent; color:white;
+}
+
+#addFriendModal button {
+  padding:8px 15px; border-radius:8px; border:1px solid gold; background:transparent; color:gold; cursor:pointer;
+}
+
+#addFriendModal .buttons {
+  display:flex; justify-content:flex-end; gap:10px;
+}
+
 </style>
 </head>
 <body>
@@ -141,16 +157,27 @@ body {
 </div>
 
 <div class="main-box" id="feedBox">
-  <!-- Friend posts appear here -->
+  <!-- Friend posts will appear here -->
+</div>
+
+<!-- Add Friend Modal -->
+<div id="addFriendModal">
+  <div class="modal-content">
+    <label>Enter Friend's @username:</label>
+    <input type="text" id="friendUserId" placeholder="@username">
+    <div class="buttons">
+      <button id="cancelAddFriend">Cancel</button>
+      <button id="okAddFriend">OK</button>
+    </div>
+  </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
-// Firebase config
-const firebaseConfig = { 
+const firebaseConfig = {
   apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
   authDomain: "rezo-chat.firebaseapp.com",
   databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -161,36 +188,44 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
-let CURRENT_UID;
-const feedBox = document.getElementById('feedBox');
+let CURRENT_UID = null;
 
-// Auth check
+// Ensure only authorized users
 onAuthStateChanged(auth, user => {
-  if(!user){
-    window.location.href = 'page2.html';
-  } else {
-    CURRENT_UID = user.uid;
-    loadFriendsFromFirestore();
-  }
+  if(user) CURRENT_UID = user.uid;
+  else window.location.href = "page2.html";
 });
 
-// Add friend button
-document.getElementById('addFriendBtn').addEventListener('click', async () => {
-  const username = prompt("Enter friend's @username:");
+// Add Friend Modal Logic
+const addFriendBtn = document.getElementById('addFriendBtn');
+const addFriendModal = document.getElementById('addFriendModal');
+const cancelAddFriend = document.getElementById('cancelAddFriend');
+const okAddFriend = document.getElementById('okAddFriend');
+const friendUserIdInput = document.getElementById('friendUserId');
+const feedBox = document.getElementById('feedBox');
+
+addFriendBtn.addEventListener('click', () => {
+  friendUserIdInput.value = '';
+  addFriendModal.style.display = 'flex';
+});
+
+cancelAddFriend.addEventListener('click', () => {
+  addFriendModal.style.display = 'none';
+});
+
+okAddFriend.addEventListener('click', async () => {
+  const username = friendUserIdInput.value.trim();
   if(!username) return;
 
-  // Simulate fetching latest tweet via X public API
-  // For now we'll mock the data
   const latestTweet = {
     name: username.replace('@',''),
     text: "This is the latest tweet from " + username,
     img: `https://via.placeholder.com/50/${Math.floor(Math.random()*16777215).toString(16)}`
   };
 
-  // Save friend to Firestore under user's document
   const userDocRef = doc(db, 'profiles', CURRENT_UID);
   const userDocSnap = await getDoc(userDocRef);
 
@@ -201,58 +236,45 @@ document.getElementById('addFriendBtn').addEventListener('click', async () => {
   }
 
   addBubble(latestTweet);
+  addFriendModal.style.display = 'none';
 });
 
-// Load friends from Firestore
-async function loadFriendsFromFirestore() {
-  const userDocRef = doc(db, 'profiles', CURRENT_UID);
-  const userDocSnap = await getDoc(userDocRef);
-  if(userDocSnap.exists()){
-    const friends = userDocSnap.data().friends || [];
-    friends.forEach(f => addBubble(f));
-  }
-}
-
-// Add bubble to feed
-function addBubble(friend) {
+// Function to create bubble
+function addBubble(f) {
   const bubble = document.createElement('div');
   bubble.className = 'friend-bubble';
 
-  const info = document.createElement('div');
-  info.className = 'friend-info';
-
   const img = document.createElement('img');
-  img.src = friend.img;
+  img.src = f.img;
 
   const content = document.createElement('div');
   content.className = 'friend-content';
 
   const name = document.createElement('div');
   name.className = 'friend-name';
-  name.innerText = friend.name;
+  name.innerText = f.name;
 
   const text = document.createElement('div');
   text.className = 'friend-text';
-  text.innerText = friend.text;
-
-  content.appendChild(name);
-  content.appendChild(text);
-  info.appendChild(img);
-  info.appendChild(content);
+  text.innerText = f.text;
 
   const replyBtn = document.createElement('button');
   replyBtn.className = 'reply-btn';
   replyBtn.innerText = 'Reply';
   replyBtn.onclick = () => {
-    window.open(`https://x.com/${friend.name}`, '_blank');
+    alert('Go to post of ' + f.name); 
+    // Replace with real navigation to post
   };
 
-  bubble.appendChild(info);
+  content.appendChild(name);
+  content.appendChild(text);
+  bubble.appendChild(img);
+  bubble.appendChild(content);
   bubble.appendChild(replyBtn);
 
   feedBox.appendChild(bubble);
-  feedBox.scrollTop = feedBox.scrollHeight; // scroll to bottom
 }
 </script>
+
 </body>
 </html>

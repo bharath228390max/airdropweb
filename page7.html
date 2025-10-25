@@ -2,187 +2,91 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Rezo Twitter Friends Feed</title>
+<title>Rezo Friends Feed</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
 
 body {
-  margin: 0;
-  height: 100vh;
-  background-color: #000;
-  font-family: 'Orbitron', sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-  color: white;
-}
-
-/* Stars background */
-.star {
-  position: absolute;
-  border-radius: 50%;
-  background: white;
-  opacity: 0.8;
-  animation: floatStars linear infinite;
-}
-
-@keyframes floatStars {
-  0% { transform: translateY(0) translateX(0); }
-  100% { transform: translateY(-200vh) translateX(50vw); }
+  margin: 0; height: 100vh; background-color: #000;
+  font-family: 'Orbitron', sans-serif; display: flex;
+  flex-direction: column; align-items: center; justify-content: flex-start;
+  overflow: hidden; color: white;
 }
 
 h1 {
-  color: blue;
-  margin-top: 20px;
-  letter-spacing: 1px;
-  display: inline-block;
+  color: #1E90FF; /* blue text */
+  margin-top: 20px; letter-spacing: 1px;
 }
 
 #addFriendBtn {
-  margin-left: 20px;
-  font-size: 28px;
-  padding: 6px 14px;
-  cursor: pointer;
-  border: 1px solid blue;
-  color: blue;
-  background: transparent;
-  border-radius: 6px;
+  margin-left: 15px; padding: 8px 20px;
+  font-size: 20px; cursor: pointer; border-radius: 8px;
+  border: 1px solid #1E90FF; background: transparent; color: #1E90FF;
 }
 
 .main-box {
-  width: 80%;
-  height: 70vh;
-  margin-top: 20px;
-  border: 1px solid white;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.02);
-  backdrop-filter: blur(4px);
+  width: 80%; height: 70vh; margin-top: 10px;
+  border: 1px solid white; border-radius: 10px;
+  background: rgba(255,255,255,0.02); backdrop-filter: blur(4px);
   box-shadow: 0 0 20px rgba(255,255,255,0.2), inset 0 0 40px rgba(255,255,255,0.05);
-  overflow-y: auto;
-  padding: 15px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  position: relative;
+  overflow-y: auto; padding: 15px; box-sizing: border-box;
+  display: flex; flex-direction: column; gap: 15px;
 }
 
-.main-box::-webkit-scrollbar {
-  width: 8px;
-}
-.main-box::-webkit-scrollbar-thumb {
-  background: blue;
-  border-radius: 10px;
-}
+.main-box::-webkit-scrollbar { width: 8px; }
+.main-box::-webkit-scrollbar-thumb { background: #1E90FF; border-radius: 10px; }
 
 .friend-bubble {
-  display: flex;
-  gap: 12px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.6);
-  border-radius: 15px;
-  padding: 12px 16px;
-  box-shadow: 0 0 10px rgba(255,255,255,0.1);
+  display: flex; gap: 12px; background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.6); border-radius: 15px;
+  padding: 12px 16px; box-shadow: 0 0 10px rgba(255,255,255,0.1);
   position: relative;
 }
 
 .friend-bubble img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.4);
+  width: 50px; height: 50px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.4);
 }
 
-.friend-content {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
+.friend-content { display: flex; flex-direction: column; gap: 4px; }
 
-.friend-name {
-  font-weight: bold;
-  color: blue;
-}
+.friend-name { font-weight: bold; color: #1E90FF; }
 
-.friend-text {
-  font-size: 15px;
-  line-height: 1.4;
-  color: white;
-}
+.friend-text { font-size: 15px; line-height: 1.4; color: white; }
 
 .reply-btn {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 6px 10px;
-  font-size: 14px;
-  cursor: pointer;
-  border: 1px solid blue;
-  border-radius: 6px;
-  background: transparent;
-  color: blue;
+  position: absolute; right: 10px; bottom: 10px;
+  border: 1px solid #1E90FF; background: transparent; color: #1E90FF;
+  padding: 6px 12px; border-radius: 6px; cursor: pointer;
 }
 
-#friendPopup {
-  position: fixed;
-  top:50%;
-  left:50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0,0,0,0.95);
-  padding: 20px 30px;
-  border-radius: 15px;
-  border: 1px solid blue;
-  display: none;
-  flex-direction: column;
-  gap: 10px;
-  z-index: 10;
-  color: white;
+/* Stars animation */
+.star {
+  position: absolute; width: 3px; height: 3px; background: white;
+  border-radius: 50%; animation: floatStars 10s linear infinite;
 }
-
-#friendPopup input {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: 1px solid blue;
-  background: transparent;
-  color: white;
-}
-
-#friendPopup button {
-  padding: 8px 12px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: 1px solid blue;
-  cursor: pointer;
-  background: transparent;
-  color: blue;
-}
+@keyframes floatStars { 0% { transform: translateY(0) } 100% { transform: translateY(-800px) } }
 </style>
 </head>
 <body>
 
 <h1>Engage your friends</h1>
-<button id="addFriendBtn">Add Friends +</button>
+<button id="addFriendBtn">Add Friend +</button>
 
-<div class="main-box" id="feedBox">
-  <!-- Friend posts will appear here -->
-</div>
+<div class="main-box" id="feedBox"></div>
 
-<div id="friendPopup">
-  <span>Enter Friend's Twitter @username</span>
-  <input type="text" id="friendUsername" placeholder="@username">
-  <div style="display:flex; gap:10px; margin-top:5px;">
-    <button id="addFriendConfirm">OK</button>
-    <button id="cancelFriend">Back</button>
-  </div>
+<!-- Popup -->
+<div id="friendPopup" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);
+  background: rgba(0,0,0,0.9); border: 1px solid #1E90FF; padding:20px; border-radius:10px; color:white; z-index:10;">
+  <label>Enter Twitter Username:</label>
+  <input type="text" id="friendUsername" style="padding:6px; margin-top:10px; width:200px;"><br><br>
+  <button id="confirmAddBtn" style="margin-right:10px;">OK</button>
+  <button id="popupBackBtn">Back</button>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
@@ -195,125 +99,82 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 const feedBox = document.getElementById('feedBox');
-const addFriendBtn = document.getElementById('addFriendBtn');
-const friendPopup = document.getElementById('friendPopup');
-const addFriendConfirm = document.getElementById('addFriendConfirm');
-const cancelFriend = document.getElementById('cancelFriend');
-const friendUsername = document.getElementById('friendUsername');
+const addBtn = document.getElementById('addFriendBtn');
+const popup = document.getElementById('friendPopup');
+const confirmBtn = document.getElementById('confirmAddBtn');
+const backBtn = document.getElementById('popupBackBtn');
+const usernameInput = document.getElementById('friendUsername');
 
-let currentUserId = null;
+let userId = auth.currentUser ? auth.currentUser.uid : "MoFCIFmemsNUFVyjB0qeL3PCGWj1"; // Replace with real auth UID
 
-// Generate some floating stars
-for(let i=0;i<50;i++){
-  const star = document.createElement('div');
-  star.className='star';
-  star.style.width=Math.random()*3+2+'px';
-  star.style.height=Math.random()*3+2+'px';
-  star.style.left=Math.random()*100+'vw';
-  star.style.top=Math.random()*100+'vh';
-  star.style.animationDuration=5+Math.random()*10+'s';
-  document.body.appendChild(star);
-}
-
-// Check auth
-onAuthStateChanged(auth, async user=>{
-  if(user){
-    currentUserId=user.uid;
-    await loadFriends();
-  } else {
-    window.location.href="page2.html";
-  }
-});
-
-// Open popup
-addFriendBtn.onclick = ()=>{ friendPopup.style.display='flex'; };
-
-// Cancel popup
-cancelFriend.onclick = ()=>{ friendPopup.style.display='none'; friendUsername.value=''; };
-
-// Add friend
-addFriendConfirm.onclick = async ()=>{
-  const username = friendUsername.value.trim();
-  if(!username) return;
-
-  const docRef = doc(db,"profiles",currentUserId);
-  const docSnap = await getDoc(docRef);
-  let friendsList = [];
-  if(docSnap.exists()){
-    friendsList = docSnap.data().friends || [];
-    if(friendsList.some(f=>f.name.toLowerCase()===username.toLowerCase())){
-      alert("Friend already added");
-      return;
-    }
-  }
-
-  // Fetch latest tweet text from Nitter API fallback
-  let tweetText="Could not load latest tweet";
-  try{
-    const res = await fetch(`https://nitter.net/${username}`);
-    if(res.ok){
-      tweetText=`Latest post from ${username}`;
-    }
-  }catch(e){}
-
-  const friendObj={
-    name:username,
-    text:tweetText,
-    img:`https://via.placeholder.com/50/${Math.floor(Math.random()*999999).toString(16)}`,
-    link1:`https://x.com/${username}`
-  };
-
-  await updateDoc(docRef,{friends:arrayUnion(friendObj)});
-  friendPopup.style.display='none';
-  friendUsername.value='';
-  loadFriends();
-};
-
-// Load friends
 async function loadFriends(){
-  feedBox.innerHTML='';
-  const docRef = doc(db,"profiles",currentUserId);
-  const docSnap = await getDoc(docRef);
-  if(docSnap.exists()){
-    const friendsList = docSnap.data().friends || [];
-    friendsList.forEach(f=>{
-      const bubble = document.createElement('div');
-      bubble.className='friend-bubble';
+    const docRef = doc(db, 'profiles', userId);
+    const docSnap = await getDoc(docRef);
+    if(docSnap.exists()){
+        feedBox.innerHTML = '';
+        const friends = docSnap.data().friends || [];
+        for(let f of friends){
+            const bubble = document.createElement('div');
+            bubble.className = 'friend-bubble';
 
-      const img = document.createElement('img');
-      img.src=f.img;
+            const img = document.createElement('img');
+            img.src = f.img || 'https://via.placeholder.com/50';
 
-      const content = document.createElement('div');
-      content.className='friend-content';
+            const content = document.createElement('div');
+            content.className = 'friend-content';
+            const name = document.createElement('div'); name.className = 'friend-name'; name.innerText = f.name;
+            const text = document.createElement('div'); text.className = 'friend-text'; text.innerText = f.text;
 
-      const name = document.createElement('div');
-      name.className='friend-name';
-      name.innerText=f.name;
+            content.appendChild(name);
+            content.appendChild(text);
+            bubble.appendChild(img);
+            bubble.appendChild(content);
 
-      const text = document.createElement('div');
-      text.className='friend-text';
-      text.innerText=f.text;
+            const reply = document.createElement('button'); reply.className = 'reply-btn'; reply.innerText = 'Reply';
+            reply.onclick = () => window.open(f.link1 || "#", "_blank");
+            bubble.appendChild(reply);
 
-      content.appendChild(name);
-      content.appendChild(text);
-
-      const reply = document.createElement('button');
-      reply.className='reply-btn';
-      reply.innerText='Reply';
-      reply.onclick = ()=>{ window.open(f.link1,'_blank'); };
-
-      bubble.appendChild(img);
-      bubble.appendChild(content);
-      bubble.appendChild(reply);
-
-      feedBox.appendChild(bubble);
-    });
-  }
+            feedBox.appendChild(bubble);
+        }
+    }
 }
+
+addBtn.onclick = () => popup.style.display = 'block';
+backBtn.onclick = () => popup.style.display = 'none';
+
+confirmBtn.onclick = async () => {
+    const uname = usernameInput.value.trim();
+    if(!uname) return alert("Enter username");
+
+    // fetch latest tweet from your server
+    let tweetText = "Loading...";
+    try {
+        const res = await fetch(`http://localhost:3000/latest-tweet/${uname}`);
+        const data = await res.json();
+        tweetText = data.tweet;
+    } catch {
+        tweetText = "Could not load tweet";
+    }
+
+    const docRef = doc(db, 'profiles', userId);
+    const docSnap = await getDoc(docRef);
+    let friendsArr = [];
+    if(docSnap.exists()) friendsArr = docSnap.data().friends || [];
+
+    if(friendsArr.find(f => f.name === uname)) return alert("Friend already added");
+
+    const newFriend = { name: uname, text: tweetText, img: "https://via.placeholder.com/50" , link1:`https://x.com/${uname}`};
+    await updateDoc(docRef, { friends: arrayUnion(newFriend) });
+    usernameInput.value = '';
+    popup.style.display = 'none';
+    loadFriends();
+}
+
+loadFriends();
 </script>
 </body>
 </html>

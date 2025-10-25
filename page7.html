@@ -19,40 +19,34 @@ body {
   color: white;
 }
 
-.header {
+h1 {
+  color: gold;
+  margin-top: 20px;
+  letter-spacing: 1px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 20px;
+  gap: 15px;
 }
 
-.header h1 {
-  color: gold;
-  margin: 0;
-  letter-spacing: 1px;
-}
-
-.header button {
-  padding: 10px 20px;
-  font-size: 26px;
-  border-radius: 12px;
-  border: 2px solid gold;
+#addFriendBtn {
+  padding: 8px 15px;
+  font-size: 22px;
+  border-radius: 8px;
+  border: 1.5px solid white;
   background: transparent;
-  color: gold;
+  color: white;
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
-.header button:hover {
-  background: gold;
+#addFriendBtn:hover {
+  background: white;
   color: black;
 }
 
 .main-box {
   width: 80%;
   height: 70vh;
-  margin-top: 20px;
+  margin-top: 10px;
   border: 1px solid white;
   border-radius: 10px;
   background: rgba(255,255,255,0.02);
@@ -76,18 +70,23 @@ body {
 
 .friend-bubble {
   display: flex;
-  gap: 12px;
+  justify-content: space-between;
+  align-items: flex-start;
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.6);
   border-radius: 15px;
   padding: 12px 16px;
   box-shadow: 0 0 10px rgba(255,255,255,0.1);
-  align-items: center;
+}
+
+.friend-left {
+  display: flex;
+  gap: 12px;
 }
 
 .friend-bubble img {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   border: 1px solid rgba(255,255,255,0.4);
 }
@@ -96,7 +95,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  flex: 1;
 }
 
 .friend-name {
@@ -108,86 +106,83 @@ body {
   font-size: 15px;
   line-height: 1.4;
   color: white;
+  max-width: 600px;
 }
 
 .reply-btn {
-  padding: 6px 12px;
+  padding: 6px 14px;
   font-size: 14px;
   border-radius: 8px;
-  border: 1.5px solid gold;
+  border: 1.5px solid #fefefe;
   background: transparent;
-  color: gold;
+  color: white;
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 .reply-btn:hover {
-  background: gold;
-  color: black;
+  background: white;
+  color: #0a0a0a;
+  box-shadow: 0 0 10px rgba(255,255,255,0.6);
 }
 
-/* Popup for adding friend */
-.popup {
+#popup {
   position: fixed;
-  top:50%;
-  left:50%;
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
   background: rgba(0,0,0,0.95);
-  border-radius: 20px;
-  padding: 30px 40px;
+  border-radius: 15px;
+  padding: 20px 30px;
   display: none;
   flex-direction: column;
   gap: 15px;
   z-index: 10;
-  border: 2px solid gold;
+  border: 2px solid white;
 }
 
-.popup input {
-  width: 250px;
-  padding: 12px;
-  border-radius: 10px;
-  border: 1.5px solid gold;
+#popup input {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1.5px solid white;
   background: rgba(255,255,255,0.1);
   color: white;
 }
 
-.popup button {
-  padding: 12px;
+#popup button {
+  padding: 10px;
   font-size: 16px;
-  border-radius: 10px;
-  border: 1.5px solid gold;
+  border-radius: 8px;
+  border: 1.5px solid white;
   background: rgba(255,255,255,0.1);
-  color: gold;
+  color: white;
   cursor: pointer;
 }
-
-.popup button:hover {
-  background: gold;
+#popup button:hover {
+  background: white;
   color: black;
 }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <h1>Engage your friends</h1>
-  <button id="addFriendBtn">Add Friends +</button>
-</div>
+<h1>Engage your friends <button id="addFriendBtn">Add Friend +</button></h1>
 
 <div class="main-box" id="feedBox">
   <!-- Friend posts will appear here -->
 </div>
 
-<div class="popup" id="friendPopup">
-  <h2>Enter Friend's @Username</h2>
+<!-- Popup for adding friend -->
+<div id="popup">
+  <h3>Enter Friend's Twitter Username</h3>
   <input type="text" id="friendUsername" placeholder="@username">
-  <button id="friendOk">OK</button>
+  <button id="addFriendConfirm">Add</button>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
@@ -200,103 +195,139 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const db = getFirestore(app);
+const auth = getAuth(app);
+
+let CURRENT_USER_ID = null;
+let CURRENT_FRIENDS = [];
+
+onAuthStateChanged(auth, async user => {
+  if(!user) {
+    alert("Unauthorized! Login required");
+    window.location.href = "page2.html";
+    return;
+  }
+  CURRENT_USER_ID = user.uid;
+  await loadFriends();
+});
 
 const feedBox = document.getElementById('feedBox');
 const addFriendBtn = document.getElementById('addFriendBtn');
-const friendPopup = document.getElementById('friendPopup');
-const friendOk = document.getElementById('friendOk');
+const popup = document.getElementById('popup');
+const addFriendConfirm = document.getElementById('addFriendConfirm');
 const friendUsernameInput = document.getElementById('friendUsername');
 
-let CURRENT_FRIENDS = [];
-let CURRENT_USER = null;
+addFriendBtn.addEventListener('click', () => popup.style.display = 'flex');
 
-// Utility to create bubble
-function addBubble(friend){
-  const bubble = document.createElement('div');
-  bubble.className = 'friend-bubble';
-
-  const img = document.createElement('img');
-  img.src = friend.img || "https://via.placeholder.com/40";
-
-  const content = document.createElement('div');
-  content.className = 'friend-content';
-
-  const name = document.createElement('div');
-  name.className = 'friend-name';
-  name.innerText = friend.name;
-
-  const text = document.createElement('div');
-  text.className = 'friend-text';
-  text.innerText = friend.text || "No recent posts";
-
-  const reply = document.createElement('button');
-  reply.className = 'reply-btn';
-  reply.innerText = "Reply";
-  reply.onclick = ()=> window.open(`https://x.com/${friend.name}`, "_blank");
-
-  content.appendChild(name);
-  content.appendChild(text);
-  bubble.appendChild(img);
-  bubble.appendChild(content);
-  bubble.appendChild(reply);
-
-  feedBox.appendChild(bubble);
-}
-
-// Open popup
-addFriendBtn.onclick = ()=> {
-  friendPopup.style.display = 'flex';
-  friendUsernameInput.value = "";
-}
-
-// Add friend
-friendOk.onclick = async ()=>{
-  const username = friendUsernameInput.value.trim().replace("@","");
-  if(!username){ alert("Enter a valid username"); return; }
-  // Check duplicate
-  if(CURRENT_FRIENDS.some(f=>f.name.toLowerCase()===username.toLowerCase())){
+addFriendConfirm.addEventListener('click', async () => {
+  const username = friendUsernameInput.value.trim();
+  if(!username) return alert("Enter username");
+  
+  if(CURRENT_FRIENDS.includes(username.toLowerCase())) {
     alert("Friend already added");
     return;
   }
 
-  // Fake latest tweet for demo (replace with public API if needed)
-  const newFriend = {name: username, text:"Latest tweet from "+username, img:"https://via.placeholder.com/40"};
+  // Add to Firestore and local array
+  try{
+    const userDoc = doc(db, "profiles", CURRENT_USER_ID);
+    await updateDoc(userDoc, {
+      friends: arrayUnion(username)
+    });
+    CURRENT_FRIENDS.push(username.toLowerCase());
+    addFriendToFeed(username);
+    popup.style.display = 'none';
+    friendUsernameInput.value = '';
+  } catch(e){ console.error(e); alert("Error adding friend"); }
+});
 
-  // Add to UI
-  CURRENT_FRIENDS.push(newFriend);
-  addBubble(newFriend);
-
-  // Add to Firestore
-  const docRef = doc(db,"profiles",CURRENT_USER.uid);
-  await updateDoc(docRef,{ friends: arrayUnion(newFriend) });
-
-  friendPopup.style.display = 'none';
+// Load friends from Firestore on page load
+async function loadFriends() {
+  const userDoc = doc(db, "profiles", CURRENT_USER_ID);
+  const docSnap = await getDoc(userDoc);
+  if(docSnap.exists()) {
+    const data = docSnap.data();
+    if(data.friends) {
+      for(let username of data.friends){
+        if(!CURRENT_FRIENDS.includes(username.toLowerCase())){
+          CURRENT_FRIENDS.push(username.toLowerCase());
+          addFriendToFeed(username);
+        }
+      }
+    }
+  }
 }
 
-// Auth check
-onAuthStateChanged(auth, async (user)=>{
-  if(!user) { window.location.href="page2.html"; return; }
-  CURRENT_USER = user;
+// Add friend bubble with latest original tweet
+async function addFriendToFeed(username){
+  const bubble = document.createElement('div');
+  bubble.className = 'friend-bubble';
+  
+  const leftDiv = document.createElement('div');
+  leftDiv.className = 'friend-left';
 
-  const docRef = doc(db,"profiles",user.uid);
-  const userDocSnap = await getDoc(docRef);
+  const img = document.createElement('img');
+  img.src = `https://unavatar.io/twitter/${username}`; // safe avatar proxy
 
-  if(userDocSnap.exists()){
-    let rawFriends = userDocSnap.data().friends || [];
-    // Remove duplicates
-    const seen = new Set();
-    CURRENT_FRIENDS = rawFriends.filter(f=>{
-      const lower = f.name.toLowerCase();
-      if(seen.has(lower)) return false;
-      seen.add(lower);
-      return true;
-    });
-    CURRENT_FRIENDS.forEach(f=> addBubble(f));
+  const content = document.createElement('div');
+  content.className = 'friend-content';
+
+  const nameDiv = document.createElement('div');
+  nameDiv.className = 'friend-name';
+  nameDiv.innerText = username;
+
+  const textDiv = document.createElement('div');
+  textDiv.className = 'friend-text';
+  textDiv.innerText = "Loading latest tweet...";
+
+  content.appendChild(nameDiv);
+  content.appendChild(textDiv);
+  leftDiv.appendChild(img);
+  leftDiv.appendChild(content);
+  bubble.appendChild(leftDiv);
+
+  const replyBtn = document.createElement('button');
+  replyBtn.className = 'reply-btn';
+  replyBtn.innerText = 'Reply';
+  bubble.appendChild(replyBtn);
+
+  feedBox.appendChild(bubble);
+
+  // Fetch latest original tweet using Nitter RSS
+  try{
+    const latestLink = await getLatestOriginalTweet(username);
+    if(latestLink){
+      textDiv.innerText = "View latest tweet";
+      replyBtn.onclick = () => window.open(latestLink, "_blank");
+    } else {
+      textDiv.innerText = "No original tweet found";
+      replyBtn.disabled = true;
+    }
+  } catch(e){
+    console.error(e);
+    textDiv.innerText = "Error fetching tweet";
+    replyBtn.disabled = true;
   }
-});
-</script>
+}
 
+// Function to get latest original tweet from Nitter RSS
+async function getLatestOriginalTweet(username){
+  try{
+    const response = await fetch(`https://nitter.net/${username}/rss`);
+    const text = await response.text();
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(text, "text/xml");
+    const items = xmlDoc.querySelectorAll("item");
+    for(let item of items){
+      const title = item.querySelector("title").textContent;
+      const link = item.querySelector("link").textContent;
+      if(!title.startsWith("@") && !title.startsWith("RT")){
+        return link;
+      }
+    }
+  } catch(err){ console.error(err); }
+  return null;
+}
+</script>
 </body>
 </html>

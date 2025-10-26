@@ -5,26 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reply Guys Place</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    * { box-sizing: border-box; }
-
-    body {
-      font-family: 'Roboto', sans-serif;
-      background: radial-gradient(circle at center, #050505 15%, #000000 90%);
-      color: #ffffff;
+    * { 
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #000;
+      color: #ffffff;
       overflow: hidden;
       height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       position: relative;
+      padding: 20px;
     }
 
-    /* stars layer */
+    /* Animated gradient background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(102, 179, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(138, 43, 226, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 20%, rgba(51, 133, 255, 0.1) 0%, transparent 50%);
+      animation: gradientShift 15s ease infinite;
+      z-index: 0;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.1); }
+    }
+
+    /* Particles/stars */
     .stars {
       position: fixed;
       top: 0;
@@ -35,214 +59,519 @@
       overflow: hidden;
       z-index: 0;
     }
+    
     .star {
       position: absolute;
       background: white;
       border-radius: 50%;
-      opacity: 0.8;
-      animation: moveStar 25s linear infinite;
-      filter: blur(0.3px);
+      animation: float 20s linear infinite, pulse 4s ease-in-out infinite;
     }
-    @keyframes moveStar {
-      0% { transform: translateY(0) scale(1); opacity: 1; }
-      100% { transform: translateY(200vh) scale(0.4); opacity: 0; }
+    
+    @keyframes float {
+      0% { 
+        transform: translateY(0) translateX(0) rotate(0deg); 
+        opacity: 0;
+      }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { 
+        transform: translateY(100vh) translateX(50px) rotate(360deg); 
+        opacity: 0;
+      }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
     }
 
+    /* Header */
     h1 {
       text-align: center;
-      color: #66b3ff;
-      font-size: 2rem;
-      margin-top: 35px;
-      margin-bottom: 15px;
+      background: linear-gradient(135deg, #fff 0%, #66b3ff 50%, #a855f7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-top: 0;
+      margin-bottom: 5px;
       position: relative;
       z-index: 2;
-      text-shadow: 0 0 15px rgba(102,179,255,0.5);
-    }
-
-    .add-friend-btn {
-      display: block;
-      padding: 12px 22px;
-      margin-bottom: 20px;
-      background: transparent;
-      border: 2px solid #66b3ff;
-      color: #66b3ff;
-      border-radius: 12px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: 0.3s;
-      position: relative;
-      z-index: 2;
-    }
-    .add-friend-btn:hover {
-      background: #66b3ff;
-      color: #000;
-      box-shadow: 0 0 20px #66b3ff;
-      transform: scale(1.03);
-    }
-
-    /* friend list box */
-    .friend-box {
-      width: 92%;
-      max-width: 600px;
-      height: 60vh;
-      padding: 16px;
-      border-radius: 18px;
-      background: rgba(0, 0, 0, 0.7);
-      border: 1px solid rgba(102,179,255,0.4);
-      box-shadow: 0 0 25px rgba(102,179,255,0.2);
-      backdrop-filter: blur(6px);
-      position: relative;
-      z-index: 1;
-      overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: #66b3ff transparent;
-    }
-    .friend-box::-webkit-scrollbar { width: 6px; }
-    .friend-box::-webkit-scrollbar-thumb {
-      background-color: #66b3ff;
-      border-radius: 10px;
-    }
-
-    .friend-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 10px 6px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      transition: background 0.2s ease;
-    }
-    .friend-item:hover { background: rgba(102,179,255,0.05); }
-
-    .friend-number {
-      width: 34px;
-      height: 34px;
-      background: #66b3ff;
-      color: #000;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      flex-shrink: 0;
-      font-size: 0.9rem;
-    }
-    .friend-info h3 {
-      margin: 0;
-      font-size: 1rem;
-      color: #fff;
-      word-break: break-word;
-    }
-
-    .friend-actions {
-      display: flex;
-      gap: 6px;
+      letter-spacing: -1px;
+      animation: slideDown 0.6s ease;
       flex-shrink: 0;
     }
-    .reply-btn, .remove-btn {
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: 1.5px solid #66b3ff;
-      background: transparent;
-      color: #66b3ff;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .reply-btn:hover, .remove-btn:hover {
-      background: #66b3ff;
-      color: #000;
-      box-shadow: 0 0 10px #66b3ff;
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* popup */
-    .popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.9);
-      background: rgba(0,0,0,0.95);
-      border: 2px solid #66b3ff;
-      border-radius: 20px;
-      padding: 25px;
-      width: 90%;
-      max-width: 350px;
+    .subtitle {
       text-align: center;
-      box-shadow: 0 0 25px rgba(102,179,255,0.4);
-      z-index: 10;
-      transition: transform 0.3s ease, opacity 0.3s ease;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      z-index: 2;
+      position: relative;
+      animation: fadeIn 0.8s ease 0.2s both;
+      flex-shrink: 0;
     }
-    .popup.active {
-      display: block;
-      transform: translate(-50%, -50%) scale(1);
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Add friend button */
+    .add-friend-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 24px;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #66b3ff 0%, #a855f7 100%);
+      border: none;
+      color: #fff;
+      border-radius: 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 8px 32px rgba(102, 179, 255, 0.3);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .add-friend-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #a855f7 0%, #66b3ff 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .add-friend-btn:hover::before {
       opacity: 1;
     }
 
-    .popup h2 {
+    .add-friend-btn:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 12px 48px rgba(102, 179, 255, 0.5);
+    }
+
+    .add-friend-btn:active {
+      transform: translateY(-2px) scale(0.98);
+    }
+
+    .add-friend-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Friend list container */
+    .friend-box {
+      width: 94%;
+      max-width: 700px;
+      flex: 1;
+      min-height: 0;
+      padding: 16px;
+      border-radius: 28px;
+      background: rgba(15, 15, 25, 0.6);
+      border: 1px solid rgba(102, 179, 255, 0.2);
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      position: relative;
+      z-index: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      animation: scaleIn 0.5s ease 0.3s both;
+    }
+
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Custom scrollbar */
+    .friend-box::-webkit-scrollbar { 
+      width: 10px; 
+    }
+    
+    .friend-box::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 10px;
+      margin: 8px;
+    }
+    
+    .friend-box::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #66b3ff 0%, #a855f7 100%);
+      border-radius: 10px;
+      border: 2px solid rgba(15, 15, 25, 0.6);
+    }
+    
+    .friend-box::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #a855f7 0%, #66b3ff 100%);
+    }
+
+    /* Friend item card */
+    .friend-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(102, 179, 255, 0.1);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: slideInLeft 0.4s ease both;
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .friend-item:hover {
+      background: rgba(102, 179, 255, 0.08);
+      border-color: rgba(102, 179, 255, 0.3);
+      transform: translateX(8px) scale(1.01);
+      box-shadow: 0 8px 24px rgba(102, 179, 255, 0.15);
+    }
+
+    /* Number badge */
+    .friend-number {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #66b3ff 0%, #a855f7 100%);
+      color: #fff;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      flex-shrink: 0;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 16px rgba(102, 179, 255, 0.4);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .friend-number::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #a855f7 0%, #66b3ff 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .friend-item:hover .friend-number::before {
+      opacity: 1;
+    }
+
+    .friend-item:hover .friend-number {
+      transform: rotate(-5deg) scale(1.1);
+      box-shadow: 0 6px 24px rgba(168, 85, 247, 0.5);
+    }
+
+    .friend-number span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Friend info */
+    .friend-info {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .friend-info h3 {
+      font-size: 0.95rem;
+      color: #fff;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      word-break: break-word;
+      margin: 0;
+    }
+
+    /* Action buttons */
+    .friend-actions {
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .reply-btn, .remove-btn {
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1.5px solid;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .reply-btn {
+      background: rgba(102, 179, 255, 0.1);
+      border-color: #66b3ff;
       color: #66b3ff;
-      margin-bottom: 12px;
-      font-size: 1.2rem;
+    }
+
+    .reply-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #66b3ff 0%, #4d9fff 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .reply-btn:hover::before {
+      opacity: 1;
+    }
+
+    .reply-btn:hover {
+      color: #000;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(102, 179, 255, 0.4);
+    }
+
+    .remove-btn {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    .remove-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .remove-btn:hover::before {
+      opacity: 1;
+    }
+
+    .remove-btn:hover {
+      color: #fff;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+    }
+
+    .reply-btn span, .remove-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Popup modal */
+    .popup-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .popup-overlay.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .popup {
+      background: linear-gradient(135deg, rgba(15, 15, 25, 0.95) 0%, rgba(10, 10, 20, 0.95) 100%);
+      border: 2px solid rgba(102, 179, 255, 0.3);
+      border-radius: 28px;
+      padding: 40px 36px;
+      width: 90%;
+      max-width: 420px;
+      box-shadow: 
+        0 24px 64px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.8) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .popup h2 {
+      background: linear-gradient(135deg, #fff 0%, #66b3ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 24px;
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      text-align: center;
     }
 
     .popup input {
-      width: 85%;
-      padding: 12px;
-      margin-top: 12px;
-      border-radius: 8px;
-      border: 1.5px solid #66b3ff;
-      background: transparent;
-      color: #66b3ff;
-      font-size: 1rem;
+      width: 100%;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      border-radius: 14px;
+      border: 2px solid rgba(102, 179, 255, 0.3);
+      background: rgba(102, 179, 255, 0.05);
+      color: #fff;
+      font-size: 1.05rem;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    .popup input:focus {
+      border-color: #66b3ff;
+      background: rgba(102, 179, 255, 0.1);
+      box-shadow: 0 0 0 4px rgba(102, 179, 255, 0.1);
+    }
+
+    .popup input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .popup-buttons {
+      display: flex;
+      gap: 12px;
     }
 
     .popup button {
-      margin: 12px 8px;
-      padding: 10px 18px;
-      border-radius: 8px;
-      border: 1.5px solid #66b3ff;
-      background: transparent;
-      color: #66b3ff;
+      flex: 1;
+      padding: 14px 24px;
+      border-radius: 14px;
+      border: none;
       cursor: pointer;
-      font-size: 0.95rem;
-      transition: 0.3s;
-    }
-    .popup button:hover {
-      background: #66b3ff;
-      color: #000;
-      box-shadow: 0 0 15px #66b3ff;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
     }
 
-    /* mobile */
+    #saveFriend {
+      background: linear-gradient(135deg, #66b3ff 0%, #a855f7 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(102, 179, 255, 0.3);
+    }
+
+    #saveFriend::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #a855f7 0%, #66b3ff 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    #saveFriend:hover::before {
+      opacity: 1;
+    }
+
+    #saveFriend:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(102, 179, 255, 0.5);
+    }
+
+    #saveFriend span {
+      position: relative;
+      z-index: 1;
+    }
+
+    #closePopup {
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.7);
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #closePopup:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 1rem;
+    }
+
+    /* Mobile responsive */
     @media (max-width: 600px) {
-      h1 { font-size: 1.6rem; margin-top: 25px; }
-      .add-friend-btn { font-size: 1rem; padding: 10px 18px; }
+      body { padding: 15px; }
+      h1 { font-size: 2rem; }
+      .subtitle { font-size: 0.85rem; margin-bottom: 10px; }
+      .add-friend-btn { font-size: 0.95rem; padding: 9px 20px; margin-bottom: 12px; }
       .friend-box {
-        height: 65vh;
-        padding: 12px;
-        border-radius: 16px;
+        padding: 14px;
+        border-radius: 24px;
       }
-      .friend-info h3 { font-size: 0.95rem; }
-      .reply-btn, .remove-btn { font-size: 0.8rem; padding: 5px 9px; }
+      .friend-number { width: 32px; height: 32px; font-size: 0.85rem; }
+      .friend-info h3 { font-size: 0.9rem; }
+      .reply-btn, .remove-btn { 
+        font-size: 0.8rem; 
+        padding: 7px 12px; 
+      }
+      .popup { 
+        padding: 32px 28px; 
+        max-width: 360px; 
+      }
+      .popup h2 { font-size: 1.35rem; }
+    }
+
+    @media (max-width: 400px) {
+      .friend-actions {
+        flex-direction: column;
+        gap: 6px;
+      }
+      .reply-btn, .remove-btn {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
   <div class="stars" id="stars"></div>
 
-  <h1>Engage with Friends</h1>
-  <button class="add-friend-btn" id="addFriendBtn">Add Friend</button>
+  <h1>Reply Guys Place</h1>
+  <p class="subtitle">Manage your Twitter connections</p>
+
+  <button class="add-friend-btn" id="addFriendBtn">
+    <span>➕ Add Friend</span>
+  </button>
 
   <div class="friend-box" id="friendsList">
-    <p style="text-align:center; color:rgba(255,255,255,0.6)">Loading friends...</p>
+    <div class="empty-state">Loading friends...</div>
   </div>
 
-  <div class="popup" id="popupBox">
-    <h2>Enter Friend’s Twitter Username</h2>
-    <input type="text" id="friendIdInput" placeholder="@username">
-    <div>
-      <button id="saveFriend">Add</button>
-      <button id="closePopup">Back</button>
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup">
+      <h2>Add New Friend</h2>
+      <input type="text" id="friendIdInput" placeholder="@username">
+      <div class="popup-buttons">
+        <button id="saveFriend"><span>Add Friend</span></button>
+        <button id="closePopup">Cancel</button>
+      </div>
     </div>
   </div>
 
@@ -265,14 +594,26 @@
     const auth = getAuth(app);
 
     const addFriendBtn = document.getElementById("addFriendBtn");
-    const popupBox = document.getElementById("popupBox");
+    const popupOverlay = document.getElementById("popupOverlay");
     const closePopup = document.getElementById("closePopup");
     const saveFriend = document.getElementById("saveFriend");
     const friendIdInput = document.getElementById("friendIdInput");
     const friendsList = document.getElementById("friendsList");
 
-    addFriendBtn.addEventListener("click", () => popupBox.classList.add("active"));
-    closePopup.addEventListener("click", () => popupBox.classList.remove("active"));
+    addFriendBtn.addEventListener("click", () => {
+      popupOverlay.classList.add("active");
+      setTimeout(() => friendIdInput.focus(), 100);
+    });
+
+    closePopup.addEventListener("click", () => {
+      popupOverlay.classList.remove("active");
+    });
+
+    popupOverlay.addEventListener("click", (e) => {
+      if (e.target === popupOverlay) {
+        popupOverlay.classList.remove("active");
+      }
+    });
 
     let currentUserId = null;
 
@@ -291,7 +632,7 @@
       const snap = await getDoc(docRef);
 
       if (!snap.exists() || !snap.data().friends || snap.data().friends.length === 0) {
-        friendsList.innerHTML = `<p style="text-align:center; color:rgba(255,255,255,0.6)">No friends added yet.</p>`;
+        friendsList.innerHTML = `<div class="empty-state">No friends added yet.<br>Click "Add Friend" to get started!</div>`;
         return;
       }
 
@@ -301,12 +642,13 @@
       friends.forEach((friend, i) => {
         const div = document.createElement("div");
         div.className = "friend-item";
+        div.style.animationDelay = `${i * 0.05}s`;
         div.innerHTML = `
-          <div class="friend-number">${i + 1}</div>
+          <div class="friend-number"><span>${i + 1}</span></div>
           <div class="friend-info"><h3>@${friend.name}</h3></div>
           <div class="friend-actions">
-            <button class="reply-btn" onclick="window.open('https://x.com/${friend.name}','_blank')">Reply</button>
-            <button class="remove-btn" data-name="${friend.name}">Remove</button>
+            <button class="reply-btn" onclick="window.open('https://x.com/${friend.name}','_blank')"><span>Reply</span></button>
+            <button class="remove-btn" data-name="${friend.name}"><span>Remove</span></button>
           </div>
         `;
         friendsList.appendChild(div);
@@ -314,8 +656,8 @@
 
       document.querySelectorAll(".remove-btn").forEach(btn => {
         btn.addEventListener("click", async (e) => {
-          const name = e.target.dataset.name;
-          if (confirm(`Remove @${name}?`)) {
+          const name = e.target.closest('button').dataset.name;
+          if (confirm(`Remove @${name} from your friends?`)) {
             const updated = friends.filter(f => f.name !== name);
             await updateDoc(docRef, { friends: updated });
             loadFriends();
@@ -326,32 +668,38 @@
 
     saveFriend.addEventListener("click", async () => {
       const friendName = friendIdInput.value.trim().replace("@", "");
-      if (!friendName) return alert("Enter a valid username");
+      if (!friendName) return alert("Please enter a valid username");
 
       const docRef = doc(db, "profiles", currentUserId);
       const snap = await getDoc(docRef);
       let friends = [];
 
       if (snap.exists() && Array.isArray(snap.data().friends)) friends = snap.data().friends;
-      if (friends.some(f => f.name === friendName)) return alert("Friend already added!");
+      if (friends.some(f => f.name === friendName)) return alert("This friend is already added!");
 
       friends.push({ name: friendName });
       await updateDoc(docRef, { friends });
 
-      popupBox.classList.remove("active");
+      popupOverlay.classList.remove("active");
       friendIdInput.value = "";
       loadFriends();
     });
 
+    friendIdInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") saveFriend.click();
+    });
+
+    // Create animated particles
     const starsContainer = document.getElementById("stars");
-    for (let i = 0; i < 180; i++) {
+    for (let i = 0; i < 200; i++) {
       const s = document.createElement("div");
       s.classList.add("star");
-      const size = Math.random() * 2 + "px";
+      const size = Math.random() * 3 + 1 + "px";
       s.style.width = s.style.height = size;
       s.style.left = Math.random() * 100 + "%";
       s.style.top = Math.random() * 100 + "%";
-      s.style.animationDuration = 25 + Math.random() * 10 + "s";
+      s.style.animationDuration = 15 + Math.random() * 15 + "s";
+      s.style.animationDelay = Math.random() * 10 + "s";
       starsContainer.appendChild(s);
     }
   </script>

@@ -2,42 +2,146 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rezo – Make Connections</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    body {
+    * {
       margin: 0;
       padding: 0;
-      background-color: #000;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0f;
       color: white;
-      font-family: 'Orbitron', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      padding: 20px;
+    }
+
+    /* Animated gradient background */
+    .bg-gradient {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+      opacity: 0.05;
+      animation: gradientShift 15s ease infinite;
+      z-index: 0;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.2) rotate(180deg); }
+    }
+
+    /* Floating orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.3;
+      animation: float 20s ease-in-out infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .orb1 {
+      width: 500px;
+      height: 500px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      top: -250px;
+      left: -250px;
+      animation-delay: 0s;
+    }
+
+    .orb2 {
+      width: 400px;
+      height: 400px;
+      background: linear-gradient(135deg, #f093fb, #f5576c);
+      bottom: -200px;
+      right: -200px;
+      animation-delay: 7s;
+    }
+
+    .orb3 {
+      width: 350px;
+      height: 350px;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      top: 50%;
+      left: 50%;
+      animation-delay: 3s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(100px, -100px) scale(1.1); }
+      66% { transform: translate(-100px, 100px) scale(0.9); }
     }
 
     .chat-container {
       width: 90%;
       max-width: 800px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 15px;
-      padding: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 30px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      height: 80vh;
-      box-sizing: border-box;
+      gap: 20px;
+      height: 85vh;
+      max-height: 800px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 2;
     }
 
-    .chat-container h2 {
-      text-align: center;
-      color: #00ffcc;
-      font-size: 1.8em;
-      margin: 0 0 20px 0;
+    .chat-header {
+      display: flex;
+      justify-content: flex-start; /* removed space-between */
+      align-items: center;
       flex-shrink: 0;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .chat-header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+    }
+
+    /* ✅ Back button style */
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      z-index: 3;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
     }
 
     .messages {
@@ -45,40 +149,66 @@
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 15px;
-      padding-bottom: 10px;
+      gap: 16px;
+      padding: 10px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(102, 126, 234, 0.3) rgba(255, 255, 255, 0.05);
+    }
+
+    .messages::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .messages::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+    }
+
+    .messages::-webkit-scrollbar-thumb {
+      background: rgba(102, 126, 234, 0.3);
+      border-radius: 4px;
     }
 
     .message {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
+      gap: 12px;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .message img {
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      border: 1px solid #666;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
     }
 
     .bubble-container {
       display: flex;
       flex-direction: column;
+      gap: 4px;
+      max-width: 70%;
     }
 
     .username {
-      font-size: 0.75em;
-      color: rgba(255, 255, 255, 0.6);
-      margin-bottom: 3px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      font-weight: 500;
     }
 
     .bubble {
-      max-width: 70%;
-      padding: 10px 15px;
-      border-radius: 15px;
-      background-color: rgba(0, 255, 204, 0.1);
-      color: #00ffcc;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      line-height: 1.5;
       word-wrap: break-word;
     }
 
@@ -87,9 +217,11 @@
     }
 
     .my-message .bubble {
-      background-color: #00ffcc;
-      color: #000;
-      border-bottom-right-radius: 0;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
     }
 
     .my-message .username {
@@ -98,108 +230,69 @@
 
     .input-area {
       display: flex;
-      margin-top: 10px;
-      gap: 10px;
+      gap: 12px;
       flex-shrink: 0;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     input {
       flex: 1;
-      padding: 10px;
-      border-radius: 10px;
-      border: none;
-      background: rgba(255,255,255,0.1);
+      padding: 14px 18px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
       color: white;
-      font-family: 'Orbitron', sans-serif;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
       outline: none;
     }
 
-    button {
-      padding: 10px 20px;
+    .send-btn {
+      padding: 14px 28px;
       border: none;
-      border-radius: 10px;
-      background: #00ffcc;
-      font-family: 'Orbitron', sans-serif;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
       cursor: pointer;
-      color: #000;
-      font-weight: bold;
-      transition: 0.2s ease;
-    }
-
-    button:hover {
-      transform: scale(1.05);
-    }
-
-    .messages::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    .messages::-webkit-scrollbar-track {
-      background: rgba(255,255,255,0.05);
-      border-radius: 4px;
-    }
-
-    .messages::-webkit-scrollbar-thumb {
-      background: rgba(0,255,204,0.3);
-      border-radius: 4px;
-    }
-
-    /* ===== RESPONSIVE ===== */
-    @media screen and (max-width: 600px) {
-      .chat-container {
-        height: 90vh;
-        padding: 15px;
-      }
-
-      .chat-container h2 {
-        font-size: 1.5em;
-        margin-bottom: 15px;
-      }
-
-      .bubble {
-        max-width: 85%;
-        padding: 8px 12px;
-        font-size: 0.9em;
-      }
-
-      .message img {
-        width: 35px;
-        height: 35px;
-      }
-
-      input {
-        padding: 8px;
-      }
-
-      button {
-        padding: 8px 15px;
-        font-size: 0.9em;
-      }
+      color: white;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
     }
   </style>
 </head>
 <body>
+  <div class="bg-gradient"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+
+  <!-- ✅ Back button linked to pag2.html -->
+  <button class="back-btn" onclick="window.location.href='pag2.html'">⬅ Back</button>
+
   <div class="chat-container">
-    <h2>Make Connections</h2>
+    <div class="chat-header">
+      <h2>Make Connections</h2>
+    </div>
+
     <div class="messages" id="messages"></div>
+
     <div class="input-area">
       <input type="text" id="messageInput" placeholder="Type your message..." />
-      <button id="sendBtn">Send</button>
+      <button class="send-btn" id="sendBtn">Send</button>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-    import { 
-      getFirestore, collection, addDoc, onSnapshot, 
-      query, orderBy, serverTimestamp, getDoc, doc 
-    } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, getDoc, doc } 
+    from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
       authDomain: "rezo-chat.firebaseapp.com",
-      databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "rezo-chat",
       storageBucket: "rezo-chat.firebasestorage.app",
       messagingSenderId: "300513819927",
@@ -259,18 +352,14 @@
       sendBtn.addEventListener("click", async () => {
         const text = messageInput.value.trim();
         if (!text) return;
-        try {
-          await addDoc(collection(db, "messages"), {
-            uid,
-            username,
-            avatarUrl,
-            text,
-            timestamp: serverTimestamp()
-          });
-          messageInput.value = "";
-        } catch (e) {
-          console.error("Send error:", e);
-        }
+        await addDoc(collection(db, "messages"), {
+          uid,
+          username,
+          avatarUrl,
+          text,
+          timestamp: serverTimestamp()
+        });
+        messageInput.value = "";
       });
 
       messageInput.addEventListener("keypress", (e) => {

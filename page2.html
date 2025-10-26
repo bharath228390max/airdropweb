@@ -3,15 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <title>Rezo - Home</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ mobile scaling -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    body {
+    * {
       margin: 0;
       padding: 0;
-      font-family: 'Orbitron', sans-serif;
-      background: radial-gradient(circle at center, #0a0a0a 25%, #000000 90%);
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0f;
       color: white;
       overflow-y: auto;
       overflow-x: hidden;
@@ -19,354 +23,482 @@
       flex-direction: column;
       align-items: center;
       position: relative;
+      min-height: 100vh;
     }
 
-    /* Animated blackhole background */
-    .blackhole {
+    /* Animated gradient background */
+    .bg-gradient {
       position: fixed;
-      width: 200vmax;
-      height: 200vmax;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+      opacity: 0.05;
+      animation: gradientShift 15s ease infinite;
+      z-index: 0;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.2) rotate(180deg); }
+    }
+
+    /* Floating orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.3;
+      animation: float 20s ease-in-out infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .orb1 {
+      width: 500px;
+      height: 500px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      top: -250px;
+      left: -250px;
+      animation-delay: 0s;
+    }
+
+    .orb2 {
+      width: 400px;
+      height: 400px;
+      background: linear-gradient(135deg, #f093fb, #f5576c);
+      bottom: -200px;
+      right: -200px;
+      animation-delay: 7s;
+    }
+
+    .orb3 {
+      width: 350px;
+      height: 350px;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
-      background: conic-gradient(from 0deg, #111, #222, #111, #000, #111, #222, #111);
-      border-radius: 50%;
-      animation: rotate 18s linear infinite;
-      z-index: 0;
-      filter: blur(100px) brightness(1.1);
+      animation-delay: 3s;
     }
 
-    @keyframes rotate {
-      0% { transform: translate(-50%, -50%) rotate(0deg); }
-      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(100px, -100px) scale(1.1); }
+      66% { transform: translate(-100px, 100px) scale(0.9); }
     }
 
-    /* Glowing orbit rings */
-    .orbit {
-      position: fixed;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 50%;
-      animation: spin 60s linear infinite;
-      mix-blend-mode: overlay;
-      pointer-events: none;
-      z-index: 1;
-    }
-    .orbit1 { width: 800px; height: 800px; animation-duration: 50s; }
-    .orbit2 { width: 1200px; height: 1200px; animation-duration: 70s; border-color: rgba(255,255,255,0.05); }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Top right buttons container */
+    /* Top navigation bar */
     .top-right-buttons {
       width: 100%;
       display: flex;
       justify-content: flex-end;
       gap: 15px;
-      padding: 10px 30px;
+      padding: 20px 40px;
       position: sticky;
       top: 0;
-      z-index: 5;
-      background-color: rgba(0,0,0,0.4);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      z-index: 100;
+      background: rgba(10, 10, 15, 0.7);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .top-right-buttons button {
-      padding: 6px 14px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1.5px solid #fefefe;
-      background: transparent;
-      color: white;
-      font-weight: bold;
+      padding: 10px 24px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: 'Inter', sans-serif;
     }
 
     .top-right-buttons button:hover {
-      background: white;
-      color: #0a0a0a;
-      box-shadow: 0 0 20px rgba(255,255,255,0.6);
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
     }
 
-    /* Boxes container */
-    .top-boxes {
-      display: flex;
-      justify-content: center;
-      align-items: stretch;
-      flex-wrap: wrap;
-      gap: 40px;
-      width: 90%;
-      max-width: 1200px;
-      margin-top: 30px;
-      position: relative;
-      z-index: 3;
-    }
-
-    /* Normal boxes */
-    .box-item {
-      flex: 1 1 calc(33.333% - 40px);
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(255,255,255,0.3);
-      border-radius: 25px;
-      height: 250px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      box-shadow: 0 0 25px rgba(255,255,255,0.1);
-      transition: transform 0.5s ease, box-shadow 0.5s ease;
-      padding: 15px;
-      cursor: pointer;
-      box-sizing: border-box;
-    }
-
-    .box-item:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 40px rgba(255,255,255,0.3);
-      border-color: rgba(255,255,255,0.6);
-    }
-
-    /* Full-width top big box */
-    .big-top-box {
-      width: 90%;
-      max-width: 1200px;
-      height: 250px;
-      background: rgba(255,255,255,0.05);
-      border: 2px solid rgba(255,255,255,0.3);
-      border-radius: 25px;
-      box-shadow: 0 0 25px rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      text-align: center;
-      margin-bottom: 40px;
-      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    /* Content wrapper */
+    .content-wrapper {
+      width: 100%;
+      max-width: 1400px;
+      padding: 40px 20px;
       position: relative;
       z-index: 2;
-      padding: 20px;
-      box-sizing: border-box;
+    }
+
+    /* Big promotional box */
+    .big-top-box {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 32px;
+      backdrop-filter: blur(20px);
+      padding: 60px 40px;
+      margin-bottom: 50px;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .big-top-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
     }
 
     .big-top-box:hover {
-      transform: translateY(10px) scale(1.03);
-      box-shadow: 0 0 35px rgba(255,255,255,0.3);
-      border-color: rgba(255,255,255,0.6);
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.25);
     }
 
     .big-top-box h2 {
-      font-size: 30px;
-      margin: 0;
-      color: #fff;
-      text-shadow: 0 0 10px rgba(255,255,255,0.4);
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff, #a8b2f0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 15px;
+      letter-spacing: -0.5px;
+      position: relative;
+      z-index: 1;
     }
 
     .big-top-box p {
-      margin-top: 10px;
-      font-size: 17px;
-      color: rgba(255,255,255,0.75);
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.6);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Grid container */
+    .top-boxes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      margin-bottom: 50px;
+    }
+
+    /* Box items */
+    .box-item {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      padding: 35px 25px;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .box-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .box-item h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 12px;
+      letter-spacing: -0.3px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .box-item p {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.5;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Empty box (invisible) */
+    .box-item.empty {
+      background: transparent;
+      border: none;
+      pointer-events: none;
+      cursor: default;
+    }
+
+    .box-item.empty:hover {
+      transform: none;
     }
 
     /* Bottom promo box */
     .promo-box {
       width: 100%;
-      height: 250px;
-      margin-top: 40px;
-      background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-      border-top: 2px solid rgba(255,255,255,0.3);
-      border-bottom: 2px solid rgba(255,255,255,0.3);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 32px;
+      padding: 60px 40px;
       text-align: center;
-      box-shadow: 0 0 35px rgba(255,255,255,0.2);
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(20px);
       position: relative;
       overflow: hidden;
-      z-index: 3;
-      padding: 20px;
-      box-sizing: border-box;
+      margin-bottom: 40px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .promo-box::before {
       content: '';
       position: absolute;
-      width: 200%;
-      height: 100%;
       top: 0;
-      left: -50%;
-      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
       animation: shine 4s linear infinite;
     }
 
     @keyframes shine {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
+      0% { left: -100%; }
+      100% { left: 200%; }
+    }
+
+    .promo-box:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.25);
     }
 
     .promo-box h2 {
-      font-size: 32px;
-      margin: 0;
-      color: white;
-      text-shadow: 0 0 20px rgba(255,255,255,0.5);
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff, #a8b2f0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 15px;
+      letter-spacing: -0.5px;
     }
 
     .promo-box p {
-      margin-top: 12px;
-      font-size: 18px;
-      color: rgba(255,255,255,0.8);
+      font-size: 1.15rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 30px;
     }
 
     .promo-btn {
-      margin-top: 20px;
-      padding: 10px 24px;
-      font-size: 16px;
-      border: 2px solid white;
-      border-radius: 10px;
-      background: transparent;
-      color: white;
+      display: inline-block;
+      padding: 14px 40px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
       text-decoration: none;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: 'Inter', sans-serif;
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
     }
 
     .promo-btn:hover {
-      background: white;
-      color: black;
-      box-shadow: 0 0 25px rgba(255,255,255,0.7);
-      transform: scale(1.05);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
     }
 
-    /* ✅ Tablet */
+    /* Tablet */
     @media (max-width: 992px) {
-      .box-item { flex: 1 1 calc(45% - 30px); }
-      .big-top-box, .promo-box { height: 220px; }
+      .top-boxes {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+      
+      .big-top-box {
+        padding: 40px 30px;
+      }
+      
+      .big-top-box h2 {
+        font-size: 2rem;
+      }
     }
 
-    /* ✅ Mobile */
+    /* Mobile */
     @media (max-width: 768px) {
       .top-right-buttons {
         justify-content: center;
         gap: 12px;
-        padding: 10px 15px;
+        padding: 15px 20px;
       }
 
       .top-right-buttons button {
-        font-size: 14px;
-        padding: 8px 14px;
+        font-size: 0.9rem;
+        padding: 8px 18px;
+      }
+
+      .content-wrapper {
+        padding: 30px 15px;
       }
 
       .big-top-box {
-        height: auto;
-        padding: 25px 15px;
+        padding: 40px 25px;
+        margin-bottom: 35px;
+        border-radius: 24px;
       }
 
-      .big-top-box h2 { font-size: 24px; }
-      .big-top-box p { font-size: 15px; }
+      .big-top-box h2 {
+        font-size: 1.75rem;
+      }
+
+      .big-top-box p {
+        font-size: 1rem;
+      }
 
       .top-boxes {
-        flex-direction: column;
-        gap: 25px;
-        width: 95%;
+        grid-template-columns: 1fr;
+        gap: 18px;
+        margin-bottom: 35px;
       }
 
       .box-item {
-        flex: 1 1 100%;
-        height: 190px;
-        padding: 12px;
+        padding: 28px 20px;
+        height: 180px;
+        border-radius: 20px;
       }
 
-      .box-item h2 { font-size: 20px; }
-      .box-item p { font-size: 15px; }
+      .box-item h2 {
+        font-size: 1.15rem;
+      }
+
+      .box-item p {
+        font-size: 0.9rem;
+      }
 
       .promo-box {
-        height: auto;
-        padding: 25px 15px;
+        padding: 45px 25px;
+        margin-bottom: 30px;
+        border-radius: 24px;
       }
 
-      .promo-box h2 { font-size: 22px; }
-      .promo-box p { font-size: 14px; }
-      .promo-btn { font-size: 14px; padding: 8px 18px; }
+      .promo-box h2 {
+        font-size: 1.75rem;
+      }
+
+      .promo-box p {
+        font-size: 1rem;
+      }
+
+      .promo-btn {
+        font-size: 0.95rem;
+        padding: 12px 32px;
+      }
     }
 
-    /* ✅ Small Phones */
+    /* Small phones */
     @media (max-width: 480px) {
-      .big-top-box h2 { font-size: 20px; }
-      .big-top-box p { font-size: 13px; }
-      .box-item h2 { font-size: 18px; }
-      .box-item p { font-size: 13px; }
-      .promo-box h2 { font-size: 20px; }
-      .promo-box p { font-size: 13px; }
+      .big-top-box h2 {
+        font-size: 1.5rem;
+      }
+
+      .big-top-box p {
+        font-size: 0.9rem;
+      }
+
+      .box-item h2 {
+        font-size: 1.05rem;
+      }
+
+      .box-item p {
+        font-size: 0.85rem;
+      }
+
+      .promo-box h2 {
+        font-size: 1.5rem;
+      }
+
+      .promo-box p {
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="blackhole"></div>
-  <div class="orbit orbit1"></div>
-  <div class="orbit orbit2"></div>
+  <div class="bg-gradient"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
 
-  <!-- Top right buttons -->
+  <!-- Top navigation -->
   <div class="top-right-buttons">
     <button onclick="alert('Level Page')">Level</button>
     <button onclick="window.location.href='profile.html'">Profile</button>
   </div>
 
-  <!-- Big Top Box -->
-  <div class="big-top-box">
-    <h2>Promote your projects here.</h2>
-    <p>Need money to run my site tho, contact in X below</p>
-  </div>
+  <div class="content-wrapper">
+    <!-- Big promotional box -->
+    <div class="big-top-box">
+      <h2>Promote your projects here.</h2>
+      <p>Need money to run my site tho, contact in X below</p>
+    </div>
 
-  <!-- 9 Box Grid -->
-  <div class="top-boxes">
-    <div class="box-item">
-      <h2>Airdrop Opportunities</h2>
-      <p>Find the latest airdrops available for small accounts.</p>
+    <!-- Grid of boxes -->
+    <div class="top-boxes">
+      <div class="box-item">
+        <h2>Airdrop Opportunities</h2>
+        <p>Find the latest airdrops available for small accounts.</p>
+      </div>
+      <div class="box-item" onclick="window.location.href='page4.html'">
+        <h2>Yappers per Project</h2>
+        <p>See the number of active participants per project.</p>
+      </div>
+      <div class="box-item" onclick="window.location.href='page7.html'">
+        <h2>Reply Guys place</h2>
+        <p>Add your friends in one place.</p>
+      </div>
+      <div class="box-item" onclick="window.location.href='page3.html'">
+        <h2>Make Connections</h2>
+        <p>Make connections and grow together.</p>
+      </div>
+      <div class="box-item">
+        <h2>Global Chat</h2>
+        <p>Join discussions with users from all over the world.</p>
+      </div>
+      <div class="box-item">
+        <h2>Dev community</h2>
+        <p>Connect with other devs.</p>
+      </div>
+      <div class="box-item" onclick="window.location.href='page5.html'">
+        <h2>Engage for Engage</h2>
+        <p>Engage on tweets to level up on LBs.</p>
+      </div>
+      <div class="box-item" onclick="window.location.href='page6.html'">
+        <h2>Follow for Follow</h2>
+        <p>Grow accounts with this page.</p>
+      </div>
+      <div class="box-item empty"></div>
     </div>
-    <div class="box-item" onclick="window.location.href='page4.html'">
-      <h2>Yappers per Project</h2>
-      <p>See the number of active participants per project.</p>
-    </div>
-    <div class="box-item" onclick="window.location.href='page7.html'">
-      <h2>Reply Guys place</h2>
-      <p>Add your friends in one place.</p>
-    </div>
-    <div class="box-item" onclick="window.location.href='page3.html'">
-      <h2>Make Connections</h2>
-      <p>Make connections and grow together.</p>
-    </div>
-    <div class="box-item">
-      <h2>Global Chat</h2>
-      <p>Join discussions with users from all over the world.</p>
-    </div>
-    <div class="box-item">
-      <h2>Dev community</h2>
-      <p>Connect with other devs.</p>
-    </div>
-    <div class="box-item" onclick="window.location.href='page5.html'">
-      <h2>Engage for Engage</h2>
-      <p>Engage on tweets to level up on LBs.</p>
-    </div>
-    <div class="box-item" onclick="window.location.href='page6.html'">
-      <h2>Follow for Follow</h2>
-      <p>Grow accounts with this page.</p>
-    </div>
-    <div class="box-item" style="background: transparent; border: none; box-shadow: none; pointer-events: none;"></div>
-  </div>
 
-  <!-- Bottom Promo Box -->
-  <div class="promo-box">
-    <h2>🚀 Rezo Launching Soon</h2>
-    <p>Early supporters get exclusive perks</p>
-    <a href="https://x.com/Rezo_xyz" target="_blank" class="promo-btn">Follow X</a>
+    <!-- Bottom promotional box -->
+    <div class="promo-box">
+      <h2>🚀 Rezo Launching Soon</h2>
+      <p>Early supporters get exclusive perks</p>
+      <a href="https://x.com/Rezo_xyz" target="_blank" class="promo-btn">Follow X</a>
+    </div>
   </div>
 
 </body>

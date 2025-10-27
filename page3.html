@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rezo – Make Connections</title>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
@@ -13,35 +13,46 @@
       box-sizing: border-box;
     }
 
-    html, body {
-      height: 100%;
-      overflow: hidden;
-    }
-
     body {
       font-family: "Inter", sans-serif;
       background: #0a0a0f;
       color: white;
+      overflow: hidden;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
+    /* Animated gradient background */
     .bg-gradient {
       position: fixed;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+      background: linear-gradient(
+        135deg,
+        #667eea 0%,
+        #764ba2 25%,
+        #f093fb 50%,
+        #4facfe 75%,
+        #00f2fe 100%
+      );
       opacity: 0.05;
       animation: gradientShift 15s ease infinite;
       z-index: 0;
     }
 
     @keyframes gradientShift {
-      0%, 100% { transform: scale(1) rotate(0deg); }
-      50% { transform: scale(1.2) rotate(180deg); }
+      0%,
+      100% {
+        transform: scale(1) rotate(0deg);
+      }
+      50% {
+        transform: scale(1.2) rotate(180deg);
+      }
     }
 
+    /* Floating orbs */
     .orb {
       position: fixed;
       border-radius: 50%;
@@ -52,23 +63,53 @@
       pointer-events: none;
     }
 
-    .orb1 { width: 500px; height: 500px; background: linear-gradient(135deg, #667eea, #764ba2); top: -250px; left: -250px; }
-    .orb2 { width: 400px; height: 400px; background: linear-gradient(135deg, #f093fb, #f5576c); bottom: -200px; right: -200px; animation-delay: 7s; }
-    .orb3 { width: 350px; height: 350px; background: linear-gradient(135deg, #4facfe, #00f2fe); top: 50%; left: 50%; animation-delay: 3s; }
+    .orb1 {
+      width: 500px;
+      height: 500px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      top: -250px;
+      left: -250px;
+      animation-delay: 0s;
+    }
+
+    .orb2 {
+      width: 400px;
+      height: 400px;
+      background: linear-gradient(135deg, #f093fb, #f5576c);
+      bottom: -200px;
+      right: -200px;
+      animation-delay: 7s;
+    }
+
+    .orb3 {
+      width: 350px;
+      height: 350px;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      top: 50%;
+      left: 50%;
+      animation-delay: 3s;
+    }
 
     @keyframes float {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(100px, -100px) scale(1.1); }
-      66% { transform: translate(-100px, 100px) scale(0.9); }
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+      33% {
+        transform: translate(100px, -100px) scale(1.1);
+      }
+      66% {
+        transform: translate(-100px, 100px) scale(0.9);
+      }
     }
 
     .chat-container {
-      width: 100%;
+      width: 90%;
       max-width: 800px;
-      height: 100vh;
+      height: 85vh; /* slightly smaller height */
       background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 0;
+      border: 2px solid rgba(255, 255, 255, 0.1); /* thicker border */
+      border-radius: 24px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -76,8 +117,10 @@
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       position: relative;
       z-index: 2;
+      overflow: hidden;
     }
 
+    /* Small back button */
     .back-btn {
       position: absolute;
       top: 15px;
@@ -89,8 +132,14 @@
       background: rgba(255, 255, 255, 0.08);
       color: white;
       font-size: 18px;
+      font-weight: 600;
       cursor: pointer;
+      transition: 0.3s;
       z-index: 3;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
     }
 
     .chat-header {
@@ -106,6 +155,7 @@
       background: linear-gradient(135deg, #667eea, #764ba2);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      margin: 0;
     }
 
     .messages {
@@ -118,9 +168,24 @@
       scrollbar-width: thin;
     }
 
-    .message { display: flex; align-items: flex-start; gap: 12px; }
-    .bubble-container { display: flex; flex-direction: column; gap: 4px; max-width: 70%; }
-    .username { font-size: 12px; color: rgba(255, 255, 255, 0.5); }
+    .message {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .bubble-container {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-width: 70%;
+    }
+
+    .username {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
     .bubble {
       padding: 12px 16px;
       border-radius: 16px;
@@ -129,8 +194,16 @@
       color: rgba(255, 255, 255, 0.9);
       word-wrap: break-word;
     }
-    .my-message { flex-direction: row-reverse; }
-    .my-message .bubble { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; }
+
+    .my-message {
+      flex-direction: row-reverse;
+    }
+
+    .my-message .bubble {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+    }
 
     .input-area {
       display: flex;
@@ -138,10 +211,10 @@
       padding: 12px;
       border-top: 1px solid rgba(255, 255, 255, 0.05);
       flex-shrink: 0;
-      background: rgba(10, 10, 15, 0.9);
+      background: rgba(10, 10, 15, 0.8);
       position: sticky;
       bottom: 0;
-      z-index: 5;
+      left: 0;
     }
 
     input {
@@ -166,13 +239,26 @@
     }
 
     @media (max-width: 768px) {
-      .chat-container {
-        height: 100dvh; /* ✅ fits mobile screens with dynamic keyboard height */
+      body {
+        padding: 0;
       }
 
-      .messages {
-        overflow-y: auto;
-        flex: 1;
+      .chat-container {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+      }
+
+      .chat-header h2 {
+        font-size: 22px;
+      }
+
+      .back-btn {
+        top: 10px;
+        left: 10px;
+        width: 34px;
+        height: 34px;
+        font-size: 16px;
       }
     }
   </style>
@@ -229,12 +315,18 @@
 
       const uid = user.uid;
       let username = "User";
+      let avatarUrl = "https://i.imgur.com/dR5VqQw.png";
 
-      const docRef = doc(db, "profiles", uid);
-      const snap = await getDoc(docRef);
-      if (snap.exists()) {
-        const data = snap.data();
-        username = data.username || username;
+      try {
+        const docRef = doc(db, "profiles", uid);
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          const data = snap.data();
+          username = data.username || username;
+          if (data.avatarUrl) avatarUrl = data.avatarUrl;
+        }
+      } catch (e) {
+        console.error("Error loading profile:", e);
       }
 
       const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
@@ -262,6 +354,7 @@
         await addDoc(collection(db, "messages"), {
           uid,
           username,
+          avatarUrl,
           text,
           timestamp: serverTimestamp()
         });

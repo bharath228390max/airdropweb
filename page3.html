@@ -19,7 +19,6 @@
       align-items: center;
     }
 
-    /* subtle gradient bg */
     .bg-gradient {
       position: fixed;
       width: 100%;
@@ -34,7 +33,6 @@
       50% { transform: scale(1.2) rotate(180deg); }
     }
 
-    /* floating lights */
     .orb {
       position: fixed;
       border-radius: 50%;
@@ -54,7 +52,6 @@
       66% { transform: translate(-100px, 100px) scale(0.9); }
     }
 
-    /* main container */
     .chat-container {
       width: 90%;
       max-width: 800px;
@@ -90,7 +87,6 @@
       -webkit-text-fill-color: transparent;
     }
 
-    /* back button small icon */
     .back-btn {
       position: absolute;
       left: 16px;
@@ -109,13 +105,12 @@
       cursor: pointer;
       transition: all 0.3s;
     }
-
     .back-btn:hover {
       background: rgba(255, 255, 255, 0.15);
       transform: translateY(-50%) scale(1.05);
     }
 
-    /* ✅ Scrollable messages only */
+    /* ✅ Scrollable messages only, with padding at bottom */
     .messages {
       flex: 1;
       overflow-y: auto;
@@ -123,6 +118,7 @@
       flex-direction: column;
       gap: 14px;
       padding: 12px;
+      padding-bottom: 80px; /* Prevent overlap with input area */
       scrollbar-width: thin;
       scrollbar-color: rgba(102, 126, 234, 0.3) rgba(255, 255, 255, 0.05);
     }
@@ -154,7 +150,7 @@
       border-bottom-right-radius: 6px;
     }
 
-    /* ✅ Input area fixed and always visible */
+    /* ✅ Fixed input area */
     .input-area {
       position: absolute;
       bottom: 0;

@@ -6,7 +6,6 @@
   <title>Rezo – Make Connections</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
@@ -20,6 +19,7 @@
       align-items: center;
     }
 
+    /* subtle gradient bg */
     .bg-gradient {
       position: fixed;
       width: 100%;
@@ -29,12 +29,12 @@
       animation: gradientShift 15s ease infinite;
       z-index: 0;
     }
-
     @keyframes gradientShift {
       0%, 100% { transform: scale(1) rotate(0deg); }
       50% { transform: scale(1.2) rotate(180deg); }
     }
 
+    /* floating lights */
     .orb {
       position: fixed;
       border-radius: 50%;
@@ -44,7 +44,6 @@
       z-index: 1;
       pointer-events: none;
     }
-
     .orb1 { width: 500px; height: 500px; background: linear-gradient(135deg, #667eea, #764ba2); top: -250px; left: -250px; }
     .orb2 { width: 400px; height: 400px; background: linear-gradient(135deg, #f093fb, #f5576c); bottom: -200px; right: -200px; }
     .orb3 { width: 350px; height: 350px; background: linear-gradient(135deg, #4facfe, #00f2fe); top: 50%; left: 50%; }
@@ -55,6 +54,7 @@
       66% { transform: translate(-100px, 100px) scale(0.9); }
     }
 
+    /* main container */
     .chat-container {
       width: 90%;
       max-width: 800px;
@@ -90,7 +90,7 @@
       -webkit-text-fill-color: transparent;
     }
 
-    /* ✅ Small circular back button */
+    /* back button small icon */
     .back-btn {
       position: absolute;
       left: 16px;
@@ -115,13 +115,14 @@
       transform: translateY(-50%) scale(1.05);
     }
 
+    /* ✅ Scrollable messages only */
     .messages {
       flex: 1;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 14px;
-      padding: 10px 12px 80px;
+      padding: 12px;
       scrollbar-width: thin;
       scrollbar-color: rgba(102, 126, 234, 0.3) rgba(255, 255, 255, 0.05);
     }
@@ -153,7 +154,7 @@
       border-bottom-right-radius: 6px;
     }
 
-    /* ✅ Fixed input area always visible */
+    /* ✅ Input area fixed and always visible */
     .input-area {
       position: absolute;
       bottom: 0;
@@ -191,9 +192,7 @@
       transition: 0.3s;
     }
 
-    .send-btn:hover {
-      transform: translateY(-2px);
-    }
+    .send-btn:hover { transform: translateY(-2px); }
 
     @media (max-width: 768px) {
       .chat-container {
@@ -202,15 +201,8 @@
         border-radius: 0;
       }
 
-      .chat-header h2 {
-        font-size: 22px;
-      }
-
-      .back-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 16px;
-      }
+      .chat-header h2 { font-size: 22px; }
+      .back-btn { width: 32px; height: 32px; font-size: 16px; }
     }
   </style>
 </head>

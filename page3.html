@@ -110,7 +110,7 @@
       transform: translateY(-50%) scale(1.05);
     }
 
-    /* ✅ Scrollable messages only, with padding at bottom */
+    /* ✅ Scrollable messages only */
     .messages {
       flex: 1;
       overflow-y: auto;
@@ -118,7 +118,6 @@
       flex-direction: column;
       gap: 14px;
       padding: 12px;
-      padding-bottom: 80px; /* Prevent overlap with input area */
       scrollbar-width: thin;
       scrollbar-color: rgba(102, 126, 234, 0.3) rgba(255, 255, 255, 0.05);
     }
@@ -150,19 +149,15 @@
       border-bottom-right-radius: 6px;
     }
 
-    /* ✅ Fixed input area */
+    /* ✅ Input area always visible */
     .input-area {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
+      flex-shrink: 0;
       display: flex;
       gap: 10px;
       padding: 12px;
       border-top: 1px solid rgba(255, 255, 255, 0.05);
       background: rgba(10, 10, 15, 0.9);
       backdrop-filter: blur(8px);
-      z-index: 3;
     }
 
     input {

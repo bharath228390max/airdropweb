@@ -6,12 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Inter', sans-serif;
@@ -26,7 +21,6 @@
       min-height: 100vh;
     }
 
-    /* Animated gradient background */
     .bg-gradient {
       position: fixed;
       width: 100%;
@@ -42,7 +36,6 @@
       50% { transform: scale(1.2) rotate(180deg); }
     }
 
-    /* Floating orbs */
     .orb {
       position: fixed;
       border-radius: 50%;
@@ -53,32 +46,9 @@
       pointer-events: none;
     }
 
-    .orb1 {
-      width: 500px;
-      height: 500px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      top: -250px;
-      left: -250px;
-      animation-delay: 0s;
-    }
-
-    .orb2 {
-      width: 400px;
-      height: 400px;
-      background: linear-gradient(135deg, #f093fb, #f5576c);
-      bottom: -200px;
-      right: -200px;
-      animation-delay: 7s;
-    }
-
-    .orb3 {
-      width: 350px;
-      height: 350px;
-      background: linear-gradient(135deg, #4facfe, #00f2fe);
-      top: 50%;
-      left: 50%;
-      animation-delay: 3s;
-    }
+    .orb1 { width: 500px; height: 500px; background: linear-gradient(135deg, #667eea, #764ba2); top: -250px; left: -250px; animation-delay: 0s; }
+    .orb2 { width: 400px; height: 400px; background: linear-gradient(135deg, #f093fb, #f5576c); bottom: -200px; right: -200px; animation-delay: 7s; }
+    .orb3 { width: 350px; height: 350px; background: linear-gradient(135deg, #4facfe, #00f2fe); top: 50%; left: 50%; animation-delay: 3s; }
 
     @keyframes float {
       0%, 100% { transform: translate(0, 0) scale(1); }
@@ -86,7 +56,6 @@
       66% { transform: translate(-100px, 100px) scale(0.9); }
     }
 
-    /* Top navigation bar */
     .top-right-buttons {
       width: 100%;
       display: flex;
@@ -110,8 +79,7 @@
       background: rgba(255, 255, 255, 0.05);
       color: #fff;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      font-family: 'Inter', sans-serif;
+      transition: all 0.3s;
     }
 
     .top-right-buttons button:hover {
@@ -120,16 +88,8 @@
       transform: translateY(-2px);
     }
 
-    /* Content wrapper */
-    .content-wrapper {
-      width: 100%;
-      max-width: 1400px;
-      padding: 40px 20px;
-      position: relative;
-      z-index: 2;
-    }
+    .content-wrapper { width: 100%; max-width: 1400px; padding: 40px 20px; position: relative; z-index: 2; }
 
-    /* Big promotional box */
     .big-top-box {
       width: 100%;
       background: rgba(255, 255, 255, 0.02);
@@ -139,7 +99,7 @@
       padding: 60px 40px;
       margin-bottom: 50px;
       text-align: center;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.4s;
       position: relative;
       overflow: hidden;
     }
@@ -155,15 +115,9 @@
       animation: shimmer 3s infinite;
     }
 
-    @keyframes shimmer {
-      0% { left: -100%; }
-      100% { left: 100%; }
-    }
+    @keyframes shimmer { 0% { left: -100%; } 100% { left: 100%; } }
 
-    .big-top-box:hover {
-      transform: translateY(-4px);
-      border-color: rgba(255, 255, 255, 0.25);
-    }
+    .big-top-box:hover { transform: translateY(-4px); border-color: rgba(255, 255, 255, 0.25); }
 
     .big-top-box h2 {
       font-size: 2.5rem;
@@ -171,21 +125,11 @@
       background: linear-gradient(135deg, #fff, #a8b2f0);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
       margin-bottom: 15px;
-      letter-spacing: -0.5px;
-      position: relative;
-      z-index: 1;
     }
 
-    .big-top-box p {
-      font-size: 1.1rem;
-      color: rgba(255, 255, 255, 0.6);
-      position: relative;
-      z-index: 1;
-    }
+    .big-top-box p { font-size: 1.1rem; color: rgba(255, 255, 255, 0.6); }
 
-    /* Grid container */
     .top-boxes {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -193,7 +137,6 @@
       margin-bottom: 50px;
     }
 
-    /* Box items */
     .box-item {
       background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(10px);
@@ -206,49 +149,17 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.4s;
       cursor: pointer;
       position: relative;
-      overflow: hidden;
     }
 
-    .box-item:hover {
-      background: rgba(255, 255, 255, 0.05);
-      transform: translateY(-4px);
-      border-color: rgba(255, 255, 255, 0.25);
-    }
+    .box-item:hover { background: rgba(255, 255, 255, 0.05); transform: translateY(-4px); border-color: rgba(255, 255, 255, 0.25); }
 
-    .box-item h2 {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #fff;
-      margin-bottom: 12px;
-      letter-spacing: -0.3px;
-      position: relative;
-      z-index: 1;
-    }
+    .box-item h2 { font-size: 1.3rem; font-weight: 600; color: #fff; margin-bottom: 12px; }
+    .box-item p { font-size: 0.95rem; color: rgba(255, 255, 255, 0.6); line-height: 1.5; }
+    .box-item.empty { background: transparent; border: none; pointer-events: none; }
 
-    .box-item p {
-      font-size: 0.95rem;
-      color: rgba(255, 255, 255, 0.6);
-      line-height: 1.5;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Empty box (invisible) */
-    .box-item.empty {
-      background: transparent;
-      border: none;
-      pointer-events: none;
-      cursor: default;
-    }
-
-    .box-item.empty:hover {
-      transform: none;
-    }
-
-    /* Bottom promo box */
     .promo-box {
       width: 100%;
       background: rgba(255, 255, 255, 0.02);
@@ -260,7 +171,7 @@
       position: relative;
       overflow: hidden;
       margin-bottom: 40px;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.4s;
     }
 
     .promo-box::before {
@@ -274,15 +185,9 @@
       animation: shine 4s linear infinite;
     }
 
-    @keyframes shine {
-      0% { left: -100%; }
-      100% { left: 200%; }
-    }
+    @keyframes shine { 0% { left: -100%; } 100% { left: 200%; } }
 
-    .promo-box:hover {
-      transform: translateY(-4px);
-      border-color: rgba(255, 255, 255, 0.25);
-    }
+    .promo-box:hover { transform: translateY(-4px); border-color: rgba(255, 255, 255, 0.25); }
 
     .promo-box h2 {
       font-size: 2.5rem;
@@ -290,173 +195,44 @@
       background: linear-gradient(135deg, #fff, #a8b2f0);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
       margin-bottom: 15px;
-      letter-spacing: -0.5px;
     }
 
-    .promo-box p {
-      font-size: 1.15rem;
-      color: rgba(255, 255, 255, 0.6);
-      margin-bottom: 30px;
-    }
+    .promo-box p { font-size: 1.15rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 30px; }
 
     .promo-btn {
       display: inline-block;
       padding: 14px 40px;
       font-size: 1.05rem;
       font-weight: 600;
-      border: none;
       border-radius: 12px;
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: #fff;
       text-decoration: none;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      font-family: 'Inter', sans-serif;
+      transition: all 0.3s;
       box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
     }
 
-    .promo-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
-    }
-
-    /* Tablet */
-    @media (max-width: 992px) {
-      .top-boxes {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-      }
-      
-      .big-top-box {
-        padding: 40px 30px;
-      }
-      
-      .big-top-box h2 {
-        font-size: 2rem;
-      }
-    }
-
-    /* Mobile */
-    @media (max-width: 768px) {
-      .top-right-buttons {
-        justify-content: center;
-        gap: 12px;
-        padding: 15px 20px;
-      }
-
-      .top-right-buttons button {
-        font-size: 0.9rem;
-        padding: 8px 18px;
-      }
-
-      .content-wrapper {
-        padding: 30px 15px;
-      }
-
-      .big-top-box {
-        padding: 40px 25px;
-        margin-bottom: 35px;
-        border-radius: 24px;
-      }
-
-      .big-top-box h2 {
-        font-size: 1.75rem;
-      }
-
-      .big-top-box p {
-        font-size: 1rem;
-      }
-
-      .top-boxes {
-        grid-template-columns: 1fr;
-        gap: 18px;
-        margin-bottom: 35px;
-      }
-
-      .box-item {
-        padding: 28px 20px;
-        height: 180px;
-        border-radius: 20px;
-      }
-
-      .box-item h2 {
-        font-size: 1.15rem;
-      }
-
-      .box-item p {
-        font-size: 0.9rem;
-      }
-
-      .promo-box {
-        padding: 45px 25px;
-        margin-bottom: 30px;
-        border-radius: 24px;
-      }
-
-      .promo-box h2 {
-        font-size: 1.75rem;
-      }
-
-      .promo-box p {
-        font-size: 1rem;
-      }
-
-      .promo-btn {
-        font-size: 0.95rem;
-        padding: 12px 32px;
-      }
-    }
-
-    /* Small phones */
-    @media (max-width: 480px) {
-      .big-top-box h2 {
-        font-size: 1.5rem;
-      }
-
-      .big-top-box p {
-        font-size: 0.9rem;
-      }
-
-      .box-item h2 {
-        font-size: 1.05rem;
-      }
-
-      .box-item p {
-        font-size: 0.85rem;
-      }
-
-      .promo-box h2 {
-        font-size: 1.5rem;
-      }
-
-      .promo-box p {
-        font-size: 0.9rem;
-      }
-    }
+    .promo-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4); }
   </style>
 </head>
 <body>
-
   <div class="bg-gradient"></div>
   <div class="orb orb1"></div>
   <div class="orb orb2"></div>
   <div class="orb orb3"></div>
 
-  <!-- Top navigation -->
   <div class="top-right-buttons">
     <button onclick="alert('Level Page')">Level</button>
     <button onclick="window.location.href='profile.html'">Profile</button>
   </div>
 
   <div class="content-wrapper">
-    <!-- Big promotional box -->
     <div class="big-top-box">
       <h2>Promote your projects here.</h2>
       <p>Need money to run my site tho, contact in X below</p>
     </div>
 
-    <!-- Grid of boxes -->
     <div class="top-boxes">
       <div class="box-item" onclick="window.location.href='page8.html'">
         <h2>Airdrop Opportunities</h2>
@@ -467,7 +243,7 @@
         <p>See the number of active participants per project.</p>
       </div>
       <div class="box-item" onclick="window.location.href='page7.html'">
-        <h2>Reply Guys place</h2>
+        <h2>Reply Guys Place</h2>
         <p>Add your friends in one place.</p>
       </div>
       <div class="box-item" onclick="window.location.href='page3.html'">
@@ -475,12 +251,8 @@
         <p>Make connections and grow together.</p>
       </div>
       <div class="box-item" onclick="window.location.href='page9.html'">
-        <h2>Active reply guys</h2>
-        <p>list of reply guys who reply back everyone and support.</p>
-      </div>
-      <div class="box-item">
-        <h2>Dev community</h2>
-        <p>Connect with other devs.</p>
+        <h2>Active Reply Guys</h2>
+        <p>List of reply guys who reply back and support.</p>
       </div>
       <div class="box-item" onclick="window.location.href='page5.html'">
         <h2>Engage for Engage</h2>
@@ -493,13 +265,11 @@
       <div class="box-item empty"></div>
     </div>
 
-    <!-- Bottom promotional box -->
     <div class="promo-box">
       <h2>🚀 Rezo Launching Soon</h2>
       <p>Early supporters get exclusive perks</p>
       <a href="https://x.com/Rezo_xyz" target="_blank" class="promo-btn">Follow X</a>
     </div>
   </div>
-
 </body>
 </html>

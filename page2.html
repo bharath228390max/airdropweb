@@ -214,6 +214,27 @@
     }
 
     .promo-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4); }
+
+    /* ✅ Mobile Fix: 2 per row grid */
+    @media (max-width: 768px) {
+      .top-boxes {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+      .box-item {
+        padding: 25px 15px;
+        height: 160px;
+      }
+      .big-top-box h2 { font-size: 1.8rem; }
+      .big-top-box p { font-size: 1rem; }
+      .promo-box h2 { font-size: 2rem; }
+      .promo-box p { font-size: 1rem; }
+    }
+
+    @media (max-width: 480px) {
+      .box-item h2 { font-size: 1.1rem; }
+      .box-item p { font-size: 0.85rem; }
+    }
   </style>
 </head>
 <body>

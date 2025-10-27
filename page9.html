@@ -45,8 +45,16 @@
       position: absolute; background: #fff; border-radius: 50%;
       animation: float 20s linear infinite, pulse 4s ease-in-out infinite;
     }
-    @keyframes float { 0% {transform: translateY(0);opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{transform:translateY(100vh);opacity:0;} }
-    @keyframes pulse { 0%,100%{opacity:0.4;transform:scale(1);}50%{opacity:1;transform:scale(1.4);} }
+    @keyframes float { 
+      0% {transform: translateY(0);opacity:0;} 
+      10%{opacity:1;} 
+      90%{opacity:1;} 
+      100%{transform:translateY(100vh);opacity:0;} 
+    }
+    @keyframes pulse { 
+      0%,100%{opacity:0.4;transform:scale(1);} 
+      50%{opacity:1;transform:scale(1.4);} 
+    }
 
     h1 {
       text-align: center;
@@ -81,7 +89,11 @@
       transition: all 0.3s ease;
       z-index: 10;
     }
-    .back-btn:hover { background: rgba(255,255,255,0.1); color: #66b3ff; border-color: #66b3ff; }
+    .back-btn:hover { 
+      background: rgba(255,255,255,0.1); 
+      color: #66b3ff; 
+      border-color: #66b3ff; 
+    }
 
     .friend-box {
       width: 94%;
@@ -116,14 +128,29 @@
     }
 
     .friend-number {
-      width: 36px; height: 36px;
+      width: 36px; 
+      height: 36px;
       background: linear-gradient(135deg, #66b3ff, #a855f7);
       border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
       font-weight: 700;
     }
 
-    .friend-info h3 { font-size: 1rem; color: #fff; font-weight: 600; margin: 0; }
+    .friend-info h3 { 
+      font-size: 1rem; 
+      color: #fff; 
+      font-weight: 600; 
+      margin: 0; 
+    }
+
+    /* ✅ Fix mobile overlap */
+    @media (max-width: 768px) {
+      h1 {
+        margin-top: 60px; /* moves title down so back button doesn’t overlap */
+      }
+    }
   </style>
 </head>
 <body>

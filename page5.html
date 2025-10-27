@@ -5,128 +5,438 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rezo - Engage for Engage</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
-      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0f;
+      color: white;
       height: 100vh;
-      background-color: #0a0a0a;
-      font-family: 'Orbitron', sans-serif;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      color: white;
+      position: relative;
+      padding: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Animated gradient background */
+    .bg-gradient {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+      opacity: 0.05;
+      animation: gradientShift 15s ease infinite;
+      z-index: 0;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.2) rotate(180deg); }
+    }
+
+    /* Floating orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.3;
+      animation: float 20s ease-in-out infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .orb1 {
+      width: 500px;
+      height: 500px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      top: -250px;
+      left: -250px;
+      animation-delay: 0s;
+    }
+
+    .orb2 {
+      width: 400px;
+      height: 400px;
+      background: linear-gradient(135deg, #f093fb, #f5576c);
+      bottom: -200px;
+      right: -200px;
+      animation-delay: 7s;
+    }
+
+    .orb3 {
+      width: 350px;
+      height: 350px;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      top: 50%;
+      left: 50%;
+      animation-delay: 3s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(100px, -100px) scale(1.1); }
+      66% { transform: translate(-100px, 100px) scale(0.9); }
+    }
+
+    /* Back button */
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateX(-4px);
+    }
+
+    /* Main container */
+    .container {
+      width: 94%;
+      max-width: 700px;
+      height: 85vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 2;
     }
 
     /* Header */
-    .header {
-      padding: 15px 20px;
-      font-size: 1.5rem;
-      font-weight: 500;
+    h1 {
       text-align: center;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(5px);
+      background: linear-gradient(135deg, #fff, #a8b2f0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      letter-spacing: -1px;
+      animation: slideDown 0.6s ease;
+      flex-shrink: 0;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .subtitle {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+      animation: fadeIn 0.8s ease 0.2s both;
+      flex-shrink: 0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     /* Feed container */
     .feed-container {
       flex: 1;
+      min-height: 0;
+      padding: 16px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(20px);
       overflow-y: auto;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
-      padding: 20px;
-      gap: 15px;
-      scroll-behavior: smooth;
+      gap: 12px;
+      animation: scaleIn 0.5s ease 0.3s both;
+    }
+
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Custom scrollbar */
+    .feed-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .feed-container::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 10px;
+    }
+
+    .feed-container::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .feed-container::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #764ba2 0%, #667eea 100%);
     }
 
     /* Link cards */
     .link-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 15px;
-      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 14px 16px;
       display: flex;
       flex-direction: column;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      cursor: pointer;
+      gap: 8px;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      animation: slideInLeft 0.4s ease both;
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
     }
 
     .link-card:hover {
-      transform: scale(1.03);
-      box-shadow: 0 0 20px rgba(255,255,255,0.3);
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateX(4px);
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
     .link-user {
-      font-weight: bold;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .link-user::before {
+      content: '👤';
       font-size: 0.95rem;
-      opacity: 0.8;
-      margin-bottom: 5px;
     }
 
     .link-url {
-      color: #9d55d1;
-      text-decoration: underline;
+      color: #a8b2f0;
+      text-decoration: none;
       word-break: break-all;
+      font-size: 0.85rem;
+      padding: 8px 12px;
+      background: rgba(168, 178, 240, 0.08);
+      border-radius: 10px;
+      border: 1px solid rgba(168, 178, 240, 0.15);
+      transition: all 0.3s ease;
+    }
+
+    .link-url:hover {
+      background: rgba(168, 178, 240, 0.12);
+      border-color: rgba(168, 178, 240, 0.25);
     }
 
     .timestamp {
       font-size: 0.7rem;
-      opacity: 0.6;
-      margin-top: 5px;
+      color: rgba(255, 255, 255, 0.4);
       align-self: flex-end;
+      font-weight: 500;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.95rem;
     }
 
     /* Input container */
     .input-container {
       display: flex;
-      padding: 12px 20px;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(5px);
-      border-top: 1px solid rgba(255,255,255,0.2);
+      gap: 10px;
+      padding-top: 15px;
+      flex-shrink: 0;
     }
 
     .input-container input {
       flex: 1;
-      padding: 10px 15px;
-      border-radius: 20px;
-      border: 1px solid #ccc;
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
       outline: none;
-      font-size: 1rem;
+      font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    .input-container input:focus {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .input-container input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
     }
 
     .input-container button {
-      margin-left: 10px;
-      padding: 10px 20px;
-      background: #9d55d1;
+      padding: 12px 28px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
       border: none;
-      border-radius: 20px;
+      border-radius: 14px;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .input-container button::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #764ba2, #667eea);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .input-container button:hover::before {
+      opacity: 1;
     }
 
     .input-container button:hover {
-      background: #7a36a5;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(5px); }
-      to { opacity: 1; transform: translateY(0); }
+    .input-container button:active {
+      transform: translateY(0);
     }
 
-    .link-card { animation: fadeIn 0.3s ease-in-out; }
+    .input-container button span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      body { padding: 15px; }
+      
+      .back-btn {
+        top: 15px;
+        left: 15px;
+        padding: 8px 16px;
+        font-size: 0.9rem;
+      }
+
+      .container {
+        height: 90vh;
+      }
+
+      h1 { 
+        font-size: 2rem; 
+      }
+
+      .subtitle { 
+        font-size: 0.85rem; 
+        margin-bottom: 12px; 
+      }
+
+      .feed-container {
+        padding: 14px;
+        border-radius: 24px;
+      }
+
+      .link-card {
+        padding: 12px 14px;
+      }
+
+      .link-user {
+        font-size: 0.85rem;
+      }
+
+      .link-url {
+        font-size: 0.8rem;
+        padding: 7px 10px;
+      }
+
+      .input-container {
+        gap: 8px;
+        padding-top: 12px;
+      }
+
+      .input-container input {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+      }
+
+      .input-container button {
+        padding: 10px 24px;
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .input-container {
+        flex-direction: column;
+      }
+
+      .input-container button {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <div class="header">Engage for Engage 💬</div>
+  <div class="bg-gradient"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
 
-  <div class="feed-container" id="feedContainer"></div>
+  <a href="page2.html" class="back-btn">← Back</a>
 
-  <div class="input-container">
-    <input type="text" id="linkInput" placeholder="Paste your tweet link..." />
-    <button id="addLinkBtn">Drop</button>
+  <div class="container">
+    <h1>Engage for Engage</h1>
+    <p class="subtitle">Share your tweets and engage with others (Links expire in 2 hours)</p>
+
+    <div class="feed-container" id="feedContainer">
+      <div class="empty-state">No tweets yet. Be the first to share!</div>
+    </div>
+
+    <div class="input-container">
+      <input type="text" id="linkInput" placeholder="Paste your tweet link here..." />
+      <button id="addLinkBtn"><span>Drop Link</span></button>
+    </div>
   </div>
 
   <script type="module">
@@ -139,7 +449,7 @@
       authDomain: "rezo-chat.firebaseapp.com",
       databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "rezo-chat",
-      storageBucket: "rezo-chat.firebasedstorage.app",
+      storageBucket: "rezo-chat.firebasestorage.app",
       messagingSenderId: "300513819927",
       appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
     };
@@ -153,6 +463,8 @@
 
     // Random anonymous username
     const username = 'anon-' + Math.floor(Math.random() * 10000);
+
+    let hasLinks = false;
 
     // Add link to Firebase
     addLinkBtn.addEventListener('click', async () => {
@@ -176,13 +488,24 @@
 
     // Display link in feed
     function addLinkToUI(linkObj, snapshotKey) {
+      // Remove empty state on first link
+      if (!hasLinks) {
+        feedContainer.innerHTML = '';
+        hasLinks = true;
+      }
+
       const card = document.createElement('div');
       card.classList.add('link-card');
 
+      const timeString = new Date(linkObj.timestamp).toLocaleTimeString([], { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+
       card.innerHTML = `
         <div class="link-user">${linkObj.username}</div>
-        <a class="link-url" href="${linkObj.link}" target="_blank">${linkObj.link}</a>
-        <div class="timestamp">${new Date(linkObj.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+        <a class="link-url" href="${linkObj.link}" target="_blank" rel="noopener noreferrer">${linkObj.link}</a>
+        <div class="timestamp">${timeString}</div>
       `;
 
       feedContainer.prepend(card); // newest first
@@ -206,7 +529,7 @@
       const snapshot = await get(ref(db, 'engage_links'));
       snapshot.forEach(child => {
         const linkObj = child.val();
-        if (Date.now() > linkObj.expireAt) {
+        if (linkObj && Date.now() > linkObj.expireAt) {
           remove(ref(db, 'engage_links/' + child.key));
         }
       });

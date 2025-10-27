@@ -7,7 +7,11 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
       font-family: 'Inter', sans-serif;
@@ -47,9 +51,10 @@
       z-index: 1;
       pointer-events: none;
     }
+
     .orb1 { width: 500px; height: 500px; background: linear-gradient(135deg, #667eea, #764ba2); top: -250px; left: -250px; }
-    .orb2 { width: 400px; height: 400px; background: linear-gradient(135deg, #f093fb, #f5576c); bottom: -200px; right: -200px; }
-    .orb3 { width: 350px; height: 350px; background: linear-gradient(135deg, #4facfe, #00f2fe); top: 50%; left: 50%; }
+    .orb2 { width: 400px; height: 400px; background: linear-gradient(135deg, #f093fb, #f5576c); bottom: -200px; right: -200px; animation-delay: 7s; }
+    .orb3 { width: 350px; height: 350px; background: linear-gradient(135deg, #4facfe, #00f2fe); top: 50%; left: 50%; animation-delay: 3s; }
 
     @keyframes float {
       0%, 100% { transform: translate(0, 0) scale(1); }
@@ -72,15 +77,20 @@
       font-size: 0.95rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.3s ease;
       text-decoration: none;
       z-index: 100;
       backdrop-filter: blur(10px);
     }
-    .back-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); transform: translateX(-4px); }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateX(-4px);
+    }
 
     .container {
-      width: 100%;
+      width: 94%;
       max-width: 700px;
       height: 85vh;
       display: flex;
@@ -97,22 +107,24 @@
       font-size: 2.5rem;
       font-weight: 700;
       margin-bottom: 5px;
+      letter-spacing: -1px;
     }
 
     .subtitle {
       text-align: center;
-      color: rgba(255,255,255,0.6);
+      color: rgba(255, 255, 255, 0.6);
       font-size: 0.9rem;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
 
     .feed-container {
       flex: 1;
+      min-height: 0;
       padding: 16px;
       border-radius: 28px;
-      background: rgba(255,255,255,0.03);
-      border: 1.5px solid rgba(255,255,255,0.1);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(20px);
       overflow-y: auto;
       display: flex;
@@ -120,11 +132,9 @@
       gap: 12px;
     }
 
-    .empty-state { text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.4); }
-
     .link-card {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 16px;
       padding: 14px 16px;
       display: flex;
@@ -132,28 +142,56 @@
       gap: 8px;
     }
 
-    .link-user { font-weight: 600; font-size: 0.9rem; color: rgba(255,255,255,0.7); }
-    .link-url { color: #a8b2f0; text-decoration: none; word-break: break-all; font-size: 0.85rem; }
-    .timestamp { font-size: 0.7rem; color: rgba(255,255,255,0.4); align-self: flex-end; }
+    .link-user {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-    /* Input container (side-by-side even on mobile) */
+    .link-url {
+      color: #a8b2f0;
+      text-decoration: none;
+      word-break: break-all;
+      font-size: 0.85rem;
+      padding: 8px 12px;
+      background: rgba(168, 178, 240, 0.08);
+      border-radius: 10px;
+      border: 1px solid rgba(168, 178, 240, 0.15);
+    }
+
+    .timestamp {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.4);
+      align-self: flex-end;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.95rem;
+    }
+
     .input-container {
       display: flex;
       gap: 10px;
-      padding-top: 15px;
+      padding-top: 5px;
+      margin-top: 5px;
       flex-shrink: 0;
-      flex-wrap: nowrap;
     }
 
     .input-container input {
       flex: 1;
       padding: 12px 18px;
       border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
       color: white;
-      font-size: 0.95rem;
       outline: none;
+      font-size: 0.95rem;
     }
 
     .input-container button {
@@ -165,14 +203,14 @@
       cursor: pointer;
       font-size: 0.95rem;
       font-weight: 600;
+      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
     }
 
-    /* Fit mobile width */
-    @media (max-width: 768px) {
-      body { padding: 10px; }
-      .container { width: 100%; height: 90vh; }
-      .input-container { flex-direction: row; gap: 8px; }
-      .input-container button { flex-shrink: 0; padding: 10px 18px; }
+    @media (max-width: 480px) {
+      .container { height: 90vh; width: 100%; }
+      .input-container { flex-direction: row; gap: 6px; }
+      .input-container input { flex: 1; font-size: 0.9rem; }
+      .input-container button { font-size: 0.9rem; padding: 10px 18px; }
     }
   </style>
 </head>
@@ -222,72 +260,64 @@
     const linkInput = document.getElementById('linkInput');
     const addLinkBtn = document.getElementById('addLinkBtn');
 
-    // Only logged in users can access this page
     onAuthStateChanged(auth, (user) => {
       if (!user) {
+        alert("You must be logged in to view this page.");
         window.location.href = "login.html";
+        return;
       }
-    });
 
-    const username = 'user-' + Math.floor(Math.random() * 10000);
-    let hasLinks = false;
+      const username = user.displayName || user.email.split("@")[0];
 
-    // Remove tracking params from tweet links
-    function cleanTweetLink(link) {
-      const match = link.match(/https:\/\/x\.com\/[^/]+\/status\/\d+/);
-      return match ? match[0] : link;
-    }
+      addLinkBtn.addEventListener('click', async () => {
+        let link = linkInput.value.trim();
+        if (!link) return;
 
-    // Add link
-    addLinkBtn.addEventListener('click', async () => {
-      let link = linkInput.value.trim();
-      if (!link) return;
+        const qIndex = link.indexOf('?');
+        if (qIndex !== -1) link = link.substring(0, qIndex);
 
-      link = cleanTweetLink(link); // Clean link
+        const linkObj = {
+          username,
+          link,
+          timestamp: Date.now(),
+          expireAt: Date.now() + 2*60*60*1000
+        };
 
-      const linkObj = {
-        username,
-        link,
-        timestamp: Date.now(),
-        expireAt: Date.now() + 2 * 60 * 60 * 1000
-      };
-
-      await push(ref(db, 'engage_links'), linkObj);
-      linkInput.value = '';
-    });
-
-    linkInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') addLinkBtn.click();
-    });
-
-    function addLinkToUI(linkObj) {
-      if (!hasLinks) {
-        feedContainer.innerHTML = '';
-        hasLinks = true;
-      }
-      const card = document.createElement('div');
-      card.classList.add('link-card');
-      const timeString = new Date(linkObj.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-      card.innerHTML = `
-        <div class="link-user">${linkObj.username}</div>
-        <a class="link-url" href="${linkObj.link}" target="_blank" rel="noopener noreferrer">${linkObj.link}</a>
-        <div class="timestamp">${timeString}</div>
-      `;
-      feedContainer.prepend(card);
-    }
-
-    onChildAdded(ref(db, 'engage_links'), snapshot => {
-      const linkObj = snapshot.val();
-      if (linkObj && Date.now() < linkObj.expireAt) addLinkToUI(linkObj);
-    });
-
-    setInterval(async () => {
-      const snapshot = await get(ref(db, 'engage_links'));
-      snapshot.forEach(child => {
-        const linkObj = child.val();
-        if (linkObj && Date.now() > linkObj.expireAt) remove(ref(db, 'engage_links/' + child.key));
+        await push(ref(db, 'engage_links'), linkObj);
+        linkInput.value = '';
       });
-    }, 300000);
+
+      linkInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') addLinkBtn.click();
+      });
+
+      function addLinkToUI(linkObj) {
+        if (feedContainer.querySelector('.empty-state')) feedContainer.innerHTML = '';
+        const card = document.createElement('div');
+        card.classList.add('link-card');
+        const timeString = new Date(linkObj.timestamp).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+        card.innerHTML = `
+          <div class="link-user">${linkObj.username}</div>
+          <a class="link-url" href="${linkObj.link}" target="_blank" rel="noopener noreferrer">${linkObj.link}</a>
+          <div class="timestamp">${timeString}</div>`;
+        feedContainer.prepend(card);
+      }
+
+      onChildAdded(ref(db, 'engage_links'), snapshot => {
+        const linkObj = snapshot.val();
+        if (!linkObj) return;
+        if (Date.now() < linkObj.expireAt) addLinkToUI(linkObj);
+        else remove(ref(db, 'engage_links/' + snapshot.key));
+      });
+
+      setInterval(async () => {
+        const snapshot = await get(ref(db, 'engage_links'));
+        snapshot.forEach(child => {
+          const linkObj = child.val();
+          if (linkObj && Date.now() > linkObj.expireAt) remove(ref(db, 'engage_links/' + child.key));
+        });
+      }, 300000);
+    });
   </script>
 </body>
 </html>

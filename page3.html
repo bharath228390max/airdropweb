@@ -3,245 +3,149 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rezo – Make Connections</title>
+  <title>Make Connections</title>
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
     body {
-      font-family: "Inter", sans-serif;
-      background: #0a0a0f;
-      color: white;
-      overflow: hidden;
+      margin: 0;
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
+      background: radial-gradient(ellipse at bottom, #0d1b2a, #000);
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
     }
 
-    /* Animated gradient background */
-    .bg-gradient {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
-        135deg,
-        #667eea 0%,
-        #764ba2 25%,
-        #f093fb 50%,
-        #4facfe 75%,
-        #00f2fe 100%
-      );
-      opacity: 0.05;
-      animation: gradientShift 15s ease infinite;
-      z-index: 0;
-    }
-
-    @keyframes gradientShift {
-      0%,
-      100% {
-        transform: scale(1) rotate(0deg);
-      }
-      50% {
-        transform: scale(1.2) rotate(180deg);
-      }
-    }
-
-    /* Floating orbs */
     .orb {
-      position: fixed;
+      position: absolute;
       border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.3;
-      animation: float 20s ease-in-out infinite;
-      z-index: 1;
-      pointer-events: none;
+      background: rgba(255, 255, 255, 0.2);
+      filter: blur(10px);
+      animation: float 15s infinite ease-in-out;
     }
 
-    .orb1 {
-      width: 500px;
-      height: 500px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      top: -250px;
-      left: -250px;
-      animation-delay: 0s;
-    }
-
-    .orb2 {
-      width: 400px;
-      height: 400px;
-      background: linear-gradient(135deg, #f093fb, #f5576c);
-      bottom: -200px;
-      right: -200px;
-      animation-delay: 7s;
-    }
-
-    .orb3 {
-      width: 350px;
-      height: 350px;
-      background: linear-gradient(135deg, #4facfe, #00f2fe);
-      top: 50%;
-      left: 50%;
-      animation-delay: 3s;
-    }
+    .orb:nth-child(1) { width: 150px; height: 150px; top: 10%; left: 20%; }
+    .orb:nth-child(2) { width: 250px; height: 250px; top: 60%; left: 70%; }
+    .orb:nth-child(3) { width: 100px; height: 100px; top: 30%; left: 80%; }
+    .orb:nth-child(4) { width: 200px; height: 200px; top: 70%; left: 10%; }
 
     @keyframes float {
-      0%,
-      100% {
-        transform: translate(0, 0) scale(1);
-      }
-      33% {
-        transform: translate(100px, -100px) scale(1.1);
-      }
-      66% {
-        transform: translate(-100px, 100px) scale(0.9);
-      }
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-30px); }
     }
 
     .chat-container {
-      width: 90%;
-      max-width: 800px;
-      height: 90vh;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 24px;
+      position: relative;
+      width: 400px;
+      height: 600px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      backdrop-filter: blur(15px);
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      backdrop-filter: blur(20px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      position: relative;
-      z-index: 2;
       overflow: hidden;
-    }
-
-    /* Small back button */
-    .back-btn {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      background: rgba(255, 255, 255, 0.08);
-      color: white;
-      font-size: 18px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-      z-index: 3;
-    }
-
-    .back-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 30px rgba(0,0,0,0.4);
     }
 
     .chat-header {
+      flex: 0 0 auto;
       text-align: center;
-      padding: 20px 0 10px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      flex-shrink: 0;
+      font-weight: 600;
+      color: #fff;
+      padding: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: relative;
     }
 
-    .chat-header h2 {
-      font-size: 26px;
-      font-weight: 700;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin: 0;
+    .back-btn {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
     }
 
-    .messages {
-      flex: 1;
+    .chat-messages {
+      flex: 1 1 auto;
       overflow-y: auto;
       padding: 15px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
       scrollbar-width: thin;
     }
 
+    .chat-messages::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+
     .message {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-    }
-
-    .bubble-container {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      max-width: 70%;
-    }
-
-    .username {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.5);
-    }
-
-    .bubble {
-      padding: 12px 16px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: rgba(255, 255, 255, 0.9);
-      word-wrap: break-word;
-    }
-
-    .my-message {
-      flex-direction: row-reverse;
-    }
-
-    .my-message .bubble {
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: rgba(255, 255, 255, 0.15);
       color: white;
-      border: none;
+      padding: 10px 14px;
+      border-radius: 12px;
+      align-self: flex-start;
+      white-space: pre-wrap;
+      max-width: 85%;
     }
 
-    /* Input stays fixed at bottom */
+    .message.user {
+      align-self: flex-end;
+      background: rgba(0, 200, 255, 0.4);
+    }
+
     .input-area {
+      flex: 0 0 auto;
       display: flex;
-      gap: 10px;
-      padding: 12px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      flex-shrink: 0;
-      background: rgba(10, 10, 15, 0.8);
-      position: sticky;
-      bottom: 0;
-      left: 0;
+      padding: 10px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.3);
     }
 
-    input {
+    textarea {
       flex: 1;
-      padding: 12px 16px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(255, 255, 255, 0.05);
-      color: white;
-      font-size: 15px;
+      resize: none;
+      border: none;
       outline: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 14px;
+      padding: 10px;
+      border-radius: 8px;
+      height: 45px;
     }
 
-    .send-btn {
-      padding: 12px 22px;
+    button.send-btn {
+      margin-left: 10px;
+      padding: 0 18px;
       border: none;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 8px;
+      background: rgba(0, 200, 255, 0.6);
       color: white;
       font-weight: 600;
       cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button.send-btn:hover {
+      background: rgba(0, 200, 255, 0.8);
     }
 
     @media (max-width: 768px) {
       body {
         padding: 0;
+        align-items: stretch;
       }
 
       .chat-container {
@@ -250,122 +154,53 @@
         border-radius: 0;
       }
 
-      .chat-header h2 {
-        font-size: 22px;
+      .chat-header {
+        font-size: 18px;
+        padding: 12px;
       }
 
-      .back-btn {
-        top: 10px;
-        left: 10px;
-        width: 34px;
-        height: 34px;
-        font-size: 16px;
+      .chat-messages {
+        padding: 10px;
+      }
+
+      textarea {
+        height: 40px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="bg-gradient"></div>
-  <div class="orb orb1"></div>
-  <div class="orb orb2"></div>
-  <div class="orb orb3"></div>
-
-  <button class="back-btn" onclick="window.location.href='page2.html'">←</button>
+  <div class="orb"></div>
+  <div class="orb"></div>
+  <div class="orb"></div>
+  <div class="orb"></div>
 
   <div class="chat-container">
     <div class="chat-header">
-      <h2>Make Connections</h2>
+      <button class="back-btn" onclick="window.history.back()">←</button>
+      Make Connections
     </div>
-
-    <div class="messages" id="messages"></div>
-
+    <div class="chat-messages" id="chatMessages"></div>
     <div class="input-area">
-      <input type="text" id="messageInput" placeholder="Type your message..." />
-      <button class="send-btn" id="sendBtn">Send</button>
+      <textarea id="userInput" placeholder="Type a message..."></textarea>
+      <button class="send-btn" onclick="sendMessage()">Send</button>
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, getDoc, doc } 
-    from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+  <script>
+    const chatMessages = document.getElementById('chatMessages');
+    const userInput = document.getElementById('userInput');
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
-      authDomain: "rezo-chat.firebaseapp.com",
-      projectId: "rezo-chat",
-      storageBucket: "rezo-chat.firebasestorage.app",
-      messagingSenderId: "300513819927",
-      appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    const messagesDiv = document.getElementById("messages");
-    const messageInput = document.getElementById("messageInput");
-    const sendBtn = document.getElementById("sendBtn");
-
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = "index.html";
-        return;
-      }
-
-      const uid = user.uid;
-      let username = "User";
-      let avatarUrl = "https://i.imgur.com/dR5VqQw.png";
-
-      try {
-        const docRef = doc(db, "profiles", uid);
-        const snap = await getDoc(docRef);
-        if (snap.exists()) {
-          const data = snap.data();
-          username = data.username || username;
-          if (data.avatarUrl) avatarUrl = data.avatarUrl;
-        }
-      } catch (e) {
-        console.error("Error loading profile:", e);
-      }
-
-      const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
-      onSnapshot(q, (snapshot) => {
-        messagesDiv.innerHTML = "";
-        snapshot.forEach((doc) => {
-          const msg = doc.data();
-          const div = document.createElement("div");
-          div.className = "message";
-          if (msg.uid === uid) div.classList.add("my-message");
-          div.innerHTML = `
-            <div class="bubble-container">
-              <div class="username">${msg.username}</div>
-              <div class="bubble">${msg.text}</div>
-            </div>
-          `;
-          messagesDiv.appendChild(div);
-        });
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-      });
-
-      sendBtn.addEventListener("click", async () => {
-        const text = messageInput.value.trim();
-        if (!text) return;
-        await addDoc(collection(db, "messages"), {
-          uid,
-          username,
-          avatarUrl,
-          text,
-          timestamp: serverTimestamp()
-        });
-        messageInput.value = "";
-      });
-
-      messageInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") sendBtn.click();
-      });
-    });
+    function sendMessage() {
+      const text = userInput.value.trim();
+      if (!text) return;
+      const msg = document.createElement('div');
+      msg.classList.add('message', 'user');
+      msg.textContent = text;
+      chatMessages.appendChild(msg);
+      userInput.value = '';
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
   </script>
 </body>
 </html>

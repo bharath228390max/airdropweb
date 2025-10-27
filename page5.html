@@ -7,8 +7,17 @@
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; overflow: hidden; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
       font-family: "Inter", sans-serif;
       background: #0a0a0f;
@@ -33,7 +42,16 @@
       50% { transform: scale(1.2) rotate(180deg); }
     }
 
-    .orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.3; animation: float 20s ease-in-out infinite; z-index: 1; pointer-events: none; }
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.3;
+      animation: float 20s ease-in-out infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+
     .orb1 { width: 500px; height: 500px; background: linear-gradient(135deg, #667eea, #764ba2); top: -250px; left: -250px; }
     .orb2 { width: 400px; height: 400px; background: linear-gradient(135deg, #f093fb, #f5576c); bottom: -200px; right: -200px; animation-delay: 7s; }
     .orb3 { width: 350px; height: 350px; background: linear-gradient(135deg, #4facfe, #00f2fe); top: 50%; left: 50%; animation-delay: 3s; }
@@ -108,10 +126,9 @@
       border-radius: 16px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      color: #a8b2f0;
+      color: rgba(255, 255, 255, 0.9);
       word-wrap: break-word;
     }
-    .bubble a { color: #a8b2f0; text-decoration: none; }
     .my-message { flex-direction: row-reverse; }
     .my-message .bubble { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; }
 
@@ -149,8 +166,14 @@
     }
 
     @media (max-width: 768px) {
-      .chat-container { height: 100dvh; border-radius: 0; }
-      .messages { overflow-y: auto; flex: 1; }
+      .chat-container {
+        height: 100dvh;
+        border-radius: 0;
+      }
+      .messages {
+        overflow-y: auto;
+        flex: 1;
+      }
     }
   </style>
 </head>
@@ -170,21 +193,22 @@
     <div class="messages" id="messages"></div>
 
     <div class="input-area">
-      <input type="text" id="linkInput" placeholder="Paste your tweet link here..." />
-      <button class="send-btn" id="sendBtn">Drop Link</button>
+      <input type="text" id="messageInput" placeholder="Paste your link..." />
+      <button class="send-btn" id="sendBtn">Send</button>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-    import { getDatabase, ref, push, onChildAdded, remove, get, child } 
-      from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+    import { 
+      getFirestore, collection, addDoc, onSnapshot, query, orderBy, 
+      serverTimestamp, getDoc, doc, setDoc, deleteDoc 
+    } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
       authDomain: "rezo-chat.firebaseapp.com",
-      databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "rezo-chat",
       storageBucket: "rezo-chat.firebasestorage.app",
       messagingSenderId: "300513819927",
@@ -193,10 +217,10 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getDatabase(app);
+    const db = getFirestore(app);
 
     const messagesDiv = document.getElementById("messages");
-    const linkInput = document.getElementById("linkInput");
+    const messageInput = document.getElementById("messageInput");
     const sendBtn = document.getElementById("sendBtn");
 
     onAuthStateChanged(auth, async (user) => {
@@ -205,68 +229,74 @@
         return;
       }
 
-      // Fetch name from /users/{uid}/name
-      const userRef = ref(db, "users/" + user.uid + "/name");
-      let usernameSnapshot = await get(userRef);
-      let username = usernameSnapshot.exists() ? usernameSnapshot.val() : (user.displayName || user.email.split("@")[0]);
+      const uid = user.uid;
+      let username = "User";
 
-      const linksRef = ref(db, "engage_links");
+      const docRef = doc(db, "profiles", uid);
+      const snap = await getDoc(docRef);
 
-      sendBtn.addEventListener("click", async () => {
-        let link = linkInput.value.trim();
-        if (!link) return;
-
-        const qIndex = link.indexOf("?");
-        if (qIndex !== -1) link = link.substring(0, qIndex);
-
-        const data = {
-          username,
-          link,
-          timestamp: Date.now(),
-          expireAt: Date.now() + 60 * 60 * 1000 // 1 hour expiry
-        };
-
-        await push(linksRef, data);
-        linkInput.value = "";
-      });
-
-      linkInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") sendBtn.click();
-      });
-
-      onChildAdded(linksRef, (snapshot) => {
-        const data = snapshot.val();
-        if (!data) return;
-
-        if (Date.now() < data.expireAt) {
-          addLinkToUI(data);
-        } else {
-          remove(ref(db, "engage_links/" + snapshot.key));
-        }
-      });
-
-      function addLinkToUI(data) {
-        const div = document.createElement("div");
-        div.className = "message";
-        if (data.username === username) div.classList.add("my-message");
-        div.innerHTML = `
-          <div class="bubble-container">
-            <div class="username">${data.username}</div>
-            <div class="bubble"><a href="${data.link}" target="_blank">${data.link}</a></div>
-          </div>
-        `;
-        messagesDiv.appendChild(div);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      if (snap.exists()) {
+        const data = snap.data();
+        username = data.username || username;
+      } else {
+        const fallbackName = user.displayName?.split(" ")[0] || "User";
+        await setDoc(docRef, { username: fallbackName });
+        username = fallbackName;
       }
 
-      // cleanup expired links every 5 minutes
-      setInterval(async () => {
-        const snapshot = await get(linksRef);
-        snapshot.forEach((childSnap) => {
-          const data = childSnap.val();
-          if (data && Date.now() > data.expireAt) remove(ref(db, "engage_links/" + childSnap.key));
+      // ✅ Delete links older than 1 hour
+      const cleanupOldLinks = async (snapshot) => {
+        const now = Date.now();
+        for (const docSnap of snapshot.docs) {
+          const data = docSnap.data();
+          if (data.timestamp?.toMillis && now - data.timestamp.toMillis() > 3600000) {
+            await deleteDoc(docSnap.ref);
+          }
+        }
+      };
+
+      const q = query(collection(db, "engage_links"), orderBy("timestamp", "desc"));
+      onSnapshot(q, async (snapshot) => {
+        await cleanupOldLinks(snapshot);
+        messagesDiv.innerHTML = "";
+        snapshot.forEach((docSnap) => {
+          const linkData = docSnap.data();
+          let cleanUrl = linkData.url.split("?")[0];
+          const div = document.createElement("div");
+          div.className = "message";
+          if (linkData.uid === uid) div.classList.add("my-message");
+          div.innerHTML = `
+            <div class="bubble-container">
+              <div class="username">${linkData.username}</div>
+              <div class="bubble">
+                <a href="${cleanUrl}" target="_blank" style="color:inherit;text-decoration:none;">${cleanUrl}</a>
+              </div>
+            </div>
+          `;
+          messagesDiv.appendChild(div);
         });
-      }, 300000);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      });
+
+      sendBtn.addEventListener("click", async () => {
+        const url = messageInput.value.trim();
+        if (!url) return;
+
+        const cleanUrl = url.split("?")[0];
+
+        await addDoc(collection(db, "engage_links"), {
+          uid,
+          username,
+          url: cleanUrl,
+          timestamp: serverTimestamp()
+        });
+
+        messageInput.value = "";
+      });
+
+      messageInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendBtn.click();
+      });
     });
   </script>
 </body>

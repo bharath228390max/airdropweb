@@ -116,6 +116,25 @@
       flex-direction: column;
       gap: 12px;
       scrollbar-width: thin;
+      scrollbar-color: rgba(102, 126, 234, 0.5) rgba(255, 255, 255, 0.05);
+    }
+
+    .messages::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .messages::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+
+    .messages::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 10px;
+    }
+
+    .messages::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #764ba2, #667eea);
     }
 
     .message { display: flex; align-items: flex-start; gap: 12px; }
@@ -123,7 +142,6 @@
     .username { 
       font-size: 12px; 
       color: rgba(255, 255, 255, 0.5);
-      cursor: pointer;
       transition: all 0.2s ease;
     }
     .username:hover { 
@@ -132,6 +150,7 @@
     }
     .username.clickable {
       color: rgba(102, 126, 234, 0.8);
+      cursor: pointer;
     }
     .username.clickable:hover {
       color: rgba(102, 126, 234, 1);
@@ -262,16 +281,6 @@
       return null;
     }
 
-    // Function to handle username click
-    async function handleUsernameClick(uid) {
-      const profileLink = await getUserProfileLink(uid);
-      if (profileLink) {
-        // Ensure the link has a protocol
-        const url = profileLink.startsWith('http') ? profileLink : `https://${profileLink}`;
-        window.open(url, '_blank');
-      }
-    }
-
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = "index.html";
@@ -291,14 +300,28 @@
       const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
       onSnapshot(q, async (snapshot) => {
         messagesDiv.innerHTML = "";
+        const oneHourAgo = Date.now() - (60 * 60 * 1000); // 1 hour in milliseconds
         
+        // Collect messages to display
+        const messagesToDisplay = [];
         for (const docSnap of snapshot.docs) {
           const msg = docSnap.data();
+          
+          // Skip messages older than 1 hour
+          if (msg.timestamp && msg.timestamp.toMillis() < oneHourAgo) {
+            continue;
+          }
+          
+          messagesToDisplay.push(msg);
+        }
+        
+        // Render all messages
+        for (const msg of messagesToDisplay) {
           const div = document.createElement("div");
           div.className = "message";
           if (msg.uid === uid) div.classList.add("my-message");
           
-          // Check if user has a profile link
+          // Fetch profile link for this user
           const profileLink = await getUserProfileLink(msg.uid);
           const usernameClass = profileLink ? 'username clickable' : 'username';
           
@@ -306,9 +329,12 @@
           usernameElement.className = usernameClass;
           usernameElement.textContent = msg.username;
           
+          // Add click handler with the fetched link stored in closure
           if (profileLink) {
-            usernameElement.style.cursor = 'pointer';
-            usernameElement.addEventListener('click', () => handleUsernameClick(msg.uid));
+            usernameElement.addEventListener('click', () => {
+              const url = profileLink.startsWith('http') ? profileLink : `https://${profileLink}`;
+              window.open(url, '_blank');
+            });
           }
           
           const bubbleContainer = document.createElement("div");

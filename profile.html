@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rezo Profile</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
@@ -9,8 +10,8 @@
     body {
       margin: 0;
       padding: 0;
-      height: 100vh;
-      width: 100vw;
+      min-height: 100vh;
+      width: 100%;
       font-family: 'Orbitron', sans-serif;
       background: linear-gradient(-45deg, #000000, #111111, #0a0a0a, #1a1a1a);
       background-size: 400% 400%;
@@ -19,7 +20,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
+      overflow-x: hidden;
+      box-sizing: border-box;
     }
 
     @keyframes gradientBG {
@@ -40,6 +42,7 @@
       align-items: center;
       gap: 20px;
       box-shadow: 0 0 25px rgba(255,255,255,0.1);
+      box-sizing: border-box;
     }
 
     .avatar {
@@ -67,23 +70,29 @@
     }
 
     input {
-      width: 80%;
-      padding: 10px;
+      width: 100%;
+      max-width: 350px;
+      padding: 12px;
       border-radius: 10px;
       background: rgba(255,255,255,0.1);
       color: white;
       border: 1px solid rgba(255,255,255,0.5);
       text-align: center;
+      font-size: 16px;
+      box-sizing: border-box;
     }
 
     button {
-      padding: 12px 25px;
+      width: 100%;
+      max-width: 200px;
+      padding: 12px;
       border-radius: 10px;
       background: rgba(255,255,255,0.1);
       border: 1px solid rgba(255,255,255,0.5);
       color: white;
       cursor: pointer;
       transition: all 0.3s ease;
+      font-size: 16px;
     }
 
     button:hover {
@@ -94,6 +103,48 @@
     .status {
       font-size: 14px;
       opacity: 0.8;
+      text-align: center;
+      max-width: 300px;
+      word-wrap: break-word;
+    }
+
+    /* ✅ Mobile version — remove box */
+    @media (max-width: 600px) {
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .profile-card {
+        background: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0;
+        width: 100%;
+        max-width: none;
+        gap: 18px;
+      }
+
+      .avatar {
+        width: 90px;
+        height: 90px;
+        font-size: 40px;
+      }
+
+      input, button {
+        width: 100%;
+        max-width: 100%;
+        padding: 10px;
+        font-size: 15px;
+      }
+
+      .status {
+        font-size: 13px;
+      }
     }
   </style>
 </head>
@@ -169,12 +220,7 @@
         document.getElementById("link2").value = data.link2 || "";
         updateAvatar(data.username);
       } else {
-        // Create empty profile if none exists
-        await setDoc(docRef, {
-          username: "",
-          link1: "",
-          link2: ""
-        });
+        await setDoc(docRef, { username: "", link1: "", link2: "" });
       }
     });
 
@@ -196,10 +242,7 @@
       status.textContent = "Saving...";
 
       try {
-        await setDoc(doc(db, "profiles", currentUser.uid), {
-          username, link1, link2
-        }, { merge: true });
-
+        await setDoc(doc(db, "profiles", currentUser.uid), { username, link1, link2 }, { merge: true });
         updateAvatar(username);
         status.textContent = "✅ Profile saved successfully!";
       } catch (err) {

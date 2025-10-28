@@ -65,9 +65,9 @@
     .chat-container {
       width: 100%;
       max-width: 800px;
-      height: 85vh; /* ✅ slightly smaller height on desktop */
+      height: 85vh;
       background: rgba(255, 255, 255, 0.03);
-      border: 1.5px solid rgba(255, 255, 255, 0.1); /* ✅ slightly thicker border */
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
       border-radius: 16px;
       display: flex;
       flex-direction: column;
@@ -120,7 +120,22 @@
 
     .message { display: flex; align-items: flex-start; gap: 12px; }
     .bubble-container { display: flex; flex-direction: column; gap: 4px; max-width: 70%; }
-    .username { font-size: 12px; color: rgba(255, 255, 255, 0.5); }
+    .username { 
+      font-size: 12px; 
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .username:hover { 
+      color: rgba(255, 255, 255, 0.9);
+      text-decoration: underline;
+    }
+    .username.clickable {
+      color: rgba(102, 126, 234, 0.8);
+    }
+    .username.clickable:hover {
+      color: rgba(102, 126, 234, 1);
+    }
     .bubble {
       padding: 12px 16px;
       border-radius: 16px;
@@ -165,7 +180,6 @@
       cursor: pointer;
     }
 
-    /* ✅ Mobile version untouched */
     @media (max-width: 768px) {
       .chat-container {
         height: 100dvh;
@@ -222,6 +236,42 @@
     const messageInput = document.getElementById("messageInput");
     const sendBtn = document.getElementById("sendBtn");
 
+    // Cache for user profiles to avoid repeated fetches
+    const userProfileCache = {};
+
+    // Function to fetch user profile link (checks link1 first, then link2)
+    async function getUserProfileLink(uid) {
+      if (userProfileCache[uid] !== undefined) {
+        return userProfileCache[uid];
+      }
+      
+      try {
+        const docRef = doc(db, "profiles", uid);
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          const data = snap.data();
+          // Prioritize link1 (Twitter), fallback to link2
+          const link = data.link1 || data.link2 || null;
+          userProfileCache[uid] = link;
+          return link;
+        }
+      } catch (error) {
+        console.error("Error fetching profile link:", error);
+      }
+      userProfileCache[uid] = null;
+      return null;
+    }
+
+    // Function to handle username click
+    async function handleUsernameClick(uid) {
+      const profileLink = await getUserProfileLink(uid);
+      if (profileLink) {
+        // Ensure the link has a protocol
+        const url = profileLink.startsWith('http') ? profileLink : `https://${profileLink}`;
+        window.open(url, '_blank');
+      }
+    }
+
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = "index.html";
@@ -239,21 +289,42 @@
       }
 
       const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
-      onSnapshot(q, (snapshot) => {
+      onSnapshot(q, async (snapshot) => {
         messagesDiv.innerHTML = "";
-        snapshot.forEach((doc) => {
-          const msg = doc.data();
+        
+        for (const docSnap of snapshot.docs) {
+          const msg = docSnap.data();
           const div = document.createElement("div");
           div.className = "message";
           if (msg.uid === uid) div.classList.add("my-message");
-          div.innerHTML = `
-            <div class="bubble-container">
-              <div class="username">${msg.username}</div>
-              <div class="bubble">${msg.text}</div>
-            </div>
-          `;
+          
+          // Check if user has a profile link
+          const profileLink = await getUserProfileLink(msg.uid);
+          const usernameClass = profileLink ? 'username clickable' : 'username';
+          
+          const usernameElement = document.createElement("div");
+          usernameElement.className = usernameClass;
+          usernameElement.textContent = msg.username;
+          
+          if (profileLink) {
+            usernameElement.style.cursor = 'pointer';
+            usernameElement.addEventListener('click', () => handleUsernameClick(msg.uid));
+          }
+          
+          const bubbleContainer = document.createElement("div");
+          bubbleContainer.className = "bubble-container";
+          
+          const bubble = document.createElement("div");
+          bubble.className = "bubble";
+          bubble.textContent = msg.text;
+          
+          bubbleContainer.appendChild(usernameElement);
+          bubbleContainer.appendChild(bubble);
+          div.appendChild(bubbleContainer);
+          
           messagesDiv.appendChild(div);
-        });
+        }
+        
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
       });
 

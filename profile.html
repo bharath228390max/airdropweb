@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rezo Profile</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
@@ -10,8 +9,8 @@
     body {
       margin: 0;
       padding: 0;
-      min-height: 100vh;
-      width: 100%;
+      height: 100vh;
+      width: 100vw;
       font-family: 'Orbitron', sans-serif;
       background: linear-gradient(-45deg, #000000, #111111, #0a0a0a, #1a1a1a);
       background-size: 400% 400%;
@@ -20,8 +19,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow-x: hidden;
-      box-sizing: border-box;
+      overflow: hidden;
     }
 
     @keyframes gradientBG {
@@ -42,7 +40,6 @@
       align-items: center;
       gap: 20px;
       box-shadow: 0 0 25px rgba(255,255,255,0.1);
-      box-sizing: border-box;
     }
 
     .avatar {
@@ -70,29 +67,23 @@
     }
 
     input {
-      width: 100%;
-      max-width: 350px;
-      padding: 12px;
+      width: 80%;
+      padding: 10px;
       border-radius: 10px;
       background: rgba(255,255,255,0.1);
       color: white;
       border: 1px solid rgba(255,255,255,0.5);
       text-align: center;
-      font-size: 16px;
-      box-sizing: border-box;
     }
 
     button {
-      width: 100%;
-      max-width: 200px;
-      padding: 12px;
+      padding: 12px 25px;
       border-radius: 10px;
       background: rgba(255,255,255,0.1);
       border: 1px solid rgba(255,255,255,0.5);
       color: white;
       cursor: pointer;
       transition: all 0.3s ease;
-      font-size: 16px;
     }
 
     button:hover {
@@ -103,47 +94,14 @@
     .status {
       font-size: 14px;
       opacity: 0.8;
-      text-align: center;
-      max-width: 300px;
-      word-wrap: break-word;
     }
 
-    /* ✅ Mobile version — remove box */
     @media (max-width: 600px) {
-      body {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-        overflow-y: auto;
-      }
-
       .profile-card {
-        background: none !important;
-        border: none !important;
-        box-shadow: none !important;
-        padding: 0;
-        width: 100%;
-        max-width: none;
-        gap: 18px;
-      }
-
-      .avatar {
-        width: 90px;
-        height: 90px;
-        font-size: 40px;
-      }
-
-      input, button {
-        width: 100%;
-        max-width: 100%;
-        padding: 10px;
-        font-size: 15px;
-      }
-
-      .status {
-        font-size: 13px;
+        background: none;
+        border: none;
+        box-shadow: none;
+        padding: 20px;
       }
     }
   </style>
@@ -153,8 +111,8 @@
     <div id="avatar" class="avatar">?</div>
     <input type="text" id="username" placeholder="Enter your name">
     <input type="text" id="link1" placeholder="Your X Profile Link">
-    <input type="text" id="link2" placeholder="Any other link">
     <button id="saveBtn">Save</button>
+    <button id="openLinkBtn">Open Link</button>
     <div class="status" id="status"></div>
   </div>
 
@@ -178,12 +136,13 @@
 
     const avatarDiv = document.getElementById("avatar");
     const saveBtn = document.getElementById("saveBtn");
+    const openLinkBtn = document.getElementById("openLinkBtn");
     const status = document.getElementById("status");
     let currentUser = null;
 
     const colors = [
       "#FF5733", "#33FF57", "#3357FF", "#FF33A8",
-      "#FFC300", "#DAF7A6", "#FF5733", "#C70039",
+      "#FFC300", "#DAF7A6", "#C70039",
       "#900C3F", "#581845"
     ];
 
@@ -217,10 +176,9 @@
         const data = docSnap.data();
         document.getElementById("username").value = data.username || "";
         document.getElementById("link1").value = data.link1 || "";
-        document.getElementById("link2").value = data.link2 || "";
         updateAvatar(data.username);
       } else {
-        await setDoc(docRef, { username: "", link1: "", link2: "" });
+        await setDoc(docRef, { username: "", link1: "" });
       }
     });
 
@@ -232,7 +190,6 @@
 
       const username = document.getElementById("username").value.trim();
       const link1 = document.getElementById("link1").value.trim();
-      const link2 = document.getElementById("link2").value.trim();
 
       if (!username) {
         status.textContent = "Please enter your name.";
@@ -242,11 +199,20 @@
       status.textContent = "Saving...";
 
       try {
-        await setDoc(doc(db, "profiles", currentUser.uid), { username, link1, link2 }, { merge: true });
+        await setDoc(doc(db, "profiles", currentUser.uid), { username, link1 }, { merge: true });
         updateAvatar(username);
-        status.textContent = "✅ Profile saved successfully!";
+        status.textContent = "Profile saved successfully!";
       } catch (err) {
-        status.textContent = "❌ Error saving: " + err.message;
+        status.textContent = "Error saving: " + err.message;
+      }
+    });
+
+    openLinkBtn.addEventListener("click", () => {
+      const link1 = document.getElementById("link1").value.trim();
+      if (link1) {
+        window.open(link1, "_blank");
+      } else {
+        status.textContent = "No link available to open.";
       }
     });
   </script>

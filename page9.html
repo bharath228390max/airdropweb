@@ -97,7 +97,7 @@
 
     .friend-box {
       width: 94%;
-      max-width: 700px;
+      max-width: 1000px;
       background: rgba(15,15,25,0.6);
       border: 1px solid rgba(102,179,255,0.2);
       border-radius: 28px;
@@ -107,6 +107,19 @@
       backdrop-filter: blur(20px);
       flex: 1;
       z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      align-content: start;
+    }
+
+    /* Hide scrollbar */
+    .friend-box::-webkit-scrollbar {
+      display: none;
+    }
+    .friend-box {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
 
     .friend-item {
@@ -117,7 +130,6 @@
       background: rgba(255,255,255,0.02);
       border: 1px solid rgba(102,179,255,0.1);
       border-radius: 12px;
-      margin-bottom: 8px;
       cursor: pointer;
       transition: all 0.3s ease;
     }
@@ -148,7 +160,11 @@
     /* ✅ Fix mobile overlap */
     @media (max-width: 768px) {
       h1 {
-        margin-top: 60px; /* moves title down so back button doesn’t overlap */
+        margin-top: 60px; /* moves title down so back button doesn't overlap */
+      }
+      
+      .friend-box {
+        grid-template-columns: 1fr;
       }
     }
   </style>

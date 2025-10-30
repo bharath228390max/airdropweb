@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yappers per projects</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  * {margin: 0; padding: 0; box-sizing: border-box;}
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0a0a0f;
+    color: white;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  .bg-gradient {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+    opacity: 0.05;
+    animation: gradientShift 15s ease infinite;
+    z-index: 0;
+  }
+  @keyframes gradientShift {
+    0%,100%{transform:scale(1) rotate(0deg);}
+    50%{transform:scale(1.2) rotate(180deg);}
+  }
+
+  .orb {
+    position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+    animation: float 20s ease-in-out infinite; z-index: 1; pointer-events: none;
+  }
+  .orb1 {width:500px;height:500px;background:linear-gradient(135deg,#667eea,#764ba2);top:-250px;left:-250px;}
+  .orb2 {width:400px;height:400px;background:linear-gradient(135deg,#f093fb,#f5576c);bottom:-200px;right:-200px;}
+  .orb3 {width:350px;height:350px;background:linear-gradient(135deg,#4facfe,#00f2fe);top:50%;left:50%;}
+  @keyframes float {
+    0%,100%{transform:translate(0,0) scale(1);}
+    33%{transform:translate(100px,-100px) scale(1.1);}
+    66%{transform:translate(-100px,100px) scale(0.9);}
+  }
+
+  .container {max-width:1200px;margin:auto;padding:2rem 1rem;position:relative;z-index:2;}
+  .top-header {
+    display:flex;justify-content:space-between;align-items:center;
+    padding:20px 30px;margin-bottom:30px;
+    backdrop-filter:blur(10px);background:rgba(10,10,15,0.7);
+    border-bottom:1px solid rgba(255,255,255,0.05);border-radius:16px;
+  }
+  .btn {
+    padding:10px 24px;border-radius:12px;border:none;font-size:15px;font-weight:600;
+    cursor:pointer;transition:all 0.3s;font-family:'Inter',sans-serif;
+  }
+  .btn-secondary {background:rgba(255,255,255,0.05);color:white;border:1px solid rgba(255,255,255,0.1);}
+  .btn-secondary:hover {background:rgba(255,255,255,0.1);transform:translateY(-2px);}
+  .header {text-align:center;margin-bottom:40px;padding:60px 20px;background:rgba(255,255,255,0.02);
+    border-radius:32px;border:1px solid rgba(255,255,255,0.05);backdrop-filter:blur(20px);position:relative;}
+  h1 {font-size:48px;font-weight:700;margin-bottom:16px;background:linear-gradient(135deg,#fff,#a8b2f0);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  p.subtitle {font-size:18px;color:rgba(255,255,255,0.6);max-width:600px;margin:0 auto;}
+
+  .table-container {overflow-x:auto;border-radius:24px;border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.03);backdrop-filter:blur(10px);}
+  table {width:100%;border-collapse:collapse;min-width:700px;}
+  th,td {padding:1.2rem 1rem;text-align:left;border-bottom:1px solid rgba(255,255,255,0.05);}
+  th {font-size:0.85rem;text-transform:uppercase;color:rgba(255,255,255,0.6);font-weight:600;}
+  tbody tr {transition:all 0.3s;}
+  tbody tr:hover {background:rgba(255,255,255,0.05);}
+  .rank-badge {display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;font-weight:700;font-size:1rem;}
+  .rank-1 {background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;}
+  .rank-2 {background:rgba(255,255,255,0.1);color:#fff;}
+  .rank-3 {background:rgba(255,255,255,0.05);color:#fff;}
+  .rank-other {color:rgba(255,255,255,0.4);}
+  .project-name {font-weight:600;font-size:1.05rem;color:#fff;}
+  .votes {font-weight:700;font-size:1.1rem;background:linear-gradient(135deg,#667eea,#764ba2);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .rewards {color:rgba(255,255,255,0.7);font-weight:500;}
+  .platform-badge {display:inline-block;padding:0.4rem 0.8rem;border-radius:8px;font-size:0.75rem;
+    border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);font-weight:500;}
+  .vote-btn {padding:0.5rem 1.2rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;
+    border-radius:10px;cursor:pointer;transition:all 0.3s;font-weight:600;font-size:0.9rem;}
+  .vote-btn:hover:not(:disabled) {transform:translateY(-2px);box-shadow:0 4px 12px rgba(102,126,234,0.4);}
+  .vote-btn:disabled {background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.3);cursor:not-allowed;}
+
+  .loading {text-align:center;padding:40px;color:rgba(255,255,255,0.6);}
+
+  @media (max-width:768px){
+    .header{padding:40px 20px;}h1{font-size:32px;}p.subtitle{font-size:16px;}
+    th,td{padding:0.8rem 0.6rem;font-size:0.85rem;}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-gradient"></div>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<div class="container">
+  <div class="top-header">
+    <button class="btn btn-secondary" onclick="window.location.href='page2.html'">← Back to Home</button>
+  </div>
+
+  <div class="header">
+    <h1>Community Leaderboard</h1>
+    <p class="subtitle">Vote projects your yapping (max 5 votes per user, reset monthly)</p>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Project</th>
+          <th>Votes</th>
+          <th>Rewards</th>
+          <th>Platform</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboardBody">
+        <tr><td colspan="6" class="loading">Loading leaderboard...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Firebase v9 Compat -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<script>
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
+    authDomain: "rezo-chat.firebaseapp.com",
+    databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "rezo-chat",
+    storageBucket: "rezo-chat.firebasestorage.app",
+    messagingSenderId: "300513819927",
+    appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const auth = firebase.auth();
+
+  // Project data
+  const projects = [
+    {id:"Anichess", name:"Anichess", rewards:"5,000,000 $CHECK (1M monthly)", platform:"Anichess"},
+    {id:"Integra", name:"Integra", rewards:"0.5% of $IRL supply", platform:"Kaito"},
+    {id:"INFINIT", name:"INFINIT", rewards:"2M $IN Tokens", platform:"Kaito"},
+    {id:"STBL", name:"STBL", rewards:"$500K $STBL ($100K monthly)", platform:"STBL"},
+    {id:"Arbitrum", name:"Arbitrum", rewards:"700K $ARB", platform:"Kaito"},
+    {id:"Beyond", name:"Beyond", rewards:"4% of total supply", platform:"Xeet"},
+    {id:"SCOR", name:"SCOR", rewards:"0.5% of supply", platform:"Xeet"},
+    {id:"Velvet", name:"Velvet", rewards:"$132K $VELVET", platform:"Xeet"},
+    {id:"Analog", name:"Analog", rewards:"$200K $ANLOG", platform:"Xeet"},
+    {id:"Klout", name:"Klout", rewards:"1% of supply", platform:"Xeet"},
+    {id:"IOPN", name:"IOPN", rewards:"$300K $OPN + Xeets", platform:"Xeet"},
+    {id:"Solstice", name:"Solstice", rewards:"1% $SLX + Xeets", platform:"Xeet"},
+    {id:"VDEX", name:"VDEX", rewards:"0.5% $VDEX + Xeets", platform:"Xeet"},
+    {id:"Artery", name:"Artery", rewards:"1% $ARTERY + NFTs", platform:"Xeet"}
+  ];
+
+  // Initialize projects in database
+  function initializeProjects() {
+    projects.forEach(p => {
+      db.ref('projects/' + p.id).once('value').then(snap => {
+        if (!snap.exists()) {
+          db.ref('projects/' + p.id).set({
+            votes: 0,
+            name: p.name,
+            rewards: p.rewards,
+            platform: p.platform
+          });
+        }
+      }).catch(err => console.error('Error initializing project:', err));
+    });
+  }
+
+  // Render leaderboard
+  function renderLeaderboard(userId) {
+    db.ref('projects').on('value', snap => {
+      const data = snap.val();
+      const tbody = document.getElementById('leaderboardBody');
+
+      if (!data) {
+        tbody.innerHTML = '<tr><td colspan="6" class="loading">No projects found</td></tr>';
+        return;
+      }
+
+      // Get user votes
+      db.ref('userVotes/' + userId).once('value').then(userSnap => {
+        const userVotes = userSnap.val() || {};
+        const voteCount = Object.keys(userVotes).length;
+
+        // Sort by votes
+        const sorted = Object.entries(data).sort((a, b) => (b[1].votes || 0) - (a[1].votes || 0));
+
+        // Render table
+        tbody.innerHTML = sorted.map(([pid, p], i) => `
+          <tr>
+            <td><span class="rank-badge ${i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'rank-other'}">${i + 1}</span></td>
+            <td><span class="project-name">${p.name || 'Unknown'}</span></td>
+            <td><span class="votes">${p.votes || 0}</span></td>
+            <td><span class="rewards">${p.rewards || 'N/A'}</span></td>
+            <td><span class="platform-badge">${p.platform || 'N/A'}</span></td>
+            <td><button class="vote-btn" data-id="${pid}" ${userVotes[pid] ? 'disabled' : ''}>${userVotes[pid] ? '✓ Voted' : 'Vote'}</button></td>
+          </tr>
+        `).join('');
+
+        // Add vote handlers
+        document.querySelectorAll('.vote-btn').forEach(btn => {
+          btn.onclick = () => handleVote(btn.dataset.id, userId, userVotes, voteCount);
+        });
+      }).catch(err => {
+        console.error('Error fetching user votes:', err);
+        tbody.innerHTML = '<tr><td colspan="6" class="loading">Error loading votes</td></tr>';
+      });
+    });
+  }
+
+  // Handle vote
+  function handleVote(projectId, userId, userVotes, voteCount) {
+    if (voteCount >= 5) {
+      alert("You've reached the maximum of 5 votes per month!");
+      return;
+    }
+
+    if (userVotes[projectId]) {
+      alert("You've already voted for this project!");
+      return;
+    }
+
+    // Increment vote
+    db.ref('projects/' + projectId + '/votes').transaction(current => {
+      return (current || 0) + 1;
+    }).then(() => {
+      // Record user vote
+      return db.ref('userVotes/' + userId + '/' + projectId).set(Date.now());
+    }).then(() => {
+      console.log('Vote recorded successfully');
+    }).catch(err => {
+      console.error('Error voting:', err);
+      alert('Failed to record vote. Please try again.');
+    });
+  }
+
+  // Auth state
+  auth.onAuthStateChanged(user => {
+    if (!user) {
+      window.location.href = "index.html";
+    } else {
+      console.log('User logged in:', user.uid);
+      initializeProjects();
+      renderLeaderboard(user.uid);
+    }
+  });
+</script>
+</body>
+</html>

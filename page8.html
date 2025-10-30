@@ -64,10 +64,10 @@
     }
 
     .btn {
-      padding: 10px 20px;
-      border-radius: 12px;
+      padding: 8px 14px;
+      border-radius: 10px;
       border: none;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       font-family: 'Inter', sans-serif;
@@ -75,6 +75,7 @@
       color: white;
       border: 1px solid rgba(255,255,255,0.1);
       transition: all 0.3s;
+      margin-left: 6px;
     }
     .btn:hover{ background: rgba(255,255,255,0.1); transform: translateY(-1px); }
 
@@ -104,6 +105,7 @@
     }
 
     .message {
+      position: relative;
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
       padding: 25px;
@@ -116,6 +118,14 @@
       word-wrap: break-word;
       align-self: center;
       white-space: pre-wrap;
+    }
+
+    .button-group {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: flex;
+      gap: 8px;
     }
 
     .messages::-webkit-scrollbar { width: 8px; }
@@ -131,6 +141,7 @@
     @media(max-width:768px){
       h1{ font-size:36px; }
       .message{ padding:20px; font-size:16px; width:95%; }
+      .button-group { top: 10px; right: 10px; }
     }
   </style>
 </head>
@@ -168,103 +179,50 @@
     const auth = getAuth(app);
 
     onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = "index.html";
-      }
+      if (!user) window.location.href = "index.html";
     });
 
-    // ✅ Project bubbles
-    const posts = [
-`Anichess
-
-Reward Pool: 5,000,000 $CHECK
-Rewards: 1,000,000 $CHECK monthly to top 200 creators
-Period: Oct 1, 2025 – Apr 1, 2026
-Vesting: None
-Platform: Anichess`,
-
-`Integra
-
-Reward Pool: 0.5% of $IRL supply
-Recipients: Kaito creators, referrers, and eco users
-Period: Sep 30, 2025 – TBD
-Vesting: 20% at TGE, 80% over 6 months
-Platform: TBD`,
-
-`INFINIT
-
-Reward Pool: 2M $IN
-Recipients: Top 2,000 creators
-Period: Oct 16 – Dec 16, 2025
-Vesting: None
-Platform: Kaito`,
-
-`sTBL
-
-Reward Pool: $500K $STBL
-Rewards: $100K monthly to top 100 creators
-Period: Oct 28, 2025 – TBD
-Vesting: 3M lock + 3M linear vesting
-Platform: sTBL`,
-
-`Arbitrum
-
-Reward Pool: 700K $ARB
-Recipients: Top 150 creators monthly
-Period: Oct 7 – Dec 31, 2025
-Vesting: None
-Platform: Kaito`,
-
-`Beyond
-
-Reward Pool: 4% of total supply
-Epoch 1 Ends: In 39 days`,
-
-`SCOR
-
-Reward Pool: 0.5% of supply
-Epoch 1 Ends: In 60 days`,
-
-`Velvet
-
-Reward Pool: $132K $VELVET
-Epoch 1 Ends: In 24 days`,
-
-`Analog
-
-Reward Pool: $200K $ANLOG
-Epoch 1 Ends: In 20 days`,
-
-`Klout
-
-Reward Pool: 1% of supply
-Epoch 1 Ends: In 18 days`,
-
-`IOPN
-
-Reward Pool: $300K $OPN + Xeets
-Rewards: $100K monthly to top 100 creators`,
-
-`Solstice
-
-Reward Pool: 1% $SLX + Xeets
-Rewards: Top 100 creators`,
-
-`VDEX
-
-Reward Pool: 0.5% $VDEX + Xeets
-Rewards: Top 150 creators (33% monthly until Jan 1, 2026)`,
-
-`Artery
-
-Reward Pool: 1% $ARTERY + Xeets
-Ends: Nov 18, 2025
-Rewards: Top 100 creators; top 50 get Genesis NFTs
-Vesting: None`
+    // Project data
+    const projects = [
+      { name: "Anichess", twitter: "https://x.com/AnichessGame", second: "https://yaps.kaito.ai", secondName: "Kaito" },
+      { name: "Integra", twitter: "https://x.com/integra_layer", second: "https://yaps.kaito.ai", secondName: "Kaito" },
+      { name: "INFINIT", twitter: "https://x.com/Infinit_Labs", second: "https://yaps.kaito.ai", secondName: "Kaito" },
+      { name: "sTBL", twitter: "https://x.com/stbl_official", second: "https://yaps.kaito.ai", secondName: "Kaito" },
+      { name: "Arbitrum", twitter: "https://x.com/arbitrum", second: "https://yaps.kaito.ai", secondName: "Kaito" },
+      { name: "Beyond", twitter: "https://x.com/beyond__tech", second: "https://quacks.app/?ref=bharath_apex", secondName: "Wallchain" },
+      { name: "SCOR", twitter: "https://x.com/SCORProtocol", second: "https://quacks.app/?ref=bharath_apex", secondName: "Wallchain" },
+      { name: "Velvet", twitter: "https://x.com/Velvet_Capital", second: "https://quacks.app/?ref=bharath_apex", secondName: "Wallchain" },
+      { name: "IOPN", twitter: "https://x.com/IOPn_io", second: "https://www.xeet.ai/refer/bharath_apex", secondName: "Xeet" },
+      { name: "Solstice", twitter: "https://x.com/solsticefi", second: "https://www.xeet.ai/refer/bharath_apex", secondName: "Xeet" },
+      { name: "VDEX", twitter: "https://x.com/0xVDEX", second: "https://www.xeet.ai/refer/bharath_apex", secondName: "Xeet" },
+      { name: "Artery", twitter: "https://x.com/Artery_Chain", second: "https://www.xeet.ai/refer/bharath_apex", secondName: "Xeet" },
     ];
 
-    const messagesEl = document.getElementById('messages');
-    messagesEl.innerHTML = posts.map(msg => `<div class="message">${msg}</div>`).join('');
+    const descriptions = [
+      `Anichess\n\nReward Pool: 5,000,000 $CHECK\nRewards: 1,000,000 $CHECK monthly to top 200 creators\nPeriod: Oct 1, 2025 – Apr 1, 2026\nVesting: None\nPlatform: Anichess`,
+      `Integra\n\nReward Pool: 0.5% of $IRL supply\nRecipients: Kaito creators, referrers, and eco users\nPeriod: Sep 30, 2025 – TBD\nVesting: 20% at TGE, 80% over 6 months`,
+      `INFINIT\n\nReward Pool: 2M $IN\nRecipients: Top 2,000 creators\nPeriod: Oct 16 – Dec 16, 2025\nVesting: None`,
+      `sTBL\n\nReward Pool: $500K $STBL\nRewards: $100K monthly to top 100 creators\nVesting: 3M lock + 3M linear vesting`,
+      `Arbitrum\n\nReward Pool: 700K $ARB\nRecipients: Top 150 creators monthly\nPeriod: Oct 7 – Dec 31, 2025`,
+      `Beyond\n\nReward Pool: 4% of total supply\nEpoch 1 Ends: In 39 days`,
+      `SCOR\n\nReward Pool: 0.5% of supply\nEpoch 1 Ends: In 60 days`,
+      `Velvet\n\nReward Pool: $132K $VELVET\nEpoch 1 Ends: In 24 days`,
+      `IOPN\n\nReward Pool: $300K $OPN + Xeets\nRewards: $100K monthly to top 100 creators`,
+      `Solstice\n\nReward Pool: 1% $SLX + Xeets\nRewards: Top 100 creators`,
+      `VDEX\n\nReward Pool: 0.5% $VDEX + Xeets\nRewards: Top 150 creators (33% monthly until Jan 1, 2026)`,
+      `Artery\n\nReward Pool: 1% $ARTERY + Xeets\nEnds: Nov 18, 2025\nRewards: Top 100 creators; top 50 get Genesis NFTs`
+    ];
+
+    const messagesEl = document.getElementById("messages");
+    messagesEl.innerHTML = projects.map((p, i) => `
+      <div class="message">
+        <div class="button-group">
+          <button class="btn" onclick="window.open('${p.twitter}','_blank')">Twitter</button>
+          <button class="btn" onclick="window.open('${p.second}','_blank')">${p.secondName}</button>
+        </div>
+        ${descriptions[i]}
+      </div>
+    `).join('');
   </script>
 
 </body>

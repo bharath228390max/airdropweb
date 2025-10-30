@@ -3,22 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Community Posts</title>
+  <title>Community Projects</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
     * { margin:0; padding:0; box-sizing:border-box; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
 
     body {
       font-family: 'Inter', sans-serif;
       background: #0a0a0f;
       color: white;
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
     }
 
+    /* background animation */
     .bg-gradient {
       position: fixed;
       width: 100%;
@@ -28,13 +31,20 @@
       animation: gradientShift 15s ease infinite;
       z-index: 0;
     }
-    @keyframes gradientShift { 0%,100%{transform:scale(1) rotate(0deg);}50%{transform:scale(1.2) rotate(180deg);} }
+    @keyframes gradientShift {
+      0%,100%{transform:scale(1) rotate(0deg);}
+      50%{transform:scale(1.2) rotate(180deg);}
+    }
 
     .orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity:0.3; animation: float 20s ease-in-out infinite; z-index:1; pointer-events:none;}
     .orb1{width:500px;height:500px;background:linear-gradient(135deg,#667eea,#764ba2);top:-250px;left:-250px;}
     .orb2{width:400px;height:400px;background:linear-gradient(135deg,#f093fb,#f5576c);bottom:-200px;right:-200px;}
     .orb3{width:350px;height:350px;background:linear-gradient(135deg,#4facfe,#00f2fe);top:50%;left:50%;}
-    @keyframes float{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(100px,-100px) scale(1.1);}66%{transform:translate(-100px,100px) scale(0.9);} }
+    @keyframes float{
+      0%,100%{transform:translate(0,0) scale(1);}
+      33%{transform:translate(100px,-100px) scale(1.1);}
+      66%{transform:translate(-100px,100px) scale(0.9);}
+    }
 
     .container{
       flex: 1;
@@ -42,6 +52,7 @@
       flex-direction: column;
       z-index: 2;
       width: 100%;
+      min-height: 0;
     }
 
     .top-header {
@@ -49,7 +60,9 @@
       align-items: center;
       padding: 15px 20px;
       z-index: 3;
+      flex-shrink: 0;
     }
+
     .btn {
       padding: 10px 20px;
       border-radius: 12px;
@@ -74,6 +87,8 @@
       text-align: center;
       width: 100%;
       margin-bottom: 20px;
+      flex-shrink: 0;
+      padding: 0 20px;
     }
 
     .messages {
@@ -82,9 +97,12 @@
       flex-direction: column;
       gap: 25px;
       overflow-y: auto;
-      padding: 0 20px;
-      margin-bottom: 20px;
+      overflow-x: hidden;
+      padding: 0 20px 30px;
+      z-index: 3;
+      min-height: 0;
     }
+
     .message {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
@@ -100,8 +118,14 @@
       white-space: pre-wrap;
     }
 
-    .messages::-webkit-scrollbar { width: 6px; }
-    .messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+    .messages::-webkit-scrollbar { width: 8px; }
+    .messages::-webkit-scrollbar-thumb { 
+      background: rgba(255,255,255,0.3); 
+      border-radius: 4px; 
+    }
+    .messages::-webkit-scrollbar-thumb:hover { 
+      background: rgba(255,255,255,0.5); 
+    }
     .messages::-webkit-scrollbar-track { background: transparent; }
 
     @media(max-width:768px){
@@ -122,7 +146,7 @@
       <button class="btn" onclick="window.location.href='page2.html'">← Back</button>
     </div>
 
-    <h1>Community Posts</h1>
+    <h1>Community Projects</h1>
 
     <div class="messages" id="messages"></div>
   </div>
@@ -143,26 +167,104 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Auth check
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "index.html";
       }
     });
 
-    // ✅ Updated messages
+    // ✅ Project bubbles
     const posts = [
-      "hello family this is where i share new airdrop projects",
-      "Welcome to the Rezo community! 🚀",
-      "Support each other — engagement brings growth.",
-      "More features coming soon. Stay tuned 👀"
+`Anichess
+
+Reward Pool: 5,000,000 $CHECK
+Rewards: 1,000,000 $CHECK monthly to top 200 creators
+Period: Oct 1, 2025 – Apr 1, 2026
+Vesting: None
+Platform: Anichess`,
+
+`Integra
+
+Reward Pool: 0.5% of $IRL supply
+Recipients: Kaito creators, referrers, and eco users
+Period: Sep 30, 2025 – TBD
+Vesting: 20% at TGE, 80% over 6 months
+Platform: TBD`,
+
+`INFINIT
+
+Reward Pool: 2M $IN
+Recipients: Top 2,000 creators
+Period: Oct 16 – Dec 16, 2025
+Vesting: None
+Platform: Kaito`,
+
+`sTBL
+
+Reward Pool: $500K $STBL
+Rewards: $100K monthly to top 100 creators
+Period: Oct 28, 2025 – TBD
+Vesting: 3M lock + 3M linear vesting
+Platform: sTBL`,
+
+`Arbitrum
+
+Reward Pool: 700K $ARB
+Recipients: Top 150 creators monthly
+Period: Oct 7 – Dec 31, 2025
+Vesting: None
+Platform: Kaito`,
+
+`Beyond
+
+Reward Pool: 4% of total supply
+Epoch 1 Ends: In 39 days`,
+
+`SCOR
+
+Reward Pool: 0.5% of supply
+Epoch 1 Ends: In 60 days`,
+
+`Velvet
+
+Reward Pool: $132K $VELVET
+Epoch 1 Ends: In 24 days`,
+
+`Analog
+
+Reward Pool: $200K $ANLOG
+Epoch 1 Ends: In 20 days`,
+
+`Klout
+
+Reward Pool: 1% of supply
+Epoch 1 Ends: In 18 days`,
+
+`IOPN
+
+Reward Pool: $300K $OPN + Xeets
+Rewards: $100K monthly to top 100 creators`,
+
+`Solstice
+
+Reward Pool: 1% $SLX + Xeets
+Rewards: Top 100 creators`,
+
+`VDEX
+
+Reward Pool: 0.5% $VDEX + Xeets
+Rewards: Top 150 creators (33% monthly until Jan 1, 2026)`,
+
+`Artery
+
+Reward Pool: 1% $ARTERY + Xeets
+Ends: Nov 18, 2025
+Rewards: Top 100 creators; top 50 get Genesis NFTs
+Vesting: None`
     ];
 
     const messagesEl = document.getElementById('messages');
-    function renderPosts() {
-      messagesEl.innerHTML = posts.map(msg => `<div class="message">${msg}</div>`).join('');
-    }
-    renderPosts();
+    messagesEl.innerHTML = posts.map(msg => `<div class="message">${msg}</div>`).join('');
   </script>
 
 </body>

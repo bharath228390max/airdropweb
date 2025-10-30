@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Yappers per projects</title>
+<title>Yappers per Projects</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -106,8 +106,8 @@
   </div>
 
   <div class="header">
-    <h1>Yappers per project</h1>
-    <p class="subtitle">Vote for the projects you're yapping about (max 5 votes per user, resets monthly)</p>
+    <h1>Yappers per Projects</h1>
+    <p class="subtitle">Vote for the projects you’re yapping about (max 5 votes per user, reset monthly)</p>
   </div>
 
   <div class="table-container">
@@ -135,7 +135,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <script>
-  // Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
     authDomain: "rezo-chat.firebaseapp.com",
@@ -146,46 +145,53 @@
     appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
   };
 
-  // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
   const auth = firebase.auth();
 
-  // Project data
+  // ✅ Project List
   const projects = [
     {id:"Anichess", name:"Anichess", rewards:"5,000,000 $CHECK (1M monthly)", platform:"Anichess"},
-    {id:"Integra", name:"Integra", rewards:"0.5% of $IRL supply", platform:"Kaito"},
-    {id:"INFINIT", name:"INFINIT", rewards:"2M $IN Tokens", platform:"Kaito"},
     {id:"STBL", name:"STBL", rewards:"$500K $STBL ($100K monthly)", platform:"STBL"},
-    {id:"Arbitrum", name:"Arbitrum", rewards:"700K $ARB", platform:"Kaito"},
-    {id:"Beyond", name:"Beyond", rewards:"4% of total supply", platform:"Xeet"},
-    {id:"SCOR", name:"SCOR", rewards:"0.5% of supply", platform:"Xeet"},
-    {id:"Velvet", name:"Velvet", rewards:"$132K $VELVET", platform:"Xeet"},
-    {id:"Analog", name:"Analog", rewards:"$200K $ANLOG", platform:"Xeet"},
-    {id:"Klout", name:"Klout", rewards:"1% of supply", platform:"Xeet"},
     {id:"IOPN", name:"IOPN", rewards:"$300K $OPN + Xeets", platform:"Xeet"},
+    {id:"Velvet", name:"Velvet", rewards:"$132K $VELVET", platform:"Xeet"},
+    {id:"Arbitrum", name:"Arbitrum", rewards:"700K $ARB", platform:"Kaito"},
+    {id:"SCOR", name:"SCOR", rewards:"0.5% of supply", platform:"Xeet"},
+    {id:"Klout", name:"Klout", rewards:"1% of supply", platform:"Xeet"},
     {id:"Solstice", name:"Solstice", rewards:"1% $SLX + Xeets", platform:"Xeet"},
-    {id:"VDEX", name:"VDEX", rewards:"0.5% $VDEX + Xeets", platform:"Xeet"},
-    {id:"Artery", name:"Artery", rewards:"1% $ARTERY + NFTs", platform:"Xeet"}
   ];
 
-  // Initialize projects in database
+  // ✅ Sync Firebase projects (Add new + Remove old)
   function initializeProjects() {
-    projects.forEach(p => {
-      db.ref('projects/' + p.id).once('value').then(snap => {
-        if (!snap.exists()) {
-          db.ref('projects/' + p.id).set({
+    const projectRef = db.ref('projects');
+    projectRef.once('value').then(snap => {
+      const existing = snap.val() || {};
+      const projectIds = projects.map(p => p.id);
+
+      // Add missing ones
+      projects.forEach(p => {
+        if (!existing[p.id]) {
+          projectRef.child(p.id).set({
             votes: 0,
             name: p.name,
             rewards: p.rewards,
             platform: p.platform
           });
         }
-      }).catch(err => console.error('Error initializing project:', err));
+      });
+
+      // Remove old ones
+      Object.keys(existing).forEach(id => {
+        if (!projectIds.includes(id)) {
+          projectRef.child(id).remove();
+          console.log(`🧹 Removed old project: ${id}`);
+        }
+      });
+      console.log("✅ Projects synced successfully.");
     });
   }
 
-  // Render leaderboard
+  // ✅ Render leaderboard
   function renderLeaderboard(userId) {
     db.ref('projects').on('value', snap => {
       const data = snap.val();
@@ -196,15 +202,12 @@
         return;
       }
 
-      // Get user votes
       db.ref('userVotes/' + userId).once('value').then(userSnap => {
         const userVotes = userSnap.val() || {};
         const voteCount = Object.keys(userVotes).length;
 
-        // Sort by votes
         const sorted = Object.entries(data).sort((a, b) => (b[1].votes || 0) - (a[1].votes || 0));
 
-        // Render table
         tbody.innerHTML = sorted.map(([pid, p], i) => `
           <tr>
             <td><span class="rank-badge ${i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'rank-other'}">${i + 1}</span></td>
@@ -216,49 +219,29 @@
           </tr>
         `).join('');
 
-        // Add vote handlers
         document.querySelectorAll('.vote-btn').forEach(btn => {
           btn.onclick = () => handleVote(btn.dataset.id, userId, userVotes, voteCount);
         });
-      }).catch(err => {
-        console.error('Error fetching user votes:', err);
-        tbody.innerHTML = '<tr><td colspan="6" class="loading">Error loading votes</td></tr>';
       });
     });
   }
 
-  // Handle vote
+  // ✅ Handle votes
   function handleVote(projectId, userId, userVotes, voteCount) {
-    if (voteCount >= 5) {
-      alert("You've reached the maximum of 5 votes per month!");
-      return;
-    }
+    if (voteCount >= 5) return alert("You've reached the maximum of 5 votes!");
+    if (userVotes[projectId]) return alert("You've already voted for this project!");
 
-    if (userVotes[projectId]) {
-      alert("You've already voted for this project!");
-      return;
-    }
-
-    // Increment vote
-    db.ref('projects/' + projectId + '/votes').transaction(current => {
-      return (current || 0) + 1;
-    }).then(() => {
-      // Record user vote
-      return db.ref('userVotes/' + userId + '/' + projectId).set(Date.now());
-    }).then(() => {
-      console.log('Vote recorded successfully');
-    }).catch(err => {
-      console.error('Error voting:', err);
-      alert('Failed to record vote. Please try again.');
-    });
+    db.ref('projects/' + projectId + '/votes').transaction(v => (v || 0) + 1)
+      .then(() => db.ref('userVotes/' + userId + '/' + projectId).set(Date.now()))
+      .then(() => console.log('Vote recorded!'))
+      .catch(err => console.error('Error voting:', err));
   }
 
-  // Auth state
+  // ✅ Auth
   auth.onAuthStateChanged(user => {
-    if (!user) {
-      window.location.href = "index.html";
-    } else {
-      console.log('User logged in:', user.uid);
+    if (!user) window.location.href = "index.html";
+    else {
+      console.log('User:', user.uid);
       initializeProjects();
       renderLeaderboard(user.uid);
     }

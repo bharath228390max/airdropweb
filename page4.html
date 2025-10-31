@@ -56,22 +56,17 @@
   .btn-secondary {background:rgba(255,255,255,0.05);color:white;border:1px solid rgba(255,255,255,0.1);}
   .btn-secondary:hover {background:rgba(255,255,255,0.1);transform:translateY(-2px);}
   .header {text-align:center;margin-bottom:40px;padding:60px 20px;background:rgba(255,255,255,0.02);
-    border-radius:32px;border:1px solid rgba(255,255,255,0.05);backdrop-filter:blur(20px);}
+    border-radius:32px;border:1px solid rgba(255,255,255,0.05);backdrop-filter:blur(20px);position:relative;}
   h1 {font-size:48px;font-weight:700;margin-bottom:16px;background:linear-gradient(135deg,#fff,#a8b2f0);
     -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
   p.subtitle {font-size:18px;color:rgba(255,255,255,0.6);max-width:600px;margin:0 auto;}
 
-  .table-container {
-    overflow-y: auto;
-    max-height: 70vh;
-    border-radius: 24px;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.03);
-    backdrop-filter: blur(10px);
-  }
+  .table-container {overflow-x:auto;border-radius:24px;border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.03);backdrop-filter:blur(10px);}
   table {width:100%;border-collapse:collapse;min-width:700px;}
   th,td {padding:1.2rem 1rem;text-align:left;border-bottom:1px solid rgba(255,255,255,0.05);}
   th {font-size:0.85rem;text-transform:uppercase;color:rgba(255,255,255,0.6);font-weight:600;}
+  tbody tr {transition:all 0.3s;}
   tbody tr:hover {background:rgba(255,255,255,0.05);}
   .rank-badge {display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;font-weight:700;font-size:1rem;}
   .rank-1 {background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;}
@@ -131,92 +126,106 @@
   </div>
 </div>
 
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
-  authDomain: "rezo-chat.firebaseapp.com",
-  databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "rezo-chat",
-  storageBucket: "rezo-chat.firebasestorage.app",
-  messagingSenderId: "300513819927",
-  appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-const auth = firebase.auth();
+  const firebaseConfig = {
+    apiKey: "AIzaSyBc2r-7g7UYtGZBV_JNAfEG_7sYY7UBsC4",
+    authDomain: "rezo-chat.firebaseapp.com",
+    databaseURL: "https://rezo-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "rezo-chat",
+    storageBucket: "rezo-chat.firebasestorage.app",
+    messagingSenderId: "300513819927",
+    appId: "1:300513819927:web:2c5f6a7f411273e1880b52"
+  };
 
-const projects = [
-  {id:"Anichess", name:"Anichess", rewards:"5,000,000 $CHECK (1M monthly)", platform:"Anichess"},
-  {id:"Integra", name:"Integra", rewards:"0.5% $IRL supply", platform:"Kaito"},
-  {id:"INFINIT", name:"INFINIT", rewards:"2M $IN (Top 2,000 creators)", platform:"Kaito"},
-  {id:"sTBL", name:"sTBL", rewards:"$500K $STBL ($100K monthly)", platform:"sTBL"},
-  {id:"Arbitrum", name:"Arbitrum", rewards:"700K $ARB", platform:"Kaito"},
-  {id:"Beyond", name:"Beyond", rewards:"4% total supply", platform:"Kaito"},
-  {id:"SCOR", name:"SCOR", rewards:"0.5% of supply", platform:"Xeet"},
-  {id:"Velvet", name:"Velvet", rewards:"$132K $VELVET", platform:"Xeet"},
-  {id:"Analog", name:"Analog", rewards:"$200K $ANLOG", platform:"Xeet"},
-  {id:"Klout", name:"Klout", rewards:"1% of supply", platform:"Xeet"},
-  {id:"IOPN", name:"IOPN", rewards:"$300K $OPN + Xeets", platform:"Xeet"},
-  {id:"Solstice", name:"Solstice", rewards:"1% $SLX + Xeets", platform:"Xeet"},
-  {id:"VDEX", name:"VDEX", rewards:"0.5% $VDEX + Xeets", platform:"Xeet"},
-  {id:"Artery", name:"Artery", rewards:"1% $ARTERY + Xeets", platform:"Xeet"}
-];
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const auth = firebase.auth();
 
-function initializeProjects() {
-  const ref = db.ref('projects');
-  ref.once('value').then(snap => {
-    const existing = snap.val() || {};
-    const ids = projects.map(p => p.id);
-    projects.forEach(p => {
-      if (!existing[p.id]) ref.child(p.id).set({...p, votes: 0});
+  // ✅ Updated Project List
+  const projects = [
+    {id:"Anichess", name:"Anichess", rewards:"5,000,000 $CHECK (1M monthly)", platform:"Kaito"},
+    {id:"STBL", name:"STBL", rewards:"$500K $STBL ($100K monthly)", platform:"Kaito"},
+    {id:"IOPN", name:"IOPN", rewards:"$300K $OPN + Xeets", platform:"Xeet"},
+    {id:"Velvet", name:"Velvet", rewards:"$132K $VELVET", platform:"Xeet"},
+    {id:"Arbitrum", name:"Arbitrum", rewards:"700K $ARB", platform:"Kaito"},
+    {id:"SCOR", name:"SCOR", rewards:"0.5% of supply", platform:"Xeet"},
+    {id:"Klout", name:"Klout", rewards:"1% of supply", platform:"Xeet"},
+    {id:"Solstice", name:"Solstice", rewards:"1% $SLX + Xeets", platform:"Xeet"},
+  ];
+
+  function initializeProjects() {
+    const projectRef = db.ref('projects');
+    projectRef.once('value').then(snap => {
+      const existing = snap.val() || {};
+      const projectIds = projects.map(p => p.id);
+      projects.forEach(p => {
+        if (!existing[p.id]) {
+          projectRef.child(p.id).set({
+            votes: 0,
+            name: p.name,
+            rewards: p.rewards,
+            platform: p.platform
+          });
+        }
+      });
+      Object.keys(existing).forEach(id => {
+        if (!projectIds.includes(id)) projectRef.child(id).remove();
+      });
+      console.log("✅ Projects synced successfully.");
     });
-    Object.keys(existing).forEach(id => {
-      if (!ids.includes(id)) ref.child(id).remove();
+  }
+
+  function renderLeaderboard(userId) {
+    db.ref('projects').on('value', snap => {
+      const data = snap.val();
+      const tbody = document.getElementById('leaderboardBody');
+      if (!data) {
+        tbody.innerHTML = '<tr><td colspan="6" class="loading">No projects found</td></tr>';
+        return;
+      }
+      db.ref('userVotes/' + userId).once('value').then(userSnap => {
+        const userVotes = userSnap.val() || {};
+        const voteCount = Object.keys(userVotes).length;
+        const sorted = Object.entries(data).sort((a, b) => (b[1].votes || 0) - (a[1].votes || 0));
+        tbody.innerHTML = sorted.map(([pid, p], i) => `
+          <tr>
+            <td><span class="rank-badge ${i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'rank-other'}">${i + 1}</span></td>
+            <td><span class="project-name">${p.name || 'Unknown'}</span></td>
+            <td><span class="votes">${p.votes || 0}</span></td>
+            <td><span class="rewards">${p.rewards || 'N/A'}</span></td>
+            <td><span class="platform-badge">${p.platform || 'N/A'}</span></td>
+            <td><button class="vote-btn" data-id="${pid}" ${userVotes[pid] ? 'disabled' : ''}>${userVotes[pid] ? '✓ Voted' : 'Vote'}</button></td>
+          </tr>
+        `).join('');
+        document.querySelectorAll('.vote-btn').forEach(btn => {
+          btn.onclick = () => handleVote(btn.dataset.id, userId, userVotes, voteCount);
+        });
+      });
     });
+  }
+
+  function handleVote(projectId, userId, userVotes, voteCount) {
+    if (voteCount >= 5) return alert("You've reached the maximum of 5 votes!");
+    if (userVotes[projectId]) return alert("You've already voted for this project!");
+    db.ref('projects/' + projectId + '/votes').transaction(v => (v || 0) + 1)
+      .then(() => db.ref('userVotes/' + userId + '/' + projectId).set(Date.now()))
+      .then(() => console.log('Vote recorded!'))
+      .catch(err => console.error('Error voting:', err));
+  }
+
+  auth.onAuthStateChanged(user => {
+    if (!user) window.location.href = "index.html";
+    else {
+      console.log('User:', user.uid);
+      initializeProjects();
+      renderLeaderboard(user.uid);
+    }
   });
-}
-
-function renderLeaderboard(uid) {
-  db.ref('projects').on('value', snap => {
-    const data = snap.val();
-    const tbody = document.getElementById('leaderboardBody');
-    if (!data) return tbody.innerHTML = '<tr><td colspan="6" class="loading">No projects found</td></tr>';
-
-    db.ref('userVotes/' + uid).once('value').then(v => {
-      const userVotes = v.val() || {};
-      const count = Object.keys(userVotes).length;
-      const sorted = Object.entries(data).sort((a,b) => (b[1].votes||0)-(a[1].votes||0));
-      tbody.innerHTML = sorted.map(([id,p],i)=>`
-        <tr>
-          <td><span class="rank-badge ${i==0?'rank-1':i==1?'rank-2':i==2?'rank-3':'rank-other'}">${i+1}</span></td>
-          <td><span class="project-name">${p.name}</span></td>
-          <td><span class="votes">${p.votes||0}</span></td>
-          <td><span class="rewards">${p.rewards}</span></td>
-          <td><span class="platform-badge">${p.platform}</span></td>
-          <td><button class="vote-btn" data-id="${id}" ${userVotes[id]?'disabled':''}>${userVotes[id]?'✓ Voted':'Vote'}</button></td>
-        </tr>
-      `).join('');
-      document.querySelectorAll('.vote-btn').forEach(b=>b.onclick=()=>handleVote(b.dataset.id,uid,userVotes,count));
-    });
-  });
-}
-
-function handleVote(pid, uid, userVotes, count) {
-  if (count >= 5) return alert("You've reached 5 votes this month!");
-  if (userVotes[pid]) return alert("Already voted!");
-  db.ref('projects/'+pid+'/votes').transaction(v=>(v||0)+1)
-    .then(()=>db.ref('userVotes/'+uid+'/'+pid).set(Date.now()))
-    .then(()=>console.log("Vote added"));
-}
-
-auth.onAuthStateChanged(u=>{
-  if(!u) window.location.href='index.html';
-  else {initializeProjects(); renderLeaderboard(u.uid);}
-});
 </script>
 </body>
 </html>

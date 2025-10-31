@@ -43,20 +43,35 @@
   }
 
   .container {max-width:1200px;margin:auto;padding:2rem 1rem;position:relative;z-index:2;}
-  .top-header {
-    display:flex;justify-content:space-between;align-items:center;
-    padding:20px 30px;margin-bottom:30px;
-    backdrop-filter:blur(10px);background:rgba(10,10,15,0.7);
-    border-bottom:1px solid rgba(255,255,255,0.05);border-radius:16px;
-  }
+
   .btn {
     padding:10px 24px;border-radius:12px;border:none;font-size:15px;font-weight:600;
     cursor:pointer;transition:all 0.3s;font-family:'Inter',sans-serif;
   }
   .btn-secondary {background:rgba(255,255,255,0.05);color:white;border:1px solid rgba(255,255,255,0.1);}
   .btn-secondary:hover {background:rgba(255,255,255,0.1);transform:translateY(-2px);}
-  .header {text-align:center;margin-bottom:40px;padding:60px 20px;background:rgba(255,255,255,0.02);
-    border-radius:32px;border:1px solid rgba(255,255,255,0.05);backdrop-filter:blur(20px);position:relative;}
+
+  /* ✅ Small back button inside the box */
+  .small-btn {
+    position:absolute;
+    top:20px;
+    left:20px;
+    padding:6px 10px;
+    font-size:14px;
+    border-radius:8px;
+  }
+
+  .header {
+    text-align:center;
+    margin-bottom:40px;
+    padding:30px 20px;
+    background:rgba(255,255,255,0.02);
+    border-radius:32px;
+    border:1px solid rgba(255,255,255,0.05);
+    backdrop-filter:blur(20px);
+    position:relative;
+  }
+
   h1 {font-size:48px;font-weight:700;margin-bottom:16px;background:linear-gradient(135deg,#fff,#a8b2f0);
     -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
   p.subtitle {font-size:18px;color:rgba(255,255,255,0.6);max-width:600px;margin:0 auto;}
@@ -98,11 +113,9 @@
 <div class="orb orb3"></div>
 
 <div class="container">
-  <div class="top-header">
-    <button class="btn btn-secondary" onclick="window.location.href='page2.html'">← Back to Home</button>
-  </div>
 
   <div class="header">
+    <button class="btn btn-secondary small-btn" onclick="window.location.href='page2.html'">←</button>
     <h1>Yappers per Projects</h1>
     <p class="subtitle">Vote for the projects you’re yapping about (max 5 votes per user, reset monthly)</p>
   </div>
@@ -146,7 +159,6 @@
   const db = firebase.database();
   const auth = firebase.auth();
 
-  // ✅ Updated Project List
   const projects = [
     {id:"Anichess", name:"Anichess", rewards:"5,000,000 $CHECK (1M monthly)", platform:"Kaito"},
     {id:"STBL", name:"STBL", rewards:"$500K $STBL ($100K monthly)", platform:"Kaito"},
